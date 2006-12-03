@@ -1,0 +1,129 @@
+body { 
+    background: #fff;
+	margin: 0;
+	font-family: helvetica, trebuchet, "Lucida Grande", sans-serif;
+    font-size:small 
+    }
+
+img { display:block; }
+img.inline { display:inline; }
+
+a img { border:none; }
+a:hover img { border: none; }
+
+#wrapper { 
+    margin:0 auto;
+	margin-left: 5px;
+    /* width: 800px; */
+}
+
+#banner img { margin:6px 0; }
+
+#nav {
+   float:left;
+   width:780px;
+   background:#fff;
+   margin:0 10px 10px;
+}
+
+#nav ul {
+   margin:0;
+   padding:0;
+   list-style:none;
+}
+
+#nav li {
+   float:left;
+   margin:0 .5em 0 0;
+   padding:0 0 0 4px;
+   background: url(/inc/b/l.png) no-repeat left top;
+}
+
+#nav li a { 
+    display:block;
+    background:url(/inc/b/r.png) no-repeat right top;
+    padding:0 11px 0 7px;
+    color:#fff;
+    text-decoration:none;
+    line-height:20px;
+}
+
+#nav li a:hover {
+    background: url(/inc/b/r.png) no-repeat 100% -20px;
+    color:rgb(17,45,137); 
+    border: 0;
+}
+
+#nav li:hover { background: url(/inc/b/l.png) no-repeat 0% -20px; } 
+
+#main {
+    clear:both;
+    margin:0 5px;
+}
+
+#main a {
+	text-decoration: none;
+	color: rgb(17,45,137);
+	font-weight: bold;
+	background: inherit;
+}
+
+a:hover, a:active { border-bottom: 1px dotted rgb(17,45,137); }
+p { padding: .3em 0; }
+
+table {
+	font-size: small;
+	border: 1px #aaa solid;
+	border-right: 0;
+	border-bottom: 0;
+}
+
+th, td {
+	white-space: nowrap;
+	border: 1px #aaa solid;
+	border-top: 0;
+	border-left: 0;
+	padding:2px;
+}
+
+body.members td { white-space: normal; }
+
+th {
+	background: #ddd;
+	color: #222;
+	font-size: x-small;
+}
+
+tr.alt td { background: #eef; }
+
+th.head {
+	background: #666;
+	color: #fff;
+	text-align: center !important;
+	letter-spacing: .1em;
+}
+
+.status, .detail { border-bottom: 1px #fff solid; }
+tr.last td { border-bottom: 1px #aaa solid; }
+.pass td.status, .pass td.detail { background: #6f6; }
+.warn td.status, .warn td.detail { background: #fc3; }
+.warnx td.status, .warn td.detail { background: #f99; }
+.fail td.status, .fail td.detail { background: #f66; }
+body.history th { text-align: right; }
+body.application table { margin: 0 auto; }
+body.application th { text-align: right; }
+body.application th.submit { text-align: center; }
+
+td.branch ul { list-style: none; }
+
+td.branch ul, td.branch li {
+	margin: 0;
+	padding: 0;
+}
+
+.opsys { color: black; }
+.compiler { color: navy; }
+.arch { color: purple; }
+
+td.flags { white-space: normal;  font-size: x-small; }
+

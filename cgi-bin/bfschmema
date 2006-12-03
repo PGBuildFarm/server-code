@@ -1,0 +1,274 @@
+--
+-- PostgreSQL database dump
+--
+
+SET client_encoding = 'SQL_ASCII';
+SET check_function_bodies = false;
+
+SET SESSION AUTHORIZATION 'pgbuildfarm';
+
+SET search_path = public, pg_catalog;
+
+--
+-- TOC entry 21 (OID 46831)
+-- Name: plpgsql_call_handler(); Type: FUNC PROCEDURAL LANGUAGE; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION plpgsql_call_handler() RETURNS language_handler
+    AS '$libdir/plpgsql', 'plpgsql_call_handler'
+    LANGUAGE c;
+
+
+--
+-- TOC entry 22 (OID 46833)
+-- Name: plperl_call_handler(); Type: FUNC PROCEDURAL LANGUAGE; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION plperl_call_handler() RETURNS language_handler
+    AS '$libdir/plperl', 'plperl_call_handler'
+    LANGUAGE c;
+
+
+SET SESSION AUTHORIZATION DEFAULT;
+
+--
+-- TOC entry 16 (OID 46832)
+-- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: public; Owner: 
+--
+
+CREATE TRUSTED PROCEDURAL LANGUAGE plpgsql HANDLER plpgsql_call_handler;
+
+
+--
+-- TOC entry 17 (OID 46834)
+-- Name: plperl; Type: PROCEDURAL LANGUAGE; Schema: public; Owner: 
+--
+
+CREATE TRUSTED PROCEDURAL LANGUAGE plperl HANDLER plperl_call_handler;
+
+
+--
+-- TOC entry 18 (OID 46835)
+-- Name: plperlu; Type: PROCEDURAL LANGUAGE; Schema: public; Owner: 
+--
+
+CREATE PROCEDURAL LANGUAGE plperlu HANDLER plperl_call_handler;
+
+
+SET SESSION AUTHORIZATION 'pgbuildfarm';
+
+--
+-- TOC entry 4 (OID 2200)
+-- Name: public; Type: ACL; Schema: -; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+SET SESSION AUTHORIZATION 'pgbuildfarm';
+
+--
+-- TOC entry 7 (OID 17150)
+-- Name: buildsystems; Type: TABLE; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE TABLE buildsystems (
+    name text NOT NULL,
+    secret text NOT NULL,
+    operating_system text NOT NULL,
+    os_version text NOT NULL,
+    compiler text NOT NULL,
+    compiler_version text NOT NULL,
+    architecture text NOT NULL,
+    status text NOT NULL,
+    sys_owner text NOT NULL,
+    owner_email text NOT NULL,
+    status_ts timestamp without time zone DEFAULT (('now'::text)::timestamp(6) with time zone)::timestamp without time zone
+);
+
+
+--
+-- TOC entry 8 (OID 17150)
+-- Name: buildsystems; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE buildsystems FROM PUBLIC;
+GRANT INSERT,SELECT ON TABLE buildsystems TO pgbfweb;
+
+
+SET SESSION AUTHORIZATION 'pgbuildfarm';
+
+--
+-- TOC entry 9 (OID 17155)
+-- Name: build_status; Type: TABLE; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    status integer,
+    stage text,
+    log text,
+    conf_sum text,
+    branch text,
+    changed_this_run text,
+    changed_since_success text,
+    log_archive bytea,
+    log_archive_filenames text[],
+    build_flags text[]
+);
+
+
+--
+-- TOC entry 10 (OID 17155)
+-- Name: build_status; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE build_status FROM PUBLIC;
+GRANT INSERT,SELECT ON TABLE build_status TO pgbfweb;
+
+
+SET SESSION AUTHORIZATION 'pgbuildfarm';
+
+--
+-- TOC entry 19 (OID 17160)
+-- Name: approve(text, text); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION approve(text, text) RETURNS void
+    AS 'update buildsystems set name = $2, status =''approved'' where name = $1 and status = ''pending'''
+    LANGUAGE sql;
+
+
+--
+-- TOC entry 5 (OID 17162)
+-- Name: pending; Type: TYPE; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE TYPE pending AS (
+	name text,
+	operating_system text,
+	os_version text,
+	compiler text,
+	compiler_version text,
+	architecture text,
+	owner_email text
+);
+
+
+--
+-- TOC entry 20 (OID 17164)
+-- Name: approve2(text, text); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION approve2(text, text) RETURNS text
+    AS ' update buildsystems set name = $2, status = ''approved'' where name = $1 and status = ''pending''; select owner_email || '':'' || name || '':'' || secret from buildsystems where name = $2;'
+    LANGUAGE sql;
+
+
+--
+-- TOC entry 6 (OID 47855)
+-- Name: pending2; Type: TYPE; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE TYPE pending2 AS (
+	name text,
+	operating_system text,
+	os_version text,
+	compiler text,
+	compiler_version text,
+	architecture text,
+	owner_email text,
+	"owner" text,
+	status_ts timestamp without time zone
+);
+
+
+--
+-- TOC entry 23 (OID 47857)
+-- Name: pending(); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION pending() RETURNS SETOF pending2
+    AS 'select name,operating_system,os_version,compiler,compiler_version,architecture,owner_email, sys_owner, status_ts from buildsystems where status = ''pending'' order by status_ts '
+    LANGUAGE sql;
+
+
+--
+-- TOC entry 11 (OID 49741)
+-- Name: list_subscriptions; Type: TABLE; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE TABLE list_subscriptions (
+    addr text
+);
+
+
+--
+-- TOC entry 24 (OID 55330)
+-- Name: prevstat(text, text, timestamp without time zone); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION prevstat(text, text, timestamp without time zone) RETURNS text
+    AS '
+   select coalesce((select distinct on (snapshot) stage
+                  from build_status
+                  where sysname = $1 and branch = $2 and snapshot < $3
+                  order by snapshot desc
+                  limit 1), ''NEW'') as prev_status
+'
+    LANGUAGE sql;
+
+
+--
+-- TOC entry 13 (OID 23365)
+-- Name: bs_branch_snapshot_idx; Type: INDEX; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE INDEX bs_branch_snapshot_idx ON build_status USING btree (branch, snapshot);
+
+
+--
+-- TOC entry 14 (OID 23366)
+-- Name: bs_sysname_branch_idx; Type: INDEX; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE INDEX bs_sysname_branch_idx ON build_status USING btree (sysname, branch);
+
+
+--
+-- TOC entry 12 (OID 23367)
+-- Name: buildsystems_pkey; Type: CONSTRAINT; Schema: public; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY buildsystems
+    ADD CONSTRAINT buildsystems_pkey PRIMARY KEY (name);
+
+
+--
+-- TOC entry 15 (OID 23369)
+-- Name: build_status_pkey; Type: CONSTRAINT; Schema: public; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status
+    ADD CONSTRAINT build_status_pkey PRIMARY KEY (sysname, snapshot);
+
+
+--
+-- TOC entry 25 (OID 23371)
+-- Name: bs_fk; Type: FK CONSTRAINT; Schema: public; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status
+    ADD CONSTRAINT bs_fk FOREIGN KEY (sysname) REFERENCES buildsystems(name) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3 (OID 2200)
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pgbuildfarm
+--
+
+COMMENT ON SCHEMA public IS 'Standard public schema';
+
+

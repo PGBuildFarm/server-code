@@ -1,0 +1,2 @@
+SetEnv BFConfDir /home/community/pgbuildfarm
+SetEnv BF_DEBUG on
