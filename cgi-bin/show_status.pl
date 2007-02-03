@@ -73,7 +73,7 @@ $statement =<<EOS;
        	) m
   where name = sysname
         and s.status = 'approved'
-  order by branch = 'HEAD' desc, 
+  order by branch = 'HEAD' desc,
         branch desc, 
         snapshot desc
 
@@ -126,6 +126,7 @@ __DATA__
      nls => '/img/translateicon.gif',
      krb5 => '/img/krb.gif',
      tcl => '/img/tcl.png',
+     xml => '/img/xml.png',
      'thread-safety' => '/img/threads.gif',
      'integer-datetimes' = '/img/days.png',
      }
