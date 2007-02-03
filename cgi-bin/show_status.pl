@@ -178,7 +178,7 @@ __DATA__
 <table><tr><th class="head" rowspan="2">Legend</th>
 [% FOREACH flagset IN flag_imgs %]
 <td><img src="[% flagset.value %]" title="[% flagset.key %]" alt="[% flagset.key %]" height="16" width="16" class="inline"  align="center"/> =  [% flagset.key %]</td>
-[% IF loop.count == 5 %]</tr><tr>[% END %]
+[% IF loop.count == 6 %]</tr><tr>[% END %]
 [% END %]
 </tr></table>
 <br />
@@ -214,10 +214,10 @@ __DATA__
 </div><!-- main -->
 <hr />
 <p style="text-align: center;">
-Hosting for the PostgreSQL Buildfarm is generously 
-provided by: 
+The PostgreSQL Buildfarm website is provided by: 
 <a href="http://www.commandprompt.com">CommandPrompt, 
-The PostgreSQL Company</a>
+The PostgreSQL Company</a> <br />
+The PostgreSQL community makes it work!
 </p>
 </div><!-- wrapper -->
   </body>
