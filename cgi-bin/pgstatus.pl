@@ -74,7 +74,7 @@ $year += 1900; $mon +=1;
 my $date=
     sprintf("%d-%.2d-%.2d_%.2d:%.2d:%.2d",$year,$mon,$mday,$hour,$min,$sec);
 
-if ($ENV{BF_DEBUG} || ($ts > time) || (! $secret) )
+if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time ) || (! $secret) )
 {
     open(TX,">../buildlogs/$animal.$date");
     print TX "sig=$sig\nlogtar-len=" , length($log_archive),
@@ -90,8 +90,17 @@ unless ($ts < time)
 {
     my $gmt = gmtime($ts);
     print "Status: 491 bad ts parameter - $ts ($gmt GMT) is in the future.\n",
-    "Context-Type: text/plain\n\n bad ts parameter - $ts ($gmt GMT) is in the future\n";
+    "Content-Type: text/plain\n\n bad ts parameter - $ts ($gmt GMT) is in the future\n";
 	$db->disconnect;
+    exit;
+}
+
+unless ($ts + 86400 > time)
+{
+    my $gmt = gmtime($ts);
+    print "Status: 491 bad ts parameter - $ts ($gmt GMT) is more than 24 hours ago.\n",
+     "Content-Type: text/plain\n\n bad ts parameter - $ts ($gmt GMT) is more than 24 hours ago.\n";
+    $db->disconnect;
     exit;
 }
 

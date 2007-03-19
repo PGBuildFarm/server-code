@@ -144,6 +144,17 @@ $_$
 
 ALTER FUNCTION public.prevstat(text, text, timestamp without time zone) OWNER TO pgbuildfarm;
 
+--
+-- Name: target(text); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION target(t text) RETURNS text
+    AS $_$ my $log = shift; $log =~ s/.*(Target:[^\n]*).*/$1/s; return $log; $_$
+    LANGUAGE plperl;
+
+
+ALTER FUNCTION public.target(t text) OWNER TO pgbuildfarm;
+
 SET default_tablespace = '';
 
 SET default_with_oids = true;
@@ -241,6 +252,16 @@ CREATE VIEW buildsystems_export AS
 
 
 ALTER TABLE public.buildsystems_export OWNER TO pgbuildfarm;
+
+--
+-- Name: failures; Type: VIEW; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE VIEW failures AS
+    SELECT build_status.sysname, build_status.snapshot, build_status.stage, build_status.conf_sum, build_status.branch, build_status.changed_this_run, build_status.changed_since_success, build_status.log_archive_filenames, build_status.build_flags, build_status.report_time FROM build_status WHERE (((build_status.stage <> 'OK'::text) AND (build_status.stage !~~ 'CVS%'::text)) AND (build_status.report_time IS NOT NULL));
+
+
+ALTER TABLE public.failures OWNER TO pgbuildfarm;
 
 --
 -- Name: list_subscriptions; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
