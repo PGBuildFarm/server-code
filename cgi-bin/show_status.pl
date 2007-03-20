@@ -91,6 +91,7 @@ while (my $row = $sth->fetchrow_hashref)
     $row->{build_flags}  =~ s/^\{(.*)\}$/$1/;
     $row->{build_flags}  =~ s/,/ /g;
     $row->{build_flags}  =~ s/--((enable|with)-)?//g;
+	$row->{build_flags} =~ s/libxml/xml/;
     $row->{build_flags}  =~ s/\S+=\S+//g;
     push(@$statrows,$row);
 }
