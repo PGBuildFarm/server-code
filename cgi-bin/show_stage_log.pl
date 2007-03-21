@@ -65,7 +65,9 @@ unless ($stage)
 }
 
 my $template = "buildlogXXXXXX";
-my ($fh, $filename) = tempfile($template, UNLINK => 1);
+my ($fh, $filename) = tempfile($template, 
+							   DIR => '/home/community/pgbuildfarm/buildlogs',
+							   UNLINK => 1);
 print $fh $tgz;
 close($fh);
 
