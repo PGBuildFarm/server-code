@@ -2,6 +2,14 @@
 
 use strict;
 
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport
+       $all_stat $fail_stat $change_stat $green_stat
+       $server_time
+);
+
+# force this before we do anything - even load modules
+BEGIN { $server_time = time; }
+
 use CGI;
 use Digest::SHA1  qw(sha1_hex);
 use MIME::Base64;
@@ -10,10 +18,6 @@ use DBD::Pg;
 use Data::Dumper;
 use Mail::Send;
 use Safe;
-
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport
-       $all_stat $fail_stat $change_stat $green_stat
-);
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
@@ -168,7 +172,20 @@ unless ($sconf =~ s/.*(\$Script_Config)/$1/ms )
 }
 my $client_conf = $container->reval("$sconf;");
 
-my @config_flags = @{ $client_conf->{config_opts} || [] };
+my @config_flags;
+if (not exists $client_conf->{config_opts} )
+{
+	@config_flags = ();
+}
+elsif (ref $client_conf->{config_opts} eq 'HASH')
+{
+	@config_flags = keys %{$client_conf->{config_opts}};
+}
+elsif (ref $client_conf->{config_opts} eq 'ARRAY' )
+{
+	@config_flags = @{$client_conf->{config_opts}};
+}
+
 if (@config_flags)
 {
     @config_flags = grep {! m/=/ } @config_flags;
@@ -277,8 +294,10 @@ my $client_events = $client_conf->{mail_events};
 
 if ($ENV{BF_DEBUG})
 {
+	my $client_time = $client_conf->{current_ts};
     open(TX,">>../buildlogs/$animal.$date");
     print TX "\n",Dumper(\$client_conf),"\n";
+	print TX "server time: $server_time, client time: $client_time\n" if $client_time;
     close(TX);
 }
 
