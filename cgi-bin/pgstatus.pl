@@ -179,7 +179,9 @@ if (not exists $client_conf->{config_opts} )
 }
 elsif (ref $client_conf->{config_opts} eq 'HASH')
 {
-	@config_flags = keys %{$client_conf->{config_opts}};
+	# leave out keys with false values
+	@config_flags = grep { $client_conf->{config_opts}->{$_} } 
+	    keys %{$client_conf->{config_opts}};
 }
 elsif (ref $client_conf->{config_opts} eq 'ARRAY' )
 {
