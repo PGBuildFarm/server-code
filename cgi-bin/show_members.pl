@@ -14,13 +14,13 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 #require "BuildFarmWeb.pl";
 
 my $query = new CGI;
-my %sort_ok = ('name' => 'name' , 
+my %sort_ok = ('name' => 'lower(name)' , 
 	       'owner' => 'lower(owner_email)', 
 	       'os' => 'lower(operating_system), os_version', 
 	       'compiler' => 'lower(compiler), compiler_version' ,
 	       'arch' => 'lower(architecture)' );
 $sort_by = $query->param('sort_by');$sort_by =~ s/[^a-zA-Z0-9_ -]//g;
-$sort_by = $sort_ok{$sort_by} || 'name';
+$sort_by = $sort_ok{$sort_by} || $sort_ok{name};
 
 my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
