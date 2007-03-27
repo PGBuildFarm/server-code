@@ -23,15 +23,15 @@ my $sort_clause = "";
 my $sortby = $query->param('sortby') || 'nosort';
 if ($sortby eq 'name')
 {
-	$sort_clause = 'sysname,';
+	$sort_clause = 'lower(sysname),';
 }
 elsif ($sortby eq 'os')
 {
-	$sort_clause = 'operating_system, os_version desc,'; 
+	$sort_clause = 'lower(operating_system), os_version desc,'; 
 }
 elsif ($sortby eq 'compiler')
 {
-	$sort_clause = "compiler, compiler_version,";
+	$sort_clause = "lower(compiler), compiler_version,";
 }
 
 my $db = DBI->connect($dsn,$dbuser,$dbpass) or die("$dsn,$dbuser,$dbpass,$!");
