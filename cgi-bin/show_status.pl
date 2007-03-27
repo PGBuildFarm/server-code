@@ -18,44 +18,38 @@ my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
+
+my $sort_clause = "";
+my $sortby = $query->param('sortby') || 'nosort';
+if ($sortby eq 'name')
+{
+	$sort_clause = 'sysname,';
+}
+elsif ($sortby eq 'os')
+{
+	$sort_clause = 'operating_system, os_version desc,'; 
+}
+elsif ($sortby eq 'compiler')
+{
+	$sort_clause = "compiler, compiler_version,";
+}
+
 my $db = DBI->connect($dsn,$dbuser,$dbpass) or die("$dsn,$dbuser,$dbpass,$!");
 
 # there is possibly some redundancy in this query, but it makes
 # a lot of the processing simpler.
 
-my $statement = <<EOS;
-
-  select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
-      sysname, snapshot, b.status, stage, branch, build_flags,
-      operating_system, os_version, compiler, compiler_version, architecture 
-  from buildsystems s, 
-       build_status b
-       natural join 
-       (select sysname, branch, max(snapshot) as snapshot
-        from build_status
-        group by sysname, branch
-	having max(snapshot) > now() - '30 days'::interval
-       ) m
-  where name = sysname
-        and s.status = 'approved'
-  order by branch = 'HEAD' desc, 
-        branch desc, 
-        snapshot desc
-
-EOS
-;
-
-$statement =<<EOS;
+my $statement =<<EOS;
 
 
   select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
       	sysname, snapshot, b.status, stage, branch, build_flags,
       	operating_system, coalesce(b.os_version,s.os_version) as os_version,
-      	compiler, coalesce(b.compiler_version, s.compiler_version) as compiler_version, 
-	architecture 
+      	compiler, coalesce(b.compiler_version, s.compiler_version) 
+	    as compiler_version, architecture 
   from buildsystems s, 
         (
-	select distinct on (bs.sysname, bs.branch, bs.report_time) 
+	    select distinct on (bs.sysname, bs.branch, bs.report_time) 
                sysname, snapshot, status, stage, branch, build_flags,
                report_time ,compiler_version, os_version
         from build_status bs
@@ -74,7 +68,7 @@ $statement =<<EOS;
   where name = sysname
         and s.status = 'approved'
   order by branch = 'HEAD' desc,
-        branch desc, 
+        branch desc, $sort_clause 
         snapshot desc
 
 
@@ -99,6 +93,7 @@ $sth->finish;
 
 
 $db->disconnect;
+
 
 my $template = new Template({});
 
