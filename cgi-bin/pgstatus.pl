@@ -5,6 +5,7 @@ use strict;
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport
        $all_stat $fail_stat $change_stat $green_stat
        $server_time
+	   $min_script_version $min_web_script_version
 );
 
 # force this before we do anything - even load modules
@@ -171,6 +172,40 @@ unless ($sconf =~ s/.*(\$Script_Config)/$1/ms )
     $sconf = '$Script_Config={};';
 }
 my $client_conf = $container->reval("$sconf;");
+
+if ($min_script_version)
+{
+	$client_conf->{script_version} ||= '0.0';
+	my ($minmajor,$minminor) = split(/\./,$min_script_version);
+	my ($smajor,$sminor) = split(/\./,$client_conf->{script_version});
+	if ($minmajor > $smajor || ($minmajor == $smajor && $minminor > $sminor))
+	{
+		print "Status: 460 script version too low\nContent-Type: text/plain\n\n";
+		print 
+			"Script version is below minimum required\n",
+			"Reported version: $client_conf->{script_version},",
+			"Minumum version required: $min_script_version\n";
+		$db->disconnect;
+		exit;
+	}
+}
+
+if ($min_web_script_version)
+{
+	$client_conf->{web_script_version} ||= '0.0';
+	my ($minmajor,$minminor) = split(/\./,$min_script_version);
+	my ($smajor,$sminor) = split(/\./,$client_conf->{script_version});
+	if ($minmajor > $smajor || ($minmajor == $smajor && $minminor > $sminor))
+	{
+		print "Status: 461 web script version too low\nContent-Type: text/plain\n\n";
+		print 
+			"Web Script version is below minimum required\n",
+			"Reported version: $client_conf->{web_script_version},",
+			"Minumum version required: $min_web_script_version\n";
+		$db->disconnect;
+		exit;
+	}
+}
 
 my @config_flags;
 if (not exists $client_conf->{config_opts} )
