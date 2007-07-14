@@ -78,7 +78,7 @@ unless ($os && $osv && $comp && $compv && $arch && $email && $owner)
 
 # some idiot has a script that tries to talk to me
 # this should catch and dispose of him
-if (grep {/\@pgbuildfarm\.org|Content-Type:/} $os,$osv,$comp,$compv,$arch,$email,$owner)
+if (grep {/\@pgbuildfarm\.org|Content-Type:|http:|mailto:|href=|None|Unknown/} $os,$osv,$comp,$compv,$arch,$email,$owner)
 {
     print 
 	"Status: 403 Forbidden - go away idiot\n",
