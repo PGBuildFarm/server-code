@@ -42,36 +42,12 @@ my $db = DBI->connect($dsn,$dbuser,$dbpass) or die("$dsn,$dbuser,$dbpass,$!");
 my $statement =<<EOS;
 
 
-  select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
-      	sysname, snapshot, b.status, stage, branch, build_flags,
-      	operating_system, coalesce(b.os_version,s.os_version) as os_version,
-      	compiler, coalesce(b.compiler_version, s.compiler_version) 
-	    as compiler_version, architecture 
-  from buildsystems s, 
-        (
-	    select distinct on (bs.sysname, bs.branch, bs.report_time) 
-               sysname, snapshot, status, stage, branch, build_flags,
-               report_time ,compiler_version, os_version
-        from build_status bs
-             left join 
-             personality p
-             on (p.name = bs.sysname and p.effective_date <= bs.report_time)
-        order by bs.sysname, bs.branch, bs.report_time, 
-                 p.effective_date is null, p.effective_date desc
-        ) as b
-	natural join 
-       	(select sysname, branch, max(snapshot) as snapshot
-        from build_status
-        group by sysname, branch
-    	having max(snapshot) > now() - '30 days'::interval
-       	) m
-  where name = sysname
-        and s.status = 'approved'
+  select when_ago, sysname, snapshot, status, stage, branch, build_flags,
+      	operating_system, os_version, compiler, compiler_version, architecture 
+  from dashboard
   order by branch = 'HEAD' desc,
         branch desc, $sort_clause 
         snapshot desc
-
-
 
 EOS
 ;
