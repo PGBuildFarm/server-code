@@ -36,14 +36,10 @@ elsif ($sortby eq 'compiler')
 
 my $db = DBI->connect($dsn,$dbuser,$dbpass) or die("$dsn,$dbuser,$dbpass,$!");
 
-# there is possibly some redundancy in this query, but it makes
-# a lot of the processing simpler.
-
 my $statement =<<EOS;
 
 
-  select when_ago, sysname, snapshot, status, stage, branch, build_flags,
-      	operating_system, os_version, compiler, compiler_version, architecture 
+  select *
   from dashboard
   order by branch = 'HEAD' desc,
         branch desc, $sort_clause 
