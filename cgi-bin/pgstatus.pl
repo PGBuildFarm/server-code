@@ -251,7 +251,8 @@ $sth->bind_param(7,$branch);
 $sth->bind_param(8,$changed_this_run);
 $sth->bind_param(9,$changed_since_success);
 $sth->bind_param(10,$log_file_names);
-$sth->bind_param(11,$log_archive,{ pg_type => DBD::Pg::PG_BYTEA });
+#$sth->bind_param(11,$log_archive,{ pg_type => DBD::Pg::PG_BYTEA });
+$sth->bind_param(11,undef,{ pg_type => DBD::Pg::PG_BYTEA });
 $sth->bind_param(12,$config_flags);
 
 $sth->execute;
