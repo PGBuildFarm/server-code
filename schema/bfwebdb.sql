@@ -145,6 +145,31 @@ $_$
 ALTER FUNCTION public.prevstat(text, text, timestamp without time zone) OWNER TO pgbuildfarm;
 
 --
+-- Name: set_latest(); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION set_latest() RETURNS "trigger"
+    AS $$
+
+	begin
+		update latest_snapshot 
+			set snapshot = 
+	(case when snapshot > NEW.snapshot then snapshot else NEW.snapshot end)
+			where sysname = NEW.sysname and
+				branch = NEW.branch;
+		if not found then
+			insert into latest_snapshot
+				values(NEW.sysname, NEW.branch, NEW.snapshot);
+		end if;
+		return NEW;
+	end;
+$$
+    LANGUAGE plpgsql;
+
+
+ALTER FUNCTION public.set_latest() OWNER TO pgbuildfarm;
+
+--
 -- Name: target(text); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
 --
 
@@ -237,7 +262,8 @@ CREATE TABLE buildsystems (
     status text NOT NULL,
     sys_owner text NOT NULL,
     owner_email text NOT NULL,
-    status_ts timestamp without time zone DEFAULT (('now'::text)::timestamp(6) with time zone)::timestamp without time zone
+    status_ts timestamp without time zone DEFAULT (('now'::text)::timestamp(6) with time zone)::timestamp without time zone,
+    no_alerts boolean DEFAULT false
 );
 
 
@@ -252,6 +278,43 @@ CREATE VIEW buildsystems_export AS
 
 
 ALTER TABLE public.buildsystems_export OWNER TO pgbuildfarm;
+
+--
+-- Name: latest_snapshot; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE TABLE latest_snapshot (
+    sysname text NOT NULL,
+    branch text NOT NULL,
+    snapshot timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.latest_snapshot OWNER TO pgbuildfarm;
+
+--
+-- Name: personality; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE TABLE personality (
+    name text NOT NULL,
+    os_version text NOT NULL,
+    compiler_version text NOT NULL,
+    effective_date timestamp with time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL
+);
+
+
+ALTER TABLE public.personality OWNER TO pgbuildfarm;
+
+--
+-- Name: dashboard; Type: VIEW; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE VIEW dashboard AS
+    SELECT ((timezone('GMT'::text, now()))::timestamp(0) without time zone - b.snapshot) AS when_ago, b.sysname, b.snapshot, b.status, b.stage, b.branch, b.build_flags, s.operating_system, COALESCE(b.os_version, s.os_version) AS os_version, s.compiler, COALESCE(b.compiler_version, s.compiler_version) AS compiler_version, s.architecture FROM buildsystems s, (SELECT DISTINCT ON (bs.sysname, bs.branch, bs.report_time) bs.sysname, bs.snapshot, bs.status, bs.stage, bs.branch, bs.build_flags, bs.report_time, p.compiler_version, p.os_version FROM ((build_status bs NATURAL JOIN latest_snapshot m) LEFT JOIN personality p ON (((p.name = bs.sysname) AND (p.effective_date <= bs.report_time)))) WHERE (m.snapshot > (now() - '30 days'::interval)) ORDER BY bs.sysname, bs.branch, bs.report_time, (p.effective_date IS NULL), p.effective_date DESC) b WHERE ((s.name = b.sysname) AND (s.status = 'approved'::text));
+
+
+ALTER TABLE public.dashboard OWNER TO pgbuildfarm;
 
 --
 -- Name: failures; Type: VIEW; Schema: public; Owner: pgbuildfarm
@@ -288,18 +351,14 @@ CREATE TABLE penguin_save (
 ALTER TABLE public.penguin_save OWNER TO pgbuildfarm;
 
 --
--- Name: personality; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
+-- Name: recent_failures; Type: VIEW; Schema: public; Owner: pgbuildfarm
 --
 
-CREATE TABLE personality (
-    name text NOT NULL,
-    os_version text NOT NULL,
-    compiler_version text NOT NULL,
-    effective_date timestamp with time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL
-);
+CREATE VIEW recent_failures AS
+    SELECT build_status.sysname, build_status.snapshot, build_status.stage, build_status.conf_sum, build_status.branch, build_status.changed_this_run, build_status.changed_since_success, build_status.log_archive_filenames, build_status.build_flags, build_status.report_time, build_status.log FROM build_status WHERE ((((build_status.stage <> 'OK'::text) AND (build_status.stage !~~ 'CVS%'::text)) AND (build_status.report_time IS NOT NULL)) AND ((build_status.snapshot + '3 mons'::interval) > ('now'::text)::timestamp(6) with time zone));
 
 
-ALTER TABLE public.personality OWNER TO pgbuildfarm;
+ALTER TABLE public.recent_failures OWNER TO pgbuildfarm;
 
 --
 -- Name: alerts_pkey; Type: CONSTRAINT; Schema: public; Owner: pgbuildfarm; Tablespace: 
@@ -340,6 +399,16 @@ ALTER TABLE ONLY buildsystems
 
 
 ALTER INDEX public.buildsystems_pkey OWNER TO pgbuildfarm;
+
+--
+-- Name: latest_snapshot_pkey; Type: CONSTRAINT; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+ALTER TABLE ONLY latest_snapshot
+    ADD CONSTRAINT latest_snapshot_pkey PRIMARY KEY (sysname, branch);
+
+
+ALTER INDEX public.latest_snapshot_pkey OWNER TO pgbuildfarm;
 
 --
 -- Name: personality_pkey; Type: CONSTRAINT; Schema: public; Owner: pgbuildfarm; Tablespace: 
@@ -388,11 +457,13 @@ CREATE INDEX bs_sysname_branch_report_idx ON build_status USING btree (sysname, 
 ALTER INDEX public.bs_sysname_branch_report_idx OWNER TO pgbuildfarm;
 
 --
--- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: pgbuildfarm
+-- Name: set_latest_snapshot; Type: TRIGGER; Schema: public; Owner: pgbuildfarm
 --
 
-ALTER TABLE ONLY personality
-    ADD CONSTRAINT "$1" FOREIGN KEY (name) REFERENCES buildsystems(name) ON DELETE CASCADE;
+CREATE TRIGGER set_latest_snapshot
+    AFTER INSERT ON build_status
+    FOR EACH ROW
+    EXECUTE PROCEDURE set_latest();
 
 
 --
@@ -408,7 +479,15 @@ ALTER TABLE ONLY build_status
 --
 
 ALTER TABLE ONLY build_status_log
-    ADD CONSTRAINT build_status_log_sysname_fkey FOREIGN KEY (sysname, snapshot) REFERENCES build_status(sysname, snapshot) ON DELETE CASCADE;
+    ADD CONSTRAINT build_status_log_sysname_fkey FOREIGN KEY (sysname, snapshot) REFERENCES build_status(sysname, snapshot) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: personality_build_systems_name_fk; Type: FK CONSTRAINT; Schema: public; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY personality
+    ADD CONSTRAINT personality_build_systems_name_fk FOREIGN KEY (name) REFERENCES buildsystems(name) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -455,6 +534,16 @@ GRANT SELECT ON TABLE buildsystems TO rssfeed;
 
 
 --
+-- Name: latest_snapshot; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE latest_snapshot FROM PUBLIC;
+REVOKE ALL ON TABLE latest_snapshot FROM pgbuildfarm;
+GRANT ALL ON TABLE latest_snapshot TO pgbuildfarm;
+GRANT INSERT,SELECT,UPDATE,DELETE ON TABLE latest_snapshot TO pgbfweb;
+
+
+--
 -- Name: personality; Type: ACL; Schema: public; Owner: pgbuildfarm
 --
 
@@ -463,6 +552,16 @@ REVOKE ALL ON TABLE personality FROM pgbuildfarm;
 GRANT ALL ON TABLE personality TO pgbuildfarm;
 GRANT INSERT,SELECT ON TABLE personality TO pgbfweb;
 GRANT SELECT ON TABLE personality TO rssfeed;
+
+
+--
+-- Name: dashboard; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE dashboard FROM PUBLIC;
+REVOKE ALL ON TABLE dashboard FROM pgbuildfarm;
+GRANT ALL ON TABLE dashboard TO pgbuildfarm;
+GRANT SELECT ON TABLE dashboard TO pgbfweb;
 
 
 --
