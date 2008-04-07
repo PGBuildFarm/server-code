@@ -56,6 +56,12 @@ while (my $row = $sth->fetchrow_hashref)
     next if (@members && ! grep {$_ eq $row->{sysname} } @members);
     $row->{build_flags}  =~ s/^\{(.*)\}$/$1/;
     $row->{build_flags}  =~ s/,/ /g;
+	# enable-integer-datetimes is now the default
+	if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_3_STABLE')
+	{
+		$row->{buildflags} .- " --enable-integer-datetimes "
+			unless ($row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
+	}
     $row->{build_flags}  =~ s/--((enable|with)-)?//g;
 	$row->{build_flags} =~ s/libxml/xml/;
     $row->{build_flags}  =~ s/\S+=\S+//g;
