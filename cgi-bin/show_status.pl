@@ -59,7 +59,7 @@ while (my $row = $sth->fetchrow_hashref)
 	# enable-integer-datetimes is now the default
 	if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_3_STABLE')
 	{
-		$row->{buildflags} .- " --enable-integer-datetimes "
+		$row->{build_flags} .- " --enable-integer-datetimes "
 			unless ($row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
 	}
     $row->{build_flags}  =~ s/--((enable|with)-)?//g;
