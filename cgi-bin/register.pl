@@ -83,9 +83,38 @@ if (grep {/rgergerger|\@pgbuildfarm\.org|Content-Type:|http:|mailto:|href=|None|
     print 
 	"Status: 403 Forbidden - go away idiot\n",
 	"Content-Type: text/plain\n\n";
-    exit;
-    
+    exit;    
 }
+
+# count transitions to and from upper case
+my $trans = 1;
+my $counttrans = 0;
+foreach (split "" ,"$os$osv$comp$compv$arch$owner")
+{
+	if (/[A-Z]/)
+	{
+		next if $trans;
+		$trans = 1;
+		$counttrans++;
+	}
+	else
+	{
+		next unless $trans;
+		$trans = 0;
+		$counttrans++;
+	}
+}
+
+# reject junk with too many transitions into/outof upper case
+if ($counttrans > 20)
+{
+    print 
+	"Status: 403 Forbidden - go away idiot\n",
+	"Content-Type: text/plain\n\n";
+    exit;   
+}
+
+
 
 my $secret = "";
 my $dummyname=""; # we'll select an animal name when we approve it.
