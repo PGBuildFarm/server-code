@@ -87,7 +87,7 @@ foreach my $chgd ($changed_this_run,$changed_since_success)
     foreach (@lines)
     {
 	next unless m!^pgsql/!;
-	s!(^\S+)(\s+)(\S+)!<a href="http://developer.postgresql.org/cvsweb.cgi/$1?rev=$3">$1$2$3</a>!;
+	s!(^\S+)(\s+)(\S+)!<a href="http://anoncvs.postgresql.org/cvsweb.cgi/$1?rev=$3">$1$2$3</a>!;
     }
     $chgd = join("\n",@lines);
     $chgd ||= 'not recorded';
