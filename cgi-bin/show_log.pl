@@ -164,7 +164,7 @@ EOHTML
 
 for my $logstage (@log_file_names)
 {
-    print "<br /> <table><tr><th class='head' rowspan='4'>Stage Logs</th>\n"
+    print "<br /> <table><tr><th class='head' rowspan='$logrows'>Stage Logs</th>\n"
 	unless $heading_done;
     $heading_done = 1;
     $cell++;
