@@ -100,7 +100,7 @@ map {s/&/&amp;/g; s/</&lt;/g; s/>/&gt;/g; s/\"/&quot;/g;} ($log,$conf);
 
 
 use POSIX qw(ceil);
-my $lrfactor = 7;
+my $lrfactor = 6;
 my $logrows = ceil(scalar(@log_file_names)/$lrfactor);
 my $logcells = $lrfactor * $logrows;
 
