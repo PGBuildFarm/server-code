@@ -108,7 +108,7 @@ __DATA__
 [%- BLOCK img ; IF flag == 'depend' or flag == 'gnu-ld' ; ; ELSIF flag_imgs.$flag %]<img src="[% flag_imgs.$flag %]" title="[% flag %]" alt="[% flag %]" height="16" width="16" class="inline" align="bottom" />  [% ELSE %][%#
 																									  flag ; ' '
 %][% END ; END -%]
-[%- BLOCK cl %] class=" [% SWITCH bgfor -%]
+[%- BLOCK cl %] class="[% SWITCH bgfor.replace('-.*','') -%]
   [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE %]fail[% END %]"
 [%- END -%]
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
