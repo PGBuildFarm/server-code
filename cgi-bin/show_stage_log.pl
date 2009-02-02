@@ -23,7 +23,7 @@ my $query = new CGI;
 
 my $system = $query->param('nm'); $system =~ s/[^a-zA-Z0-9_ -]//g;
 my $logdate = $query->param('dt');$logdate =~ s/[^a-zA-Z0-9_ -]//g;
-my $stage = $query->param('stg');$stage =~ s/[^a-zA-Z0-9_ -]//g;
+my $stage = $query->param('stg');$stage =~ s/[^a-zA-Z0-9._ -]//g;
 
 use vars qw($tgz);
 
