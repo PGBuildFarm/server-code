@@ -322,6 +322,12 @@ $row=$sth->fetchrow_arrayref;
 my ($os, $compiler,$arch) = @$row;
 $sth->finish;
 
+
+$db->begin_work;
+$db->do("delete from dashboard_mat");
+$db->do("insert into dashboard_mat select * from dashboard_mat_data");
+$db->commit;
+
 $db->disconnect;
 
 print "Content-Type: text/plain\n\n";
