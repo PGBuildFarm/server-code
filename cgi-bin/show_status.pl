@@ -39,8 +39,8 @@ my $db = DBI->connect($dsn,$dbuser,$dbpass) or die("$dsn,$dbuser,$dbpass,$!");
 my $statement =<<EOS;
 
 
-  select *
-  from dashboard
+  select timezone('GMT'::text, now())::timestamp(0) without time zone - b.snapshot AS when_ago, b.*
+  from dashboard_mat b
   order by branch = 'HEAD' desc,
         branch desc, $sort_clause 
         snapshot desc
