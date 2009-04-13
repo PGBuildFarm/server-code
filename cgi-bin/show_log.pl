@@ -66,7 +66,8 @@ EOS
           select operating_system, os_version, 
                  compiler, compiler_version, 
                  architecture,
-		replace(owner_email,'\@',' [ a t ] ') as owner_email
+		 replace(owner_email,'\@',' [ a t ] ') as owner_email,
+		 sys_notes_ts::date AS sys_notes_date, sys_notes
           from buildsystems 
           where status = 'approved'
                 and name = ?
@@ -76,7 +77,7 @@ EOS
 	$sth=$db->prepare($statement);
 	$sth->execute($system);
 	$info_row=$sth->fetchrow_hashref;
-        $sysinfo = join(" ",@$row);
+        # $sysinfo = join(" ",@$row);
 	$sth->finish;
 	$db->disconnect;
 }
@@ -161,6 +162,25 @@ if ($stage eq 'OK')
     </tr>
     </table>
 EOHTML
+
+    if ($info_row->{sys_notes})
+    {
+        print <<EOHTML;
+    <br />
+    <table>
+     <tr>
+       <th class="head" rowspan="2">System Notes</th>
+       <th>Date</th>
+       <th>Notes</th>
+     </tr>
+     <tr>
+      <td>$info_row->{sys_notes_date}</td>
+      <td>$info_row->{sys_notes}</td>
+     </tr>
+   </table>
+EOHTML
+
+    }
 
 for my $logstage (@log_file_names)
 {
@@ -265,8 +285,27 @@ print <<EOHTML;
         <td>$info_row->{architecture}</td>
         <td>$info_row->{owner_email}</td>
     </tr>
-    </table>
+  </table>
 EOHTML
+
+    if ($info_row->{sys_notes})
+    {
+        print <<EOHTML;
+    <br />
+    <table>
+     <tr>
+       <th class="head" rowspan="2">System Notes</th>
+       <th>Date</th>
+       <th>Notes</th>
+     </tr>
+     <tr>
+      <td>$info_row->{sys_notes_date}</td>
+      <td>$info_row->{sys_notes}</td>
+     </tr>
+   </table>
+EOHTML
+
+    }
 
 for my $logstage (@log_file_names)
 {
