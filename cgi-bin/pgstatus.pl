@@ -324,7 +324,7 @@ $sth->finish;
 
 
 $db->begin_work;
-$db->do("delete from dashboard_mat");
+$db->do("truncate dashboard_mat");
 $db->do("insert into dashboard_mat select * from dashboard_mat_data");
 $db->commit;
 
