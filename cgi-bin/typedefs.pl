@@ -2,6 +2,9 @@
 
 use strict;
 use DBI;
+use CGI;
+
+my $query = new CGI;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
 
@@ -24,6 +27,22 @@ my $sql = q{
     group by sysname
 };
 my $builds = $dbh->selectall_arrayref($sql, { Slice => {} });
+
+
+if ($query->param('show_list'))
+{
+    print "Content-Type: text/html\n\n",
+    "<head><title>Typedefs URLs</title></head>\n",
+    "<body><h1>Typdefs URLs</h1>\n",
+    "<table border='1'><tr><th>member</th></tr>\n";
+
+    foreach my $build (@$builds)
+    {
+	print "<tr><td><a href='http://www.pgbuildfarm.org/cgi-bin/show_stage_log.pl?nm=$build->{sysname}\&amp;dt=$build->{snapshot}\&amp;stg=typedefs'>$build->{sysname}</a></td></tr>\n";
+    }
+    print "</table></body></html>\n";
+    exit;
+}
 
 $sql = q{
    select log_text
