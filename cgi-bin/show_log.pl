@@ -27,6 +27,7 @@ my $logdate = $query->param('dt'); $logdate =~ s/[^a-zA-Z0-9_ -]//g;
 my $log = "";
 my $conf = "";
 my ($stage,$changed_this_run,$changed_since_success,$sysinfo,$branch);
+my $scm;
 
 use vars qw($info_row);
 
@@ -40,7 +41,7 @@ if ($system && $logdate)
 	my $statement = <<EOS;
 
   select log,conf_sum,stage, changed_this_run, changed_since_success,branch,
-      log_archive_filenames
+      log_archive_filenames, scm
   from build_status
   where sysname = ? and snapshot = ?
 
@@ -56,6 +57,8 @@ EOS
 	$changed_since_success = $row->[4];
 	$branch = $row->[5];
 	my $log_file_names = $row->[6];
+	$scm = $row->[7];
+	$scm ||= 'cvs'; # legacy scripts
 	$log_file_names =~ s/^\{(.*)\}$/$1/;
 	@log_file_names=split(',',$log_file_names)
 	    if $log_file_names;
@@ -84,11 +87,20 @@ EOS
 
 foreach my $chgd ($changed_this_run,$changed_since_success)
 {
+	my $cvsurl = 'http://anoncvs.postgresql.org/cvsweb.cgi';
+	my $giturl = 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;';
     my @lines = split(/!/,$chgd);
     foreach (@lines)
     {
-	next unless m!^pgsql/!;
-	s!(^\S+)(\s+)(\S+)!<a href="http://anoncvs.postgresql.org/cvsweb.cgi/$1?rev=$3">$1$2$3</a>!;
+		if ($scm eq 'git')
+		{
+			s!(^\S+)(\s+)(\S+)!<a href="$giturl;h=$3">$1</a>!;
+		}
+		elsif ($scm eq 'cvs')
+		{
+			next unless m!^pgsql/!;
+			s!(^\S+)(\s+)(\S+)!<a href="$cvsurl/$1?rev=$3">$1$2$3</a>!;
+		}
     }
     $chgd = join("\n",@lines);
     $chgd ||= 'not recorded';
