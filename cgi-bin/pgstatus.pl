@@ -230,13 +230,14 @@ if (@config_flags)
     $config_flags = '{' . join(',',@config_flags) . '}' ;
 }
 
+my $scm = $client_conf->{scm} || 'cvs';
 
 my $logst = <<EOSQL;
     insert into build_status 
       (sysname, snapshot,status, stage, log,conf_sum, branch,
        changed_this_run, changed_since_success, 
-       log_archive_filenames , log_archive, build_flags)
-    values(?,?,?,?,?,?,?,?,?,?,?,?)
+       log_archive_filenames , log_archive, build_flags, scm)
+    values(?,?,?,?,?,?,?,?,?,?,?,?,?)
 EOSQL
 ;
 $sth=$db->prepare($logst);
@@ -254,6 +255,7 @@ $sth->bind_param(10,$log_file_names);
 #$sth->bind_param(11,$log_archive,{ pg_type => DBD::Pg::PG_BYTEA });
 $sth->bind_param(11,undef,{ pg_type => DBD::Pg::PG_BYTEA });
 $sth->bind_param(12,$config_flags);
+$sth->bind_param(13,$scm);
 
 $sth->execute;
 $sth->finish;
