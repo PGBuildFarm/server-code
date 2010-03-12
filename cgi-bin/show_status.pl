@@ -62,6 +62,12 @@ while (my $row = $sth->fetchrow_hashref)
 		$row->{build_flags} .= " --enable-integer-datetimes "
 			unless ($row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
 	}
+	# enable-thread-safety is now the default
+	if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_5_STABLE')
+	{
+		$row->{build_flags} .= " --enable-thread-safety "
+			unless ($row->{build_flags} =~ /--(en|dis)able-thread-safety/);
+	}
     $row->{build_flags}  =~ s/--((enable|with)-)?//g;
 	$row->{build_flags} =~ s/libxml/xml/;
     $row->{build_flags}  =~ s/\S+=\S+//g;
