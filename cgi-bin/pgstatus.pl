@@ -282,6 +282,7 @@ foreach my $log_file( @log_file_names )
   $stage_start = $mtime;
   my $ltext = <$handle>;
   close($handle);
+  $ltext =~ s/\x00/\\0/g;
   $sth->execute($animal,$dbdate,$branch,$log_file,$ltext, 
 		"$stage_interval seconds");
 }
