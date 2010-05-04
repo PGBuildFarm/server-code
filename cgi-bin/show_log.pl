@@ -26,7 +26,7 @@ my $logdate = $query->param('dt'); $logdate =~ s/[^a-zA-Z0-9_ -]//g;
 
 my $log = "";
 my $conf = "";
-my ($stage,$changed_this_run,$changed_since_success,$sysinfo,$branch);
+my ($stage,$changed_this_run,$changed_since_success,$sysinfo,$branch,$scmurl);
 my $scm;
 
 use vars qw($info_row);
@@ -41,7 +41,7 @@ if ($system && $logdate)
 	my $statement = <<EOS;
 
   select log,conf_sum,stage, changed_this_run, changed_since_success,branch,
-      log_archive_filenames, scm
+      log_archive_filenames, scm, scmurl
   from build_status
   where sysname = ? and snapshot = ?
 
@@ -59,6 +59,7 @@ EOS
 	my $log_file_names = $row->[6];
 	$scm = $row->[7];
 	$scm ||= 'cvs'; # legacy scripts
+	$scmurl = $row->[8];
 	$log_file_names =~ s/^\{(.*)\}$/$1/;
 	@log_file_names=split(',',$log_file_names)
 	    if $log_file_names;
@@ -88,13 +89,13 @@ EOS
 foreach my $chgd ($changed_this_run,$changed_since_success)
 {
 	my $cvsurl = 'http://anoncvs.postgresql.org/cvsweb.cgi';
-	my $giturl = 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;';
+	my $giturl = $scmurl || 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;h=';
     my @lines = split(/!/,$chgd);
     foreach (@lines)
     {
 		if ($scm eq 'git')
 		{
-			s!(^\S+)(\s+)(\S+)!<a href="$giturl;h=$3">$1</a>!;
+			s!(^\S+)(\s+)(\S+)!<a href="$giturl$3">$1</a>!;
 		}
 		elsif ($scm eq 'cvs')
 		{
