@@ -238,7 +238,7 @@ my $logst = <<EOSQL;
       (sysname, snapshot,status, stage, log,conf_sum, branch,
        changed_this_run, changed_since_success, 
        log_archive_filenames , log_archive, build_flags, scm, scmurl)
-    values(?,?,?,?,?,?,?,?,?,?,?,?,?)
+    values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 EOSQL
 ;
 $sth=$db->prepare($logst);
@@ -257,7 +257,7 @@ $sth->bind_param(10,$log_file_names);
 $sth->bind_param(11,undef,{ pg_type => DBD::Pg::PG_BYTEA });
 $sth->bind_param(12,$config_flags);
 $sth->bind_param(13,$scm);
-$sth->bind_param(13,$scmurl);
+$sth->bind_param(14,$scmurl);
 
 $sth->execute;
 $sth->finish;
