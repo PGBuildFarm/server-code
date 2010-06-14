@@ -330,7 +330,7 @@ $sth->finish;
 
 $db->begin_work;
 $db->do("truncate dashboard_mat");
-$db->do("insert into dashboard_mat select * from dashboard_mat_data");
+$db->do("insert into dashboard_mat select * from dashboard_mat_data2");
 $db->commit;
 
 $db->disconnect;

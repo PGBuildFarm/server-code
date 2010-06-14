@@ -106,6 +106,7 @@ __DATA__
      nls => '/img/translateicon.gif',
      krb5 => '/img/krb.gif',
      tcl => '/img/tcl.png',
+     vpath => '/img/vpath.png',
      xml => '/img/xml.png',
      'thread-safety' => '/img/threads.gif',
      'integer-datetimes' = '/img/days.png',
