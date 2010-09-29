@@ -74,6 +74,8 @@ $sth->execute($animal);
 my ($secret)=$sth->fetchrow_array();
 $sth->finish;
 
+my $tsdiff = time - $ts;
+
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime($ts);
 $year += 1900; $mon +=1;
 my $date=
@@ -84,6 +86,7 @@ if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time ) || (! $secret) )
     open(TX,">../buildlogs/$animal.$date");
     print TX "sig=$sig\nlogtar-len=" , length($log_archive),
         "\nstatus=$res\nstage=$stage\nconf:\n$conf\n",
+        "tsdiff:$tsdiff\n",
 	"changed_this_run:\n$changed_this_run\n",
 	"changed_since_success:\n$changed_since_success\n",
 	"log:\n",$log;
@@ -91,7 +94,7 @@ if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time ) || (! $secret) )
     close(TX);
 }
 
-unless ($ts < time)
+unless ($ts < time + 120)
 {
     my $gmt = gmtime($ts);
     print "Status: 491 bad ts parameter - $ts ($gmt GMT) is in the future.\n",
@@ -227,6 +230,7 @@ if (@config_flags)
 {
     @config_flags = grep {! m/=/ } @config_flags;
     map {s/\s+//g; $_=qq("$_"); } @config_flags;
+    push @config_flags,'git' if $client_conf->{scm} eq 'git';
     $config_flags = '{' . join(',',@config_flags) . '}' ;
 }
 
@@ -329,7 +333,7 @@ $sth->finish;
 
 
 $db->begin_work;
-$db->do("truncate dashboard_mat");
+$db->do("delete from dashboard_mat");
 $db->do("insert into dashboard_mat select * from dashboard_mat_data2");
 $db->commit;
 

@@ -148,7 +148,7 @@ if ($stage eq 'OK')
     <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
     <li id="status"><a href="/cgi-bin/show_status.pl" title="Current results">Status</a></li>
     <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested">Members</a></li>
-    <li id="register"><a href="/register.html" title="Join PostgreSQL BuildFarm">Register</a></li>
+    <li id="register"><a href="/cgi-bin/register-form.pl" title="Join PostgreSQL BuildFarm">Register</a></li>
     <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFoundry</a></li>
 </ul>
 </div><!-- nav -->
@@ -272,7 +272,7 @@ print <<EOHTML;
     <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
     <li id="status"><a href="/cgi-bin/show_status.pl" title="Status Page">Status</a></li>
     <li id="members"><a href="/cgi-bin/show_members.pl" title="Status Page">Members</a></li>
-    <li id="register"><a href="/register.html" title="Register">Register</a></li>
+    <li id="register"><a href="/cgi-bin/register-form.pl" title="Register">Register</a></li>
     <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFoundry</a></li>
 </ul>
 </div><!-- nav -->

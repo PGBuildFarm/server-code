@@ -110,6 +110,7 @@ __DATA__
      xml => '/img/xml.png',
      'thread-safety' => '/img/threads.gif',
      'integer-datetimes' = '/img/days.png',
+     git => '/img/git.png',
      }
 -%]
 [%- BLOCK img ; IF flag == 'depend' or flag == 'gnu-ld' ; ; ELSIF flag_imgs.$flag %]<img src="[% flag_imgs.$flag %]" title="[% flag %]" alt="[% flag %]" height="16" width="16" class="inline" align="bottom" />  [% ELSE %][%#
@@ -140,7 +141,7 @@ __DATA__
     <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
     <li id="status"><a href="/cgi-bin/show_status.pl" title="Current results">Status</a></li>
     <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested">Members</a></li>
-    <li id="register"><a href="/register.html" title="Join PostgreSQL BuildFarm">Register</a></li>
+    <li id="register"><a href="/cgi-bin/register-form.pl" title="Join PostgreSQL BuildFarm">Register</a></li>
     <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFoundry</a></li>
     <li id="postgresql.org"><a href="http://www.postgresql.org">PostgreSQL.org</a></li>
 </ul>
@@ -159,7 +160,7 @@ __DATA__
 <table><tr><th class="head" rowspan="2">Legend</th>
 [% FOREACH flagset IN flag_imgs %]
 <td><img src="[% flagset.value %]" title="[% flagset.key %]" alt="[% flagset.key %]" height="16" width="16" class="inline"  align="center"/> =  [% flagset.key %]</td>
-[% IF loop.count == 6 %]</tr><tr>[% END %]
+[% IF loop.count == 7 %]</tr><tr>[% END %]
 [% END %]
 </tr></table>
 <br />

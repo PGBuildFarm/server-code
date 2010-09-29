@@ -180,6 +180,41 @@ CREATE FUNCTION target(t text) RETURNS text
 
 ALTER FUNCTION public.target(t text) OWNER TO pgbuildfarm;
 
+--
+-- Name: transitions(text, text, text, text, text, text); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION transitions(text, text, text, text, text, text) RETURNS integer
+    AS $_$
+
+my ($os,$osv,$comp,$compv,$arch,$owner) = @_;
+# count transitions to and from upper case
+my $trans = 1;
+my $counttrans = 0;
+foreach (split "" ,"$os$osv$comp$compv$arch$owner")
+{
+	if (/[A-Z]/)
+	{
+		next if $trans;
+		$trans = 1;
+		$counttrans++;
+	}
+	else
+	{
+		next unless $trans;
+		$trans = 0;
+		$counttrans++;
+	}
+}
+
+return $counttrans;
+
+$_$
+    LANGUAGE plperl;
+
+
+ALTER FUNCTION public.transitions(text, text, text, text, text, text) OWNER TO pgbuildfarm;
+
 SET default_tablespace = '';
 
 SET default_with_oids = true;
@@ -215,7 +250,9 @@ CREATE TABLE build_status (
     log_archive bytea,
     log_archive_filenames text[],
     build_flags text[],
-    report_time timestamp with time zone DEFAULT ('now'::text)::timestamp(6) with time zone
+    report_time timestamp with time zone DEFAULT ('now'::text)::timestamp(6) with time zone,
+    scm text,
+    scmurl text
 );
 
 
@@ -263,7 +300,9 @@ CREATE TABLE buildsystems (
     sys_owner text NOT NULL,
     owner_email text NOT NULL,
     status_ts timestamp without time zone DEFAULT (('now'::text)::timestamp(6) with time zone)::timestamp without time zone,
-    no_alerts boolean DEFAULT false
+    no_alerts boolean DEFAULT false,
+    sys_notes text,
+    sys_notes_ts timestamp with time zone
 );
 
 
@@ -315,6 +354,57 @@ CREATE VIEW dashboard AS
 
 
 ALTER TABLE public.dashboard OWNER TO pgbuildfarm;
+
+--
+-- Name: dashboard_ex; Type: VIEW; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE VIEW dashboard_ex AS
+    SELECT ((timezone('GMT'::text, now()))::timestamp(0) without time zone - b.snapshot) AS when_ago, b.sysname, b.snapshot, b.status, b.stage, b.branch, b.build_flags, s.operating_system, COALESCE(b.os_version, s.os_version) AS os_version, s.compiler, COALESCE(b.compiler_version, s.compiler_version) AS compiler_version, s.architecture, s.sys_notes, (s.sys_notes_ts)::date AS sys_notes_date FROM buildsystems s, (SELECT DISTINCT ON (bs.sysname, bs.branch, bs.report_time) bs.sysname, bs.snapshot, bs.status, bs.stage, bs.branch, bs.build_flags, bs.report_time, p.compiler_version, p.os_version FROM ((build_status bs NATURAL JOIN latest_snapshot m) LEFT JOIN personality p ON (((p.name = bs.sysname) AND (p.effective_date <= bs.report_time)))) WHERE (m.snapshot > (now() - '30 days'::interval)) ORDER BY bs.sysname, bs.branch, bs.report_time, (p.effective_date IS NULL), p.effective_date DESC) b WHERE ((s.name = b.sysname) AND (s.status = 'approved'::text));
+
+
+ALTER TABLE public.dashboard_ex OWNER TO pgbuildfarm;
+
+--
+-- Name: dashboard_mat; Type: TABLE; Schema: public; Owner: pgbfweb; Tablespace: 
+--
+
+CREATE TABLE dashboard_mat (
+    sysname text,
+    snapshot timestamp without time zone,
+    status integer,
+    stage text,
+    branch text,
+    build_flags text[],
+    operating_system text,
+    os_version text,
+    compiler text,
+    compiler_version text,
+    architecture text
+);
+
+
+ALTER TABLE public.dashboard_mat OWNER TO pgbfweb;
+
+--
+-- Name: dashboard_mat_data; Type: VIEW; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE VIEW dashboard_mat_data AS
+    SELECT b.sysname, b.snapshot, b.status, b.stage, b.branch, b.build_flags, s.operating_system, COALESCE(b.os_version, s.os_version) AS os_version, s.compiler, COALESCE(b.compiler_version, s.compiler_version) AS compiler_version, s.architecture FROM buildsystems s, (SELECT DISTINCT ON (bs.sysname, bs.branch, bs.report_time) bs.sysname, bs.snapshot, bs.status, bs.stage, bs.branch, bs.build_flags, bs.report_time, p.compiler_version, p.os_version FROM ((build_status bs NATURAL JOIN latest_snapshot m) LEFT JOIN personality p ON (((p.name = bs.sysname) AND (p.effective_date <= bs.report_time)))) WHERE (m.snapshot > (now() - '30 days'::interval)) ORDER BY bs.sysname, bs.branch, bs.report_time, (p.effective_date IS NULL), p.effective_date DESC) b WHERE ((s.name = b.sysname) AND (s.status = 'approved'::text));
+
+
+ALTER TABLE public.dashboard_mat_data OWNER TO pgbuildfarm;
+
+--
+-- Name: dashboard_mat_data2; Type: VIEW; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE VIEW dashboard_mat_data2 AS
+    SELECT b.sysname, b.snapshot, b.status, b.stage, b.branch, CASE WHEN ((b.conf_sum ~ 'use_vpath'::text) AND (b.conf_sum !~ '''use_vpath'' => undef'::text)) THEN (b.build_flags || 'vpath'::text) ELSE b.build_flags END AS build_flags, s.operating_system, COALESCE(b.os_version, s.os_version) AS os_version, s.compiler, COALESCE(b.compiler_version, s.compiler_version) AS compiler_version, s.architecture FROM buildsystems s, (SELECT DISTINCT ON (bs.sysname, bs.branch, bs.report_time) bs.sysname, bs.snapshot, bs.status, bs.stage, bs.branch, bs.build_flags, bs.conf_sum, bs.report_time, p.compiler_version, p.os_version FROM ((build_status bs NATURAL JOIN latest_snapshot m) LEFT JOIN personality p ON (((p.name = bs.sysname) AND (p.effective_date <= bs.report_time)))) WHERE (m.snapshot > (now() - '30 days'::interval)) ORDER BY bs.sysname, bs.branch, bs.report_time, (p.effective_date IS NULL), p.effective_date DESC) b WHERE ((s.name = b.sysname) AND (s.status = 'approved'::text));
+
+
+ALTER TABLE public.dashboard_mat_data2 OWNER TO pgbuildfarm;
 
 --
 -- Name: failures; Type: VIEW; Schema: public; Owner: pgbuildfarm
@@ -457,6 +547,15 @@ CREATE INDEX bs_sysname_branch_report_idx ON build_status USING btree (sysname, 
 ALTER INDEX public.bs_sysname_branch_report_idx OWNER TO pgbuildfarm;
 
 --
+-- Name: build_status_log_snapshot_idx; Type: INDEX; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE INDEX build_status_log_snapshot_idx ON build_status_log USING btree (snapshot);
+
+
+ALTER INDEX public.build_status_log_snapshot_idx OWNER TO pgbuildfarm;
+
+--
 -- Name: set_latest_snapshot; Type: TRIGGER; Schema: public; Owner: pgbuildfarm
 --
 
@@ -529,7 +628,7 @@ GRANT SELECT ON TABLE build_status_log TO rssfeed;
 REVOKE ALL ON TABLE buildsystems FROM PUBLIC;
 REVOKE ALL ON TABLE buildsystems FROM pgbuildfarm;
 GRANT ALL ON TABLE buildsystems TO pgbuildfarm;
-GRANT INSERT,SELECT ON TABLE buildsystems TO pgbfweb;
+GRANT INSERT,SELECT,UPDATE ON TABLE buildsystems TO pgbfweb;
 GRANT SELECT ON TABLE buildsystems TO rssfeed;
 
 
@@ -562,6 +661,45 @@ REVOKE ALL ON TABLE dashboard FROM PUBLIC;
 REVOKE ALL ON TABLE dashboard FROM pgbuildfarm;
 GRANT ALL ON TABLE dashboard TO pgbuildfarm;
 GRANT SELECT ON TABLE dashboard TO pgbfweb;
+
+
+--
+-- Name: dashboard_ex; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE dashboard_ex FROM PUBLIC;
+REVOKE ALL ON TABLE dashboard_ex FROM pgbuildfarm;
+GRANT ALL ON TABLE dashboard_ex TO pgbuildfarm;
+GRANT SELECT ON TABLE dashboard_ex TO pgbfweb;
+
+
+--
+-- Name: dashboard_mat; Type: ACL; Schema: public; Owner: pgbfweb
+--
+
+REVOKE ALL ON TABLE dashboard_mat FROM PUBLIC;
+REVOKE ALL ON TABLE dashboard_mat FROM pgbfweb;
+GRANT ALL ON TABLE dashboard_mat TO pgbfweb;
+
+
+--
+-- Name: dashboard_mat_data; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE dashboard_mat_data FROM PUBLIC;
+REVOKE ALL ON TABLE dashboard_mat_data FROM pgbuildfarm;
+GRANT ALL ON TABLE dashboard_mat_data TO pgbuildfarm;
+GRANT SELECT ON TABLE dashboard_mat_data TO pgbfweb;
+
+
+--
+-- Name: dashboard_mat_data2; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE dashboard_mat_data2 FROM PUBLIC;
+REVOKE ALL ON TABLE dashboard_mat_data2 FROM pgbuildfarm;
+GRANT ALL ON TABLE dashboard_mat_data2 TO pgbuildfarm;
+GRANT SELECT ON TABLE dashboard_mat_data2 TO pgbfweb;
 
 
 --

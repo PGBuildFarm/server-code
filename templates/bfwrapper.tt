@@ -25,7 +25,7 @@ a></li>
 atus</a></li>
     <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested"
 >Members</a></li>
-    <li id="register"><a href="/register.html" title="Join PostgreSQL BuildFarm"
+    <li id="register"><a href="/cgi-bin/register-form.pl" title="Join PostgreSQL BuildFarm"
 >Register</a></li>
     <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFo
 undry</a></li>

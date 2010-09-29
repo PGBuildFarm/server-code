@@ -4,8 +4,10 @@ use strict;
 use DBI;
 use Template;
 use CGI;
+use Template;
+use Captcha::reCAPTCHA;
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp);
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp $captcha_pubkey $captcha_privkey);
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 #require "BuildFarmWeb.pl";
@@ -37,7 +39,7 @@ my $header = <<EOS;
     <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
     <li id="status"><a href="/cgi-bin/show_status.pl" title="Current results">Status</a></li>
     <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested">Members</a></li>
-    <li id="register"><a href="/register.html" title="Join PostgreSQL BuildFarm">Register</a></li>
+    <li id="register"><a href="/cgi-bin/register-form.pl" title="Join PostgreSQL BuildFarm">Register</a></li>
     <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFoundry</a></li>
     <li id="postgresql.org"><a href="http://www.postgresql.org">PostgreSQL.org</a></li>
 </ul>
@@ -64,14 +66,23 @@ my $query = new CGI;
 
 my $params = $query->Vars;
 
-my ($os, $osv, $comp, $compv, $arch, $email, $owner) = @{$params}{
-	qw(os osv comp compv arch email owner)};
+my ($os, $osv, $comp, $compv, $arch, $email, $owner, $challenge, $response ) = @{$params}{
+	qw(os osv comp compv arch email owner recaptcha_challenge_field recaptcha_response_field)};
 
-unless ($os && $osv && $comp && $compv && $arch && $email && $owner)
+my $captcha = Captcha::reCAPTCHA->new;
+my $captcha_ok = $captcha->check_answer
+    (
+     $captcha_privkey, 
+     $ENV{'REMOTE_ADDR'},
+     $challenge, $response
+     );
+
+
+unless ($os && $osv && $comp && $compv && $arch && $email && $owner && $captcha_ok->{is_valid})
 {
 	print "Content-Type: text/html\n\n",
 	$header,
-	"<p>You need to complete all the form items. <a href=\"/register.html\">Please try again.</a></p>\n",
+	"<p>You need to complete all the form items. <a href=\"/cgi-bin/register-form.pl\">Please try again.</a></p>\n",
 	$footer;
 	exit;
 }
