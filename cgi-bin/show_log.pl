@@ -99,7 +99,7 @@ foreach my $chgd ($changed_this_run,$changed_since_success)
 		}
 		elsif ($scm eq 'cvs')
 		{
-			next unless m!^pgsql/!;
+			next unless m!^(pgsql|master|REL\d_\d_STABLE)/!;
 			s!(^\S+)(\s+)(\S+)!<a href="$cvsurl/$1?rev=$3">$1$2$3</a>!;
 		}
     }
