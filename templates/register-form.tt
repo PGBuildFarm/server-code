@@ -42,7 +42,7 @@ before submitting this form.</p>
 <li> download and unpack the latest release of client code from 
      <a href="http://pgfoundry.org/frs/?group_id=1000040">http://pgfoundry.org/frs/?group_id=1000040</a></li>
 <li> read instructions at 
-     <a href="http://pgfoundry.org/docman/view.php/1000040/4/PGBuildFarm-HOWTO.txt">http://pgfoundry.org/docman/view.php/1000040/4/PGBuildFarm-HOWTO.txt</a></li>
+     <a href="http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a></li>
 <li> get the software running locally using flags --force --nostatus --nosend</li>
 <li> register your machine on this page</li>
 <li> when you receive credentials, put them in the config file, and schedule regular builds (without those flags) 
