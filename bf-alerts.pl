@@ -205,7 +205,7 @@ foreach my $clearme (@need_cleared)
     my $text;
     if ($setting)
     {
-	my $hours = ($now - $sysbranch->{snapshot}) / 3600;
+	my $hours = sprintf("%.2f",($now - $sysbranch->{snapshot}) / 3600);
 	$text = "$sysbranch->{sysname} has now reported " .
 	    "on $sysbranch->{branch} $hours hours ago.";
     }
@@ -239,7 +239,7 @@ foreach my $clearme (@need_alerts)
 {
     my ($sysbranch, $setting) = @$clearme;
     my ($animal, $branch) = ($sysbranch->{sysname},$sysbranch->{branch});
-    my $hours = ($now - $sysbranch->{snapshot}) / 3600;
+    my $hours = sprintf("%.2f",($now - $sysbranch->{snapshot}) / 3600);
     my $text = "$sysbranch->{sysname} has not reported " .
 	"on $sysbranch->{branch} for $hours hours.";
     my $msg = new Mail::Send;
