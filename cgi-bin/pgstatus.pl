@@ -351,10 +351,10 @@ else
 {
     $db->do(q{
 	      insert into build_status_latest
-		  (sysname, brancn, latest_snapshot)
+		  (sysname, branch, latest_snapshot)
 	      values (?,?,?)
 	      },
-	    undef, $dbdate, $animal, $branch);
+	    undef, $animal, $branch, $dbdate);
 }
 $db->commit;
 
