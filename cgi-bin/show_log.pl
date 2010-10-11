@@ -6,11 +6,14 @@ use Template;
 use CGI;
 use URI::Escape;
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport @log_file_names);
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir @log_file_names);
 
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 #require "BuildFarmWeb.pl";
+
+my $template_opts = { INCLUDE_PATH => $template_dir};
+my $template = new Template($template_opts);
 
 die "no dbname" unless $dbname;
 die "no dbuser" unless $dbuser;
