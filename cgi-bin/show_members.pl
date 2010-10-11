@@ -35,15 +35,13 @@ my $statement = <<EOS;
 
   select name, operating_system, os_version, compiler, compiler_version, owner_email, 
     architecture as arch, ARRAY(
-				select distinct on (branch <> 'HEAD', branch) 
-				       branch || ':' || 
-				       extract(days from now() - snapshot)
-				from build_status 
-				where name = sysname
-				order by branch <> 'HEAD', branch desc, 
-				         snapshot desc
+				select branch || ':' || 
+				       extract(days from now() - latest_snapshot)
+				from build_status_latest l 
+				where l.sysname = s.name
+				order by branch <> 'HEAD', branch desc 
 				) as branches 
-  from buildsystems 
+  from buildsystems s
   where status = 'approved'
   order by $sort_by
 
@@ -119,7 +117,15 @@ __DATA__
     <th>Branches reported on<br />(most recent report)</th>
     </tr>
 [% alt = true %]
-[% FOREACH row IN statrows %]    <tr [%- IF alt %]class="alt"[% END -%]>
+[% FOREACH row IN statrows ;
+    have_recent = 0;
+    FOREACH branch_days IN row.branches.split(',') ;
+       branch_fields = branch_days.split(':');
+       branch_day = branch_fields.1;
+       IF branch_day < 365 ; have_recent = 1; END;
+    END;
+ IF have_recent ;
+%]    <tr [%- IF alt %]class="alt"[% END -%]>
     [% alt = ! alt %]
     <td><input type="checkbox" name="member" value="[% row.name %]" /></td>
     <td>[% row.name %]<br />[% row.owner_email %]</td>
@@ -133,12 +139,13 @@ __DATA__
        branch_fields = branch_days.split(':');
        branch = branch_fields.0;
        branch_day = branch_fields.1;
+       IF branch_day < 365 ;
     %]<li><a 
     href="show_history.pl?nm=[% row.name %]&amp;br=[% branch %]"
     title="History"
-    >[% branch %]</a>&nbsp;([% branch_day %]&nbsp;days&nbsp;ago)</li>[% END %]</ul></td>
+    >[% branch %]</a>&nbsp;([% branch_day %]&nbsp;days&nbsp;ago)</li>[% END; END %]</ul></td>
     </tr>
-[% END %]
+[% END; END %]
     </table>
     <input type="submit" value="Make Filter" />
     </form>
