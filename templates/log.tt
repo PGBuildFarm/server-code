@@ -1,0 +1,131 @@
+[% PERL %]
+	use POSIX qw(ceil);
+        my $lrfactor = 6;
+	$stash->set(lrfactor => $lrfactor);
+        my $rows = $stash->get('log_file_names'); 
+	my $logrows = ceil(scalar(@$rows)/$lrfactor);
+	my $logcells = $lrfactor * $logrows;
+	$stash->set( logcells => $logcells);
+	$stash->set( logrows => $logrows ); 
+[% END -%]
+[%
+        cvsurl = 'http://anoncvs.postgresql.org/cvsweb.cgi';
+        giturl = scmurl || 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;h=';
+-%]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>PostgreSQL BuildFarm | [% IF stage != 'OK' %]Log for system "[% system %]" failure on snapshot taken [% urldt ; ELSE %]Configuration summary for system "[% system %]" snapshot taken [% urldt ; END %]</title>
+    <link rel="icon" type="image/png" href="/elephant-icon.png" />
+    <link rel="stylesheet" rev="stylesheet" href="/inc/pgbf.css" charset="utf-8" />
+</head>
+<body>
+<div id="wrapper">
+<div id="banner">
+<a href="/index.html"><img src="/inc/pgbuildfarm-banner.png" alt="PostgreSQL BuildFarm" width="800" height="73" /></a>
+<div id="nav">
+<ul>
+    <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
+    <li id="status"><a href="/cgi-bin/show_status.pl" title="Status Page">Status</a></li>
+    <li id="members"><a href="/cgi-bin/show_members.pl" title="Status Page">Members</a></li>
+    <li id="register"><a href="/cgi-bin/register-form.pl" title="Register">Register</a></li>
+    <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFoundry</a></li>
+</ul>
+</div><!-- nav -->
+</div><!-- banner -->
+<div id="main">
+    <h1>PostgreSQL Build Farm Log</h1>
+<h2>Details for system "[% system %]"[% IF stage != 'OK' %] failure at stage [% stage ; ELSE %], status 'OK'[% END %], snapshot taken [% urldt %]</h2>
+<table cellspacing="0">
+    <tr>
+        <th class="head" rowspan="2">System Information</th>
+        <th>Farm member</th>
+        <th>Branch</th>
+        <th>OS</th>
+        <th>Compiler</th>
+        <th>Architecture</th>
+        <th>Owner</th>
+    </tr>
+    <tr>
+        <td>[% system %]</td>
+        <td><a href="/cgi-bin/show_history.pl?nm=[% system %]&amp;br=[% branch %]">[% branch %]</a></td>
+        <td>[% info_row.operating_system %] [% info_row.os_version %]</td>
+        <td>[% info_row.compiler %] [% info_row.compiler_version %]</td>
+        <td>[% info_row.architecture %]</td>
+        <td>[% info_row.owner_email %]</td>
+    </tr>
+  </table>
+[% IF info_row.sys_notes %]
+    <br />
+    <table>
+     <tr>
+       <th class="head" rowspan="2">System Notes</th>
+       <th>Date</th>
+       <th>Notes</th>
+     </tr>
+     <tr>
+      <td>[% info_row.sys_notes_date %]</td>
+      <td>[% info_row.sys_notes %]</td>
+     </tr>
+   </table>
+[% END %]
+[% cell = 0; FOREACH logstage  IN log_file_names ; striplog = logstage.replace('\.log$','') ; cell = loop.count %]
+  [% IF loop.first %] 
+    <br /> <table><tr><th class='head' rowspan='[% logrows %]'>Stage Logs</th>
+  [% END %]
+    [% IF loop.count > 1 and loop.count % lrfactor == 1 %]<tr>[% END %]
+    <td><a href='show_stage_log.pl?nm=[% system %]&amp;dt=[% urldt | uri %]&amp;stg=[% striplog %]'>[% striplog %]</a></td>
+    [% IF loop.count % lrfactor == 0 %]</tr>[% END %]
+[% END %]
+
+[% IF cell > 0 ; nrcell = cell + 1; ncells = [ nrcell .. logcells ] ; FOREACH rcell IN ncells %]
+	[% IF rcell > 1 and rcell % lrfactor == 1 %]<tr>[% END %]
+	<td>&nbsp;</td>
+	[% IF rcell % lrfactor == 0 %]</tr>[% END %]
+    [% END %]
+    </table>
+[% END %]
+
+<h3>Configuration summary</h3>
+<pre>
+[% conf | html %]
+</pre>
+<h3>Files changed this run</h3>
+<pre>
+[%- IF changed_this_run.0 -%]
+[%- FOREACH changed IN changed_this_run %]
+<a href="[% IF scm == 'git' ; giturl; changed.1; ELSE ; cvsurl ; changed.0; 'rev='; changed.1; END %]">[% changed.0 ; IF scm == 'cvs'; ' '; changed.1; END %]</a>
+[%- END -%]
+[%- ELSE %]
+not recorded
+[% END -%]
+</pre>
+[% IF stage != 'OK' %]
+<h3>Files changed since last success</h3>
+<pre>
+[%- IF changed_since_success.0 %]
+[%- FOREACH changed IN changed_since_success %]
+<a href="[% IF scm == 'git' ; giturl; changed.1; ELSE ; cvsurl ; changed.0; 'rev='; changed.1; END %]">[% changed.0 ; IF scm == 'cvs'; ' '; changed.1; END %]</a>
+[%- END -%]
+[%- ELSE %]
+not recorded
+[% END -%]
+</pre>
+[% END %]
+<h3>Log</h3>
+<pre>
+[% log | html %]
+</pre>
+</div><!-- main -->
+<hr />
+<p style="text-align: center;">
+Hosting for the PostgreSQL Buildfarm is generously 
+provided by: 
+<a href="http://www.commandprompt.com">CommandPrompt, 
+The PostgreSQL Company</a>
+</p>
+</div><!-- wrapper -->
+</body>
+</html>
