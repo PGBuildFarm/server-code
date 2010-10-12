@@ -62,6 +62,15 @@ unless ($animal && $ts && $stage && $sig)
 	
 }
 
+unless ($branch =~ /^(HEAD|REL\d+_\d+_STABLE)$/)
+{
+        print
+            "Status: 492 bad branch parameter $branch\nContent-Type: text/plain\n\n",
+            "bad branch parameter $branch\n";
+        exit;
+
+}
+
 
 my $db = DBI->connect($dsn,$dbuser,$dbpass);
 
