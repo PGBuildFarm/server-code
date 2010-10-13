@@ -36,8 +36,8 @@ my $statement = q{
   select name, operating_system, os_version, compiler, compiler_version, owner_email, 
     architecture as arch, ARRAY(
 				select branch || ':' || 
-				       extract(days from now() - latest_snapshot)
-				from build_status_latest l 
+				       extract(days from now() - l.snapshot)
+				from latest_snapshot l 
 				where l.sysname = s.name
 				order by branch <> 'HEAD', branch desc 
 				) as branches, 

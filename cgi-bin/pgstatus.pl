@@ -341,33 +341,6 @@ my ($os, $compiler,$arch) = @$row;
 $sth->finish;
 
 $db->begin_work;
-my $have_status = $db->selectrow_arrayref( q{
-    select 1 
-    from build_status_latest 
-    where sysname = ? and branch = ?
-}, 
-					   undef, $animal, $branch);
-if ($have_status) 
-{
-    $db->do(q{
-	      update build_status_latest
-		  set latest_snapshot = ?
-		  where sysname = ? and branch = ?
-	      },
-	    undef, $dbdate, $animal, $branch);
-}
-else
-{
-    $db->do(q{
-	      insert into build_status_latest
-		  (sysname, branch, latest_snapshot)
-	      values (?,?,?)
-	      },
-	    undef, $animal, $branch, $dbdate);
-}
-$db->commit;
-
-$db->begin_work;
 $db->do("delete from dashboard_mat");
 $db->do("insert into dashboard_mat select * from dashboard_mat_data2");
 $db->commit;
