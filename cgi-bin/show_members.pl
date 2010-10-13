@@ -60,13 +60,15 @@ while (my $row = $sth->fetchrow_hashref)
     $row->{branches} =~ s/^\{(.*)\}$/$1/;
     my $personalities = $row->{personalities};
     $personalities =~ s/^\{(.*)\}$/$1/;
-    my @personalities = split($personalities,',');
+    my @personalities = split(',',$personalities);
     $row->{personalities} = [];
     foreach my $personality (@personalities)
     {
 	$personality =~ s/^"(.*)"$/$1/;
 	$personality =~ s/\\(.)/$1/g;
+	
 	my ($compiler_version, $os_version, $effective_date) = split(/\t/,$personality);
+	$effective_date =~ s/ .*//;
 	push(@{$row->{personalities}}, {compiler_version => $compiler_version, 
 					os_version => $os_version, 
 					effective_date => $effective_date });

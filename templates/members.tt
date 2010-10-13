@@ -28,8 +28,16 @@
     [% alt = ! alt %]
     <td><input type="checkbox" name="member" value="[% row.name %]" /></td>
     <td>[% row.name %]<br />[% row.owner_email %]</td>
-    <td>[% row.operating_system %]<br />[% row.os_version %]</td>
-    <td>[% row.compiler %]<br />[% row.compiler_version %]</td>
+    <td>[% row.operating_system %]<br />[% row.os_version %]
+	[% FOREACH personality IN row.personalities %]
+        <br / > w.e.f. [% personality.effective_date %]: [% personality.os_version %]
+        [% END %]
+    </td>
+    <td>[% row.compiler %]<br />[% row.compiler_version %]
+	[% FOREACH personality IN row.personalities %]
+        <br / > w.e.f. [% personality.effective_date %]: [% personality.compiler_version %]
+        [% END %]
+    </td>
     <td>[% row.arch %]</td>
     <td class="branch">[% IF ! row.branches ; '&nbsp;' ; END -%]
     <ul>

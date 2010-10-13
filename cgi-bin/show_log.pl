@@ -79,7 +79,20 @@ if ($system && $logdate)
 	$sth=$db->prepare($statement);
 	$sth->execute($system);
 	$info_row=$sth->fetchrow_hashref;
+
+	my $latest_personality = $db->selectrow_arrayref(q{
+	    select os_version, compiler_version
+	    from personality
+	    where effective_date < ?
+	    and name = ?
+	    order by effective_date desc limit 1
+	}, undef, $logdate, $system);
         # $sysinfo = join(" ",@$row);
+	if ($latest_personality)
+	{
+	    $info_row->{os_version} = $latest_personality->[0];
+	    $info_row->{compiler_version} = $latest_personality->[1];
+	}
 	$sth->finish;
 	$db->disconnect;
 }
