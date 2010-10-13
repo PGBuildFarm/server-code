@@ -1,0 +1,8 @@
+[% WRAPPER 'page.tt' 
+    title = 'PostgreSQL BuildFarm Application'
+    bodyclass = 'application'
+    pagebutton = 'none'
+%]
+<h1>PostgreSQL BuildFarm Application received</h1>\
+<p>Thank you. You should hear from us shortly.</p>
+[% END %]

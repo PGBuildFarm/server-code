@@ -1,0 +1,38 @@
+[%#
+
+	Use this template to generate the index page, with something like:
+
+		tpage index.tt > ../htdocs/index.html
+
+-%]
+[% WRAPPER 'page.tt' 
+	title = 'PostgreSQL BuildFarm'
+	bodyclass = 'none'
+	pagebutton = 'home'
+%]
+<!-- html generated from index.tt -->
+<p>
+The PostgreSQL build farm is a distributed system for automatically testing
+changes in the source code for PostgreSQL as they occur, on a wide variety
+of platforms. This server is the central repository for the results of those
+tests.
+</p>
+<p>
+To see the current status of tests on various branches, check the
+<a href="/cgi-bin/show_status.pl" title="Status Page">Status Page</a>.
+</p>
+<p>
+If you are interested in running a member of the build farm, then please visit
+the <a href="/cgi-bin/register-form.pl" title="Register">Registration Page</a>.
+We are particularly interested in unusual platforms or combinations of
+architecture, operating system and compiler.
+</p>
+<p>To see what is involved in running a buildfarm member, please 
+read <a href="http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a>.
+The client code can be found at the
+<a href="http://pgfoundry.org/projects/pgbuildfarm/">project page</a> at 
+<a href="http://pgfoundry.org/">PGFoundry</a>.
+</p>
+<p>The build farm software should run on all platforms that can support PostgreSQL.
+</p>
+[% END %]

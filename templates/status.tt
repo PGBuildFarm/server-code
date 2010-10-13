@@ -22,35 +22,11 @@
 [%- BLOCK cl %] class="[% SWITCH bgfor.replace('-.*','') -%]
   [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE %]fail[% END %]"
 [%- END -%]
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>PostgreSQL BuildFarm Status</title>
-<link rel="icon" type="image/png" href="/elephant-icon.png" />	
-    <link rel="stylesheet" rev="stylesheet" href="/inc/pgbf.css" charset="utf-8" />
-	<style type="text/css"><!--
-	li#status a { color:rgb(17,45,137); background: url(/inc/b/r.png) no-repeat 100% -20px; } 
-	li#status { background: url(/inc/b/l.png) no-repeat 0% -20px; }
-	--></style>
-</head>
-<body>
-<div id="wrapper">
-<div id="banner">
-<a href="/index.html"><img src="/inc/pgbuildfarm-banner.png" alt="PostgreSQL BuildFarm" width="800" height="73" /></a>
-<div id="nav">
-<ul>
-    <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
-    <li id="status"><a href="/cgi-bin/show_status.pl" title="Current results">Status</a></li>
-    <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested">Members</a></li>
-    <li id="register"><a href="/cgi-bin/register-form.pl" title="Join PostgreSQL BuildFarm">Register</a></li>
-    <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFoundry</a></li>
-    <li id="postgresql.org"><a href="http://www.postgresql.org">PostgreSQL.org</a></li>
-</ul>
-</div><!-- nav -->
-</div><!-- banner -->
-<div id="main">
+[% WRAPPER 'page.tt' 
+	title = 'PostgreSQL BuildFarm Status'
+	bodyclass = 'none'
+	pagebutton = 'status'
+%]
     <h1>PostgreSQL BuildFarm Status</h1>
     <p>
       Shown here is the latest status of each farm member 
@@ -96,22 +72,4 @@
 </tr>
 [% END %]
     </table>
-</div><!-- main -->
-<hr />
-<p style="text-align: center;">
-The PostgreSQL Buildfarm website is provided by: 
-<a href="http://www.commandprompt.com">CommandPrompt, 
-The PostgreSQL Company</a> <br />
-The PostgreSQL community makes it work!
-</p>
-</div><!-- wrapper -->
-  </body>
-</html>
-
-
-
-
-
-
-
-
+[% END %]

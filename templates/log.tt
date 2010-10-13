@@ -8,35 +8,17 @@
 	$stash->set( logcells => $logcells);
 	$stash->set( logrows => $logrows ); 
 [% END -%]
+[% mytitle = BLOCK %]PostgreSQL BuildFarm | [% IF stage != 'OK' %]Log for system "[% system %]" failure on snapshot taken [% urldt ; ELSE %]Configuration summary for system "[% system %]" snapshot taken [% urldt ; END ; END -%]
 [%
         cvsurl = 'http://anoncvs.postgresql.org/cvsweb.cgi';
         giturl = scmurl || 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;h=';
 -%]
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>PostgreSQL BuildFarm | [% IF stage != 'OK' %]Log for system "[% system %]" failure on snapshot taken [% urldt ; ELSE %]Configuration summary for system "[% system %]" snapshot taken [% urldt ; END %]</title>
-    <link rel="icon" type="image/png" href="/elephant-icon.png" />
-    <link rel="stylesheet" rev="stylesheet" href="/inc/pgbf.css" charset="utf-8" />
-</head>
-<body>
-<div id="wrapper">
-<div id="banner">
-<a href="/index.html"><img src="/inc/pgbuildfarm-banner.png" alt="PostgreSQL BuildFarm" width="800" height="73" /></a>
-<div id="nav">
-<ul>
-    <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
-    <li id="status"><a href="/cgi-bin/show_status.pl" title="Status Page">Status</a></li>
-    <li id="members"><a href="/cgi-bin/show_members.pl" title="Status Page">Members</a></li>
-    <li id="register"><a href="/cgi-bin/register-form.pl" title="Register">Register</a></li>
-    <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFoundry</a></li>
-</ul>
-</div><!-- nav -->
-</div><!-- banner -->
-<div id="main">
-    <h1>PostgreSQL Build Farm Log</h1>
+[% WRAPPER 'page.tt' 
+	title = mytitle
+	bodyclass = 'none'
+	pagebutton = 'none'
+%]
+<h1>PostgreSQL Build Farm Log</h1>
 <h2>Details for system "[% system %]"[% IF stage != 'OK' %] failure at stage [% stage ; ELSE %], status 'OK'[% END %], snapshot taken [% urldt %]</h2>
 <table cellspacing="0">
     <tr>
@@ -118,14 +100,4 @@ not recorded
 <pre>
 [% log | html %]
 </pre>
-</div><!-- main -->
-<hr />
-<p style="text-align: center;">
-Hosting for the PostgreSQL Buildfarm is generously 
-provided by: 
-<a href="http://www.commandprompt.com">CommandPrompt, 
-The PostgreSQL Company</a>
-</p>
-</div><!-- wrapper -->
-</body>
-</html>
+[% END %]

@@ -1,31 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>PostgreSQL BuildFarm Application</title>
-	<link rel="icon" type="image/png" href="/elephant-icon.png" />
-	<link rel="stylesheet" rev="stylesheet" href="/inc/pgbf.css" charset="utf-8" />
-	<style type="text/css"><!--
-	li#register a { color:rgb(17,45,137); background: url(/inc/b/r.png) no-repeat 100% -20px; } 
-	li#register { background: url(/inc/b/l.png) no-repeat 0% -20px; }
-	--></style>
-</head>
-<body class="application">
-<div id="wrapper">
-<div id="banner">
-<a href="/index.html"><img src="/inc/pgbuildfarm-banner.png" alt="PostgreSQL BuildFarm" width="800" height="73" /></a>
-<div id="nav">
-<ul>
-    <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
-    <li id="status"><a href="/cgi-bin/show_status.pl" title="Current results">Status</a></li>
-    <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested">Members</a></li>
-    <li id="register"><a href="/cgi-bin/register-form.pl" title="Join PostgreSQL BuildFarm">Register</a></li>
-    <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFoundry</a></li>
-</ul>
-</div><!-- nav -->
-</div><!-- banner -->
-<div id="main">
+[% WRAPPER 'page.tt' 
+	title = 'PostgreSQL BuildFarm Application'
+	bodyclass = 'application'
+	pagebutton = 'register'
+%]
 <h1>Application to join PostgreSQL BuildFarm</h1>
 
 <p>Here is a short description of what is required to join the buildfarm successfully. Please read it carefully
@@ -48,10 +25,6 @@ before submitting this form.</p>
 <li> when you receive credentials, put them in the config file, and schedule regular builds (without those flags) 
      for the branches you want to support - which should be at least HEAD and the most recent stable branch.</li>
 </ul>
-
-<p>There is also some extra information in this 
-<a href="http://www.onlamp.com/pub/a/onlamp/2005/02/24/pg_buildfarm.html">article about buildfarm</a> on the O'Reilly network.</p>
-
 <hr />
 
 <p>Please complete all items.</p>
@@ -96,16 +69,4 @@ Systems is "Fedora Core" and the version is "4".</p>
 </tr>
 </table>
 </form>
-</div><!-- main -->
-<hr />
-<p style="text-align: center;">
-Hosting for the PostgreSQL Buildfarm is generously 
-provided by: 
-<a href="http://www.commandprompt.com">CommandPrompt, 
-The PostgreSQL Company</a>
-</p>
-</div><!-- wrapper -->
-</body>
-</html>
-
-
+[% END %]

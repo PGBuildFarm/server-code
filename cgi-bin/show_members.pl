@@ -31,7 +31,7 @@ my $db = DBI->connect($dsn,$dbuser,$dbpass);
 # there is possibly some redundancy in this query, but it makes
 # a lot of the processing simpler.
 
-my $statement = <<EOS;
+my $statement = q{
 
   select name, operating_system, os_version, compiler, compiler_version, owner_email, 
     architecture as arch, ARRAY(
@@ -40,13 +40,17 @@ my $statement = <<EOS;
 				from build_status_latest l 
 				where l.sysname = s.name
 				order by branch <> 'HEAD', branch desc 
-				) as branches 
+				) as branches, 
+			  ARRAY(select compiler_version || '\t' ||  os_version || '\t' || effective_date
+				from personality p
+				where p.name = s.name 
+				order by effective_date
+				) as personalities
   from buildsystems s
   where status = 'approved'
-  order by $sort_by
+};
 
-EOS
-;
+$statement .= "order by $sort_by";
 
 my $statrows=[];
 my $sth=$db->prepare($statement);
@@ -54,6 +58,19 @@ $sth->execute;
 while (my $row = $sth->fetchrow_hashref)
 {
     $row->{branches} =~ s/^\{(.*)\}$/$1/;
+    my $personalities = $row->{personalities};
+    $personalities =~ s/^\{(.*)\}$/$1/;
+    my @personalities = split($personalities,',');
+    $row->{personalities} = [];
+    foreach my $personality (@personalities)
+    {
+	$personality =~ s/^"(.*)"$/$1/;
+	$personality =~ s/\\(.)/$1/g;
+	my ($compiler_version, $os_version, $effective_date) = split(/\t/,$personality);
+	push(@{$row->{personalities}}, {compiler_version => $compiler_version, 
+					os_version => $os_version, 
+					effective_date => $effective_date });
+    }
     $row->{owner_email} =~ s/\@/ [ a t ] /;
     push(@$statrows,$row);
 }

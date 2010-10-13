@@ -1,0 +1,9 @@
+[% WRAPPER 'page.tt' 
+    title = 'PostgreSQL BuildFarm Application'
+    bodyclass = 'application'
+    pagebutton = 'none'
+%]
+<p>You need to complete all the form items. 
+<a href="/cgi-bin/register-form.pl">Please click here to try again.</a>
+</p>
+[% END %]

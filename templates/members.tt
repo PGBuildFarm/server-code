@@ -1,32 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>PostgreSQL BuildFarm Members</title>
-	<link rel="icon" type="image/png" href="/elephant-icon.png" />
-	<link rel="stylesheet" rev="stylesheet" href="/inc/pgbf.css" charset="utf-8" />
-	<style type="text/css"><!--
-	li#members a { color:rgb(17,45,137); background: url(/inc/b/r.png) no-repeat 100% -20px; } 
-	li#members { background: url(/inc/b/l.png) no-repeat 0% -20px; }
-	--></style>
-   </style>
-</head>
-<body class="members">
-<div id="wrapper">
-<div id="banner">
-<a href="/index.html"><img src="/inc/pgbuildfarm-banner.png" alt="PostgreSQL BuildFarm" width="800" height="73" /></a>
-<div id="nav">
-<ul>
-    <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
-    <li id="status"><a href="/cgi-bin/show_status.pl" title="Current results">Status</a></li>
-    <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested">Members</a></li>
-    <li id="register"><a href="/cgi-bin/register-form.pl" title="Join PostgreSQL BuildFarm">Register</a></li>
-    <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFoundry</a></li>
-</ul>
-</div><!-- nav -->
-</div><!-- banner -->
-<div id="main">
+[% WRAPPER 'page.tt' 
+	title = 'PostgreSQL BuildFarm Members'
+	bodyclass = 'members'
+	pagebutton = 'members'
+%]
 <h1>PostgreSQL BuildFarm Members</h1>
     <p>Click branch links to see build history. Click the heading links to resort the list. Select members by checkbox and hit the button at the bottom to create a status custom filter.</p>
     <form name="filter" method="GET" action="/cgi-bin/show_status.pl">
@@ -72,22 +48,4 @@
     </table>
     <input type="submit" value="Make Filter" />
     </form>
-    </div><!-- main -->
-<hr />
-<p style="text-align: center;">
-Hosting for the PostgreSQL Buildfarm is generously 
-provided by: 
-<a href="http://www.commandprompt.com">CommandPrompt, 
-The PostgreSQL Company</a>
-</p>
-    </div><!-- wrapper -->
-  </body>
-</html>
-
-
-
-
-
-
-
-
+[% END %]
