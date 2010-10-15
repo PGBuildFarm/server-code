@@ -34,6 +34,7 @@ my $db = DBI->connect($dsn,$dbuser,$dbpass);
 my $statement = q{
 
   select name, operating_system, os_version, compiler, compiler_version, owner_email, 
+    sys_notes_ts::date AS sys_notes_date, sys_notes,
     architecture as arch, ARRAY(
 				select branch || ':' || 
 				       extract(days from now() - l.snapshot)

@@ -15,6 +15,20 @@
     <tr><th>Architecture</th><td>[% statrows.0.architecture %]</td></tr>
     <tr><th>Owner</th><td>[% statrows.0.owner_email %]</td></tr>
   </table>
+[% IF statrows.0.sys_notes %]
+    <br />
+    <table>
+     <tr>
+       <th class="head" rowspan="2">System Notes</th>
+       <th>Date</th>
+       <th>Notes</th>
+     </tr>
+     <tr>
+      <td>[% statrows.0.sys_notes_date %]</td>
+      <td>[% statrows.0.sys_notes %]</td>
+     </tr>
+   </table>
+[% END %]
   <h3>Branch: [% branch %][% IF statrows.size >= hm %] (last [% hm %] entries shown)[% END %]</h3>
 [% BLOCK stdet %]
     <tr [% PROCESS cl bgfor=row.stage %]>

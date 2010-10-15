@@ -44,7 +44,8 @@ my $statement = <<EOS;
   select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
       sysname, snapshot, b.status, stage,
       operating_system, os_version, compiler, compiler_version, architecture,
-      owner_email
+      owner_email,
+      sys_notes_ts::date AS sys_notes_date, sys_notes
   from buildsystems s, 
        build_status b 
   where name = ?

@@ -27,7 +27,12 @@
 %]    <tr [%- IF alt %]class="alt"[% END -%]>
     [% alt = ! alt %]
     <td><input type="checkbox" name="member" value="[% row.name %]" /></td>
-    <td>[% row.name %]<br />[% row.owner_email %]</td>
+    <td>[% row.name %]<br />[% row.owner_email %]
+[% IF row.sys_notes %]
+    <br />
+      Notes: ([% row.sys_notes_date %]) [% row.sys_notes %]
+[% END %]
+    </td>
     <td>[% row.operating_system %]<br />[% row.os_version %]
 	[% FOREACH personality IN row.personalities %]
         <br / > w.e.f. [% personality.effective_date %]: [% personality.os_version %]
