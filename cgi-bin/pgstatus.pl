@@ -19,6 +19,7 @@ use DBD::Pg;
 use Data::Dumper;
 use Mail::Send;
 use Safe;
+use Time::ParseDate;
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
@@ -149,6 +150,19 @@ if ($calc_sig ne $sig && $calc_sig2 ne $sig)
 # undo escape-proofing of base64 data and decode it
 map {tr/$@/+=/; $_ = decode_base64($_); } 
     ($log, $conf,$changed_this_run,$changed_since_success,$log_archive);
+
+
+if ($log =~/Last file mtime in snapshot: (.*)/)
+{
+    my $snaptime = parsedate($1);
+    if ($snaptime < (time - (10 * 86400)))
+    {
+	print "Status: 493 snapshot too old: $1\nContent-Type: text/plain\n\n";
+	print "snapshot to old: $1\n";
+	$db->disconnect;
+	exit;	
+    }
+}
 
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($ts);
 $year += 1900; $mon +=1;
