@@ -34,14 +34,20 @@
 [% END %]
     </td>
     <td>[% row.operating_system %]<br />[% row.os_version %]
-	[% FOREACH personality IN row.personalities %]
+	[% prev_osver = row.osversion; 
+           FOREACH personality IN row.personalities;
+	   IF personality.os_version != prev_osver
+         %]
         <br / > w.e.f. [% personality.effective_date %]: [% personality.os_version %]
-        [% END %]
+        [% prev_osver = personality.os_version; END; END %]
     </td>
     <td>[% row.compiler %]<br />[% row.compiler_version %]
-	[% FOREACH personality IN row.personalities %]
+	[% prev_compver = row.compiler_version; 
+	   FOREACH personality IN row.personalities;
+	   IF personality.compiler_version != prev_compver
+        %]
         <br / > w.e.f. [% personality.effective_date %]: [% personality.compiler_version %]
-        [% END %]
+        [% prev_compver = personality.compiler_version; END; END %]
     </td>
     <td>[% row.arch %]</td>
     <td class="branch">[% IF ! row.branches ; '&nbsp;' ; END -%]
