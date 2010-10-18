@@ -19,6 +19,8 @@
 [%- BLOCK img ; IF flag == 'depend' or flag == 'gnu-ld' ; ; ELSIF flag_imgs.$flag %]<img src="[% flag_imgs.$flag %]" title="[% flag %]" alt="[% flag %]" height="16" width="16" class="inline" align="bottom" />  [% ELSE %][%#
 																									  flag ; ' '
 %][% END ; END -%]
+[%- BLOCK sysnotes ; IF row.sys_notes %]<img src="/img/notes.png" height="16" width="16" title="[% row.sys_notes_ts.replace(' .*','') | html %]: [% row.sys_notes | html %]" />
+[%- ELSE %]&nbsp;[% END ; END -%]
 [%- BLOCK cl %] class="[% SWITCH bgfor.replace('-.*','') -%]
   [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE %]fail[% END %]"
 [%- END -%]
@@ -47,14 +49,15 @@
 [% brch = "" %]
 [% FOREACH row IN statrows %]
 [% IF row.branch != brch ; brch = row.branch %]
-<tr><th class="head" colspan="4">Branch: [% brch %]</th></tr>
-<tr><th>Alias</th><th>System</th><th>Status</th><th>Flags</th></tr>
+<tr><th class="head" colspan="5">Branch: [% brch %]</th></tr>
+<tr><th>Alias</th><th colspan="2">System</th><th>Status</th><th>Flags</th></tr>
 [% END %]
 <tr [% PROCESS cl bgfor=row.stage %]>
     <td><a 
     href="show_history.pl?nm=[% row.sysname %]&amp;br=[% row.branch %]"
     title="History"
     >[% row.sysname %]</a></td>
+    <td>[% PROCESS sysnotes %]</td>
     <td><span class="opsys">[% row.operating_system %]
             [% row.os_version %]</span> <span class="compiler">
             [%- row.compiler %]
