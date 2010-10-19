@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-print "Contect-Type: text/plain\n\n";
+print "Content-Type: text/plain\n\n";
 
 print "Conf: $ENV{BFConfDir}\n";
 
