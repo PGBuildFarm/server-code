@@ -34,7 +34,7 @@ use vars qw($info_row);
 if ($system && $logdate)
 {
 
-	my $db = DBI->connect($dsn,$dbuser,$dbpass);
+	my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0});
 
 	die $DBI::errstr unless $db;
 

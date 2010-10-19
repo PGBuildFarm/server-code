@@ -34,7 +34,8 @@ elsif ($sortby eq 'compiler')
 	$sort_clause = "lower(compiler), compiler_version,";
 }
 
-my $db = DBI->connect($dsn,$dbuser,$dbpass) or die("$dsn,$dbuser,$dbpass,$!");
+my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0}) 
+    or die("$dsn,$dbuser,$dbpass,$!");
 
 my $statement =<<EOS;
 

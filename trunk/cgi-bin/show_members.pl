@@ -26,7 +26,7 @@ my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-my $db = DBI->connect($dsn,$dbuser,$dbpass);
+my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0});
 
 # there is possibly some redundancy in this query, but it makes
 # a lot of the processing simpler.
