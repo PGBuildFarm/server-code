@@ -449,7 +449,6 @@ $msg->to(@$mailto);
 $msg->bcc(@$bcc_stat) if (@$bcc_stat);
 $msg->subject("PGBuildfarm member $animal Branch $branch $stat_type $stage");
 $msg->set('From',$from_addr);
-{ my $handle; open($handle,">>/tmp/mailobj"); print $handle scalar(localtime),Dumper($msg); close($handle); }
 my $fh = $msg->open;
 print $fh <<EOMAIL; 
 
@@ -489,7 +488,6 @@ $stat_type .= " failure" if $stage ne 'OK';
 
 $msg->subject("PGBuildfarm member $animal Branch $branch Status $stat_type");
 $msg->set('From',$from_addr);
-{ my $handle; open($handle,">>/tmp/mailobj"); print $handle scalar(localtime),Dumper($msg); close($handle); }
 $fh = $msg->open;
 print $fh <<EOMAIL;
 
