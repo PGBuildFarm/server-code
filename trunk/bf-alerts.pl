@@ -12,6 +12,7 @@ use Safe;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport
        $all_stat $fail_stat $change_stat $green_stat
+       $default_host
 );
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
@@ -193,8 +194,11 @@ my $addr_sth = $db->prepare(q[
 
 
 my $me = `id -un`; chomp $me;
+my $host = `hostname`; chomp ($host);
+$host = $default_host unless ($host =~ m/[.]/ || !defined($default_host));
 
-my $host = `hostname`; chomp $host;
+my $from_addr = "PG Build Farm <$me\@$host>";
+$from_addr =~ tr /\r\n//d;
 
 
 
@@ -216,7 +220,7 @@ foreach my $clearme (@need_cleared)
     }
     my $msg = new Mail::Send;
 
-    $msg->set('From',"PG Build Farm <$me\@$host>");
+    $msg->set('From',$from_addr);
 
     $addr_sth->execute($animal);
 
@@ -244,7 +248,7 @@ foreach my $clearme (@need_alerts)
 	"on $sysbranch->{branch} for $hours hours.";
     my $msg = new Mail::Send;
 
-    $msg->set('From',"PG Build Farm <$me\@$host>");
+    $msg->set('From',$from_addr);
 
     $addr_sth->execute($animal);
 

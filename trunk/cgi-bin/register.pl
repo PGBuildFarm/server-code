@@ -7,7 +7,7 @@ use CGI;
 use Template;
 use Captcha::reCAPTCHA;
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp $captcha_pubkey $captcha_privkey $template_dir);
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp $captcha_pubkey $captcha_privkey $template_dir $default_host);
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
@@ -123,11 +123,14 @@ use Mail::Send;
 
 my $msg = new Mail::Send;
 
-my $me = `id -un`;
+my $me = `id -un`; chomp($me);
+my $host = `hostname`; chomp ($host);
+$host = $default_host unless ($host =~ m/[.]/ || !defined($default_host));
 
-my $host = `hostname`;
+my $from_addr = "PG Build Farm <$me\@$host>";
+$from_addr =~ tr /\r\n//d;
 
-$msg->set('From',"PG Build Farm <$me\@$host>");
+$msg->set('From',$from_addr);
 
 $msg->to(@$notifyapp);
 $msg->subject('New Buildfarm Application');

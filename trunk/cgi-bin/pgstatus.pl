@@ -6,6 +6,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
        $all_stat $fail_stat $change_stat $green_stat
        $server_time
 	   $min_script_version $min_web_script_version
+       $default_host
 );
 
 # force this before we do anything - even load modules
@@ -433,17 +434,22 @@ my $stat_type = $stage eq 'OK' ? 'Status' : 'Failed at Stage';
 my $mailto = [@$all_stat];
 push(@$mailto,@$fail_stat) if $stage ne 'OK';
 
-my $me = `id -un`; chomp $me;
+my $me = `id -un`; chomp($me);
 
-my $host = `hostname`; chomp $host;
+my $host = `hostname`; chomp ($host);
+$host = $default_host unless ($host =~ m/[.]/ || !defined($default_host));
+
+my $from_addr = "PG Build Farm <$me\@$host>";
+$from_addr =~ tr /\r\n//d;
 
 my $msg = new Mail::Send;
 
-$msg->set('From',"PG Build Farm <$me\@$host>");
 
 $msg->to(@$mailto);
 $msg->bcc(@$bcc_stat) if (@$bcc_stat);
 $msg->subject("PGBuildfarm member $animal Branch $branch $stat_type $stage");
+$msg->set('From',$from_addr);
+{ my $handle; open($handle,">>/tmp/mailobj"); print $handle scalar(localtime),Dumper($msg); close($handle); }
 my $fh = $msg->open;
 print $fh <<EOMAIL; 
 
@@ -472,7 +478,6 @@ push(@$mailto,@$green_stat) if ($stage eq 'OK' || $prev_stat eq 'OK');
 
 $msg = new Mail::Send;
 
-$msg->set('From',"PG Build Farm <$me\@$host>");
 
 $msg->to(@$mailto);
 $msg->bcc(@$bcc_chg) if (@$bcc_chg);
@@ -483,6 +488,8 @@ $stat_type = "New member: $stage" if $prev_stat eq 'NEW';
 $stat_type .= " failure" if $stage ne 'OK';
 
 $msg->subject("PGBuildfarm member $animal Branch $branch Status $stat_type");
+$msg->set('From',$from_addr);
+{ my $handle; open($handle,">>/tmp/mailobj"); print $handle scalar(localtime),Dumper($msg); close($handle); }
 $fh = $msg->open;
 print $fh <<EOMAIL;
 
