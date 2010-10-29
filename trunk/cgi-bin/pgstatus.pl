@@ -23,6 +23,7 @@ use Safe;
 use Time::ParseDate;
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
+my $buildlogs = "$ENV{BFConfDir}/buildlogs";
 
 die "no dbname" unless $dbname;
 die "no dbuser" unless $dbuser;
@@ -94,7 +95,7 @@ my $date=
 
 if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time ) || (! $secret) )
 {
-    open(TX,">../buildlogs/$animal.$date");
+    open(TX,">$buildlogs/$animal.$date");
     print TX "sig=$sig\nlogtar-len=" , length($log_archive),
         "\nstatus=$res\nstage=$stage\nconf:\n$conf\n",
         "tsdiff:$tsdiff\n",
@@ -172,12 +173,12 @@ my $dbdate=
 
 my $log_file_names;
 my @log_file_names;
-my $dirname = "../buildlogs/tmp.$$.unpacklogs";
+my $dirname = "$buildlogs/tmp.$$.unpacklogs";
 
 if ($log_archive)
 {
     my $log_handle;
-    my $archname = "../buildlogs/tmp.$$.tgz";
+    my $archname = "$buildlogs/tmp.$$.tgz";
     open($log_handle,">$archname");
     binmode $log_handle;
     print $log_handle $log_archive;
@@ -356,6 +357,8 @@ my ($os, $compiler,$arch) = @$row;
 $sth->finish;
 
 $db->begin_work;
+# prevent occasional duplication by forcing serialization of this operation
+$db->do("lock table dashboard_mat in share row exclusive mode");
 $db->do("delete from dashboard_mat");
 $db->do("insert into dashboard_mat select * from dashboard_mat_data");
 $db->commit;
@@ -371,7 +374,7 @@ my $client_events = $client_conf->{mail_events};
 if ($ENV{BF_DEBUG})
 {
 	my $client_time = $client_conf->{current_ts};
-    open(TX,">>../buildlogs/$animal.$date");
+    open(TX,">>$buildlogs/$animal.$date");
     print TX "\n",Dumper(\$client_conf),"\n";
 	print TX "server time: $server_time, client time: $client_time\n" if $client_time;
     close(TX);
