@@ -21,6 +21,7 @@ use Data::Dumper;
 use Mail::Send;
 use Safe;
 use Time::ParseDate;
+use Storable qw(thaw);
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 my $buildlogs = "$ENV{BFConfDir}/buildlogs";
@@ -47,6 +48,7 @@ my $branch = $query->param('branch');
 my $changed_since_success = $query->param('changed_since_success');
 my $changed_this_run = $query->param('changed_files');
 my $log_archive = $query->param('logtar');
+my $frozen_sconf = $query->param('frozen_sconf') || '';
 
 my $content = 
 	"branch=$branch&res=$res&stage=$stage&animal=$animal&".
@@ -101,6 +103,7 @@ if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time ) || (! $secret) )
         "tsdiff:$tsdiff\n",
 	"changed_this_run:\n$changed_this_run\n",
 	"changed_since_success:\n$changed_since_success\n",
+        "frozen_sconf:$frozen_sconf\n",
 	"log:\n",$log;
 #    $query->save(\*TX);
     close(TX);
@@ -151,8 +154,7 @@ if ($calc_sig ne $sig && $calc_sig2 ne $sig)
 
 # undo escape-proofing of base64 data and decode it
 map {tr/$@/+=/; $_ = decode_base64($_); } 
-    ($log, $conf,$changed_this_run,$changed_since_success,$log_archive);
-
+    ($log, $conf,$changed_this_run,$changed_since_success,$log_archive, $frozen_sconf);
 
 if ($log =~/Last file mtime in snapshot: (.*)/)
 {
@@ -175,6 +177,8 @@ my $log_file_names;
 my @log_file_names;
 my $dirname = "$buildlogs/tmp.$$.unpacklogs";
 
+my $githeadref;
+
 if ($log_archive)
 {
     my $log_handle;
@@ -186,20 +190,35 @@ if ($log_archive)
     mkdir $dirname;
     @log_file_names = `tar -z -C $dirname -xvf $archname 2>/dev/null`;
     map {s/\s+//g; } @log_file_names;
-    my @qnames = @log_file_names;
+    my @qnames = grep { $_ ne 'githead.log' } @log_file_names;
     map { $_ = qq("$_"); } @qnames;
     $log_file_names = '{' . join(',',@qnames) . '}';
+    if (-e "$dirname/githead.log" )
+    {
+	open(my $githead,"$dirname/githead.log");
+	$githeadref = <$githead>;
+	chomp $githeadref;
+	close $githead;
+    }
     # unlink $archname;
 }
 
 my $config_flags;
-my $container = new Safe;
-my $sconf = $conf; 
-unless ($sconf =~ s/.*(\$Script_Config)/$1/ms )
+my $client_conf;
+if ($frozen_sconf)
 {
-    $sconf = '$Script_Config={};';
+    $client_conf = thaw $frozen_sconf;
 }
-my $client_conf = $container->reval("$sconf;");
+else
+{
+    my $container = new Safe;
+    my $sconf = $conf; 
+    unless ($sconf =~ s/.*(\$Script_Config)/$1/ms )
+    {
+	$sconf = '$Script_Config={};';
+    }
+    $client_conf = $container->reval("$sconf;");
+}
 
 if ($min_script_version)
 {
@@ -266,8 +285,9 @@ my $logst = <<EOSQL;
     insert into build_status 
       (sysname, snapshot,status, stage, log,conf_sum, branch,
        changed_this_run, changed_since_success, 
-       log_archive_filenames , log_archive, build_flags, scm, scmurl)
-    values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+       log_archive_filenames , log_archive, build_flags, scm, scmurl, 
+       git_head_ref,frozen_conf)
+    values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 EOSQL
 ;
 $sth=$db->prepare($logst);
@@ -287,6 +307,8 @@ $sth->bind_param(11,undef,{ pg_type => DBD::Pg::PG_BYTEA });
 $sth->bind_param(12,$config_flags);
 $sth->bind_param(13,$scm);
 $sth->bind_param(14,$scmurl);
+$sth->bind_param(15,$githeadref);
+$sth->bind_param(16,$frozen_sconf,{ pg_type => DBD::Pg::PG_BYTEA });
 
 $sth->execute;
 $sth->finish;
@@ -308,16 +330,17 @@ my $stage_start = $ts;
 
 foreach my $log_file( @log_file_names )
 {
-  my $handle;
-  open($handle,"$dirname/$log_file");
-  my $mtime = (stat $handle)[9];
-  my $stage_interval = $mtime - $stage_start;
-  $stage_start = $mtime;
-  my $ltext = <$handle>;
-  close($handle);
-  $ltext =~ s/\x00/\\0/g;
-  $sth->execute($animal,$dbdate,$branch,$log_file,$ltext, 
-		"$stage_interval seconds");
+    next if $log_file =~ /^githead/;
+    my $handle;
+    open($handle,"$dirname/$log_file");
+    my $mtime = (stat $handle)[9];
+    my $stage_interval = $mtime - $stage_start;
+    $stage_start = $mtime;
+    my $ltext = <$handle>;
+    close($handle);
+    $ltext =~ s/\x00/\\0/g;
+    $sth->execute($animal,$dbdate,$branch,$log_file,$ltext, 
+		  "$stage_interval seconds");
 }
 
 
