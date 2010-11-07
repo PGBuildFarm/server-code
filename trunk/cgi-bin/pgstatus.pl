@@ -223,8 +223,10 @@ else
 if ($min_script_version)
 {
 	$client_conf->{script_version} ||= '0.0';
+	my $cli_ver = $client_conf->{script_version} ;
+	$cli_ver =~ s/^REL_//;
 	my ($minmajor,$minminor) = split(/\./,$min_script_version);
-	my ($smajor,$sminor) = split(/\./,$client_conf->{script_version});
+	my ($smajor,$sminor) = split(/\./,$cli_ver);
 	if ($minmajor > $smajor || ($minmajor == $smajor && $minminor > $sminor))
 	{
 		print "Status: 460 script version too low\nContent-Type: text/plain\n\n";
@@ -240,8 +242,10 @@ if ($min_script_version)
 if ($min_web_script_version)
 {
 	$client_conf->{web_script_version} ||= '0.0';
+	my $cli_ver = $client_conf->{web_script_version} ;
+	$cli_ver =~ s/^REL_//;
 	my ($minmajor,$minminor) = split(/\./,$min_script_version);
-	my ($smajor,$sminor) = split(/\./,$client_conf->{script_version});
+	my ($smajor,$sminor) = split(/\./,$cli_ver);
 	if ($minmajor > $smajor || ($minmajor == $smajor && $minminor > $sminor))
 	{
 		print "Status: 461 web script version too low\nContent-Type: text/plain\n\n";
