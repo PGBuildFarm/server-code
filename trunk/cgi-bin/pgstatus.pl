@@ -295,6 +295,16 @@ my $logst = <<EOSQL;
     values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 EOSQL
 ;
+
+
+# this transaction lets us set log_error_verbosity to terse
+# just for the duration of the transaction. That turns off logging the
+# bind params, so all the logs don't get stuffed on the postgres logs
+
+$db->begin_work;
+$db->do("select set_local_error_terse()");
+
+
 $sth=$db->prepare($logst);
 
 $sth->bind_param(1,$animal);
@@ -317,6 +327,8 @@ $sth->bind_param(16,$frozen_sconf,{ pg_type => DBD::Pg::PG_BYTEA });
 
 $sth->execute;
 $sth->finish;
+
+
 
 my $logst2 = <<EOSQL;
 
@@ -348,8 +360,9 @@ foreach my $log_file( @log_file_names )
 		  "$stage_interval seconds");
 }
 
-
 $sth->finish;
+
+$db->commit;
 
 my $prevst = <<EOSQL;
 
