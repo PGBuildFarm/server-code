@@ -8,7 +8,7 @@ use DBI;
 use DBD::Pg;
 use Data::Dumper;
 use Mail::Send;
-use Safe;
+use Storable qw(thaw);
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport
        $all_stat $fail_stat $change_stat $green_stat
@@ -45,7 +45,7 @@ my $sth = $db->prepare(q[
     SELECT DISTINCT ON (sysname, branch) 
 	 sysname, branch, 
 	 extract(epoch from snapshot at time zone 'GMT')::int as snapshot, 
-	 conf_sum as config
+	 frozen_conf as config
     FROM build_status s join buildsystems b on (s.sysname = b.name)
     WHERE NOT b.no_alerts and
        snapshot > current_timestamp - interval '30 days'
@@ -108,14 +108,7 @@ print "starting alert run: $lts\n";
 
 foreach my $sysbranch (@last_heard)
 {
-    # eval the config in a Safe container to protect ourselves
-    my $container = new Safe;
-    my $sconf = $sysbranch->{config}; 
-    unless ($sconf =~ s/.*(\$Script_Config)/$1/ms )
-    {
-	$sconf = '$Script_Config={};';
-    }
-    my $client_conf = $container->reval("$sconf;");
+    my $client_conf = thaw $sysbranch->{config};
 
     my %client_alert_settings = %{ $client_conf->{alerts} || {} };
     my $setting = $client_alert_settings{$sysbranch->{branch}};
