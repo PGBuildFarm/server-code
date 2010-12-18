@@ -1,14 +1,19 @@
 #!/usr/bin/perl
 
+=comment
+
+Copyright (c) 2003-2010, Andrew Dunstan
+
+See accompanying License file for license details
+
+=cut 
+
 use strict;
 use CGI;
 use DBI;
 use Template;
 
-
-
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir $sort_by);
-
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 #require "BuildFarmWeb.pl";

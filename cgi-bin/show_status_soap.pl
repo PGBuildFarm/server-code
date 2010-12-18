@@ -1,13 +1,18 @@
 #!/usr/bin/perl
 
-use strict;
+=comment
 
+Copyright (c) 2003-2010, Andrew Dunstan
+
+See accompanying License file for license details
+
+=cut 
+
+use strict;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
-
-use lib "/home/community/pgbuildfarm/lib/lib/perl5/site_perl";
 
 use SOAP::Transport::HTTP;
 

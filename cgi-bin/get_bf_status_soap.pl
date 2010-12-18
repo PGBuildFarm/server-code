@@ -1,6 +1,12 @@
 #!/usr/bin/perl
 
-use lib "/home/community/pgbuildfarm/lib/lib/perl5/site_perl";
+=comment
+
+Copyright (c) 2003-2010, Andrew Dunstan
+
+See accompanying License file for license details
+
+=cut 
 
 use SOAP::Lite +trace;
 

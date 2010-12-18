@@ -1,3 +1,10 @@
+[%#
+
+Copyright (c) 2003-2010, Andrew Dunstan
+
+See accompanying License file for license details
+
+-%]
 [%- BLOCK cl %] class="[% SWITCH bgfor -%]
   [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE %]fail[% END %]"
 [%- END -%]
