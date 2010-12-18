@@ -1,5 +1,13 @@
 #!/usr/bin/perl
 
+=comment
+
+Copyright (c) 2003-2010, Andrew Dunstan
+
+See accompanying License file for license details
+
+=cut 
+
 use strict;
 
 use Digest::SHA1  qw(sha1_hex);
