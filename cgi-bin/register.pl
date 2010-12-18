@@ -15,7 +15,8 @@ use CGI;
 use Template;
 use Captcha::reCAPTCHA;
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp $captcha_pubkey $captcha_privkey $template_dir $default_host);
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp 
+			$captcha_pubkey $captcha_privkey $template_dir $default_host);
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
@@ -29,8 +30,10 @@ my $query = new CGI;
 
 my $params = $query->Vars;
 
-my ($os, $osv, $comp, $compv, $arch, $email, $owner, $challenge, $response ) = @{$params}{
-	qw(os osv comp compv arch email owner recaptcha_challenge_field recaptcha_response_field)};
+my ($os, $osv, $comp, $compv, $arch, $email, $owner, $challenge, $response ) = 
+  @{$params}{
+	qw(os osv comp compv arch email owner recaptcha_challenge_field 
+	   recaptcha_response_field)};
 
 my $captcha = Captcha::reCAPTCHA->new;
 my $captcha_ok = $captcha->check_answer
@@ -41,17 +44,20 @@ my $captcha_ok = $captcha->check_answer
      );
 
 
-unless ($os && $osv && $comp && $compv && $arch && $email && $owner && $captcha_ok->{is_valid})
+unless ($os && $osv && $comp && $compv && $arch && $email && $owner && 
+		$captcha_ok->{is_valid})
 {
     print "Content-Type: text/html\n\n";
     $template->process('register-incomplete.tt');
     exit;
 }
 
-# some idiot has a script that tries to talk to me
-# this should catch and dispose of him
-if ((grep {/rgergerger|\@pgbuildfarm\.org|Content-Type:|http:|mailto:|href=|None|Unknown/} $os,$osv,$comp,$compv,$arch,$email,$owner)
-    || ($email =~ /john.*\@aol.com/) )
+# these filters  should catch and dispose of idiots, 
+# although I hope they are redundant now we're using captchas.
+
+if ((grep 
+   {/\@pgbuildfarm\.org|Content-Type:|http:|mailto:|href=|None|Unknown/} 
+	 $os,$osv,$comp,$compv,$arch,$email,$owner))
 {
     print 
 	"Status: 403 Forbidden - go away idiot\n",
