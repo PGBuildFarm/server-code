@@ -19,7 +19,6 @@ use DBI;
 use DBD::Pg;
 use Data::Dumper;
 use Mail::Send;
-use Safe;
 use Time::ParseDate;
 use Storable qw(thaw);
 
@@ -209,16 +208,6 @@ if ($frozen_sconf)
 {
     $client_conf = thaw $frozen_sconf;
 }
-else
-{
-    my $container = new Safe;
-    my $sconf = $conf; 
-    unless ($sconf =~ s/.*(\$Script_Config)/$1/ms )
-    {
-	$sconf = '$Script_Config={};';
-    }
-    $client_conf = $container->reval("$sconf;");
-}
 
 if ($min_script_version)
 {
@@ -239,7 +228,7 @@ if ($min_script_version)
 	}
 }
 
-if ($min_web_script_version && ! ($client_conf->{script_version} eq 'REL_4.3'))
+if ($min_web_script_version)
 {
 	$client_conf->{web_script_version} ||= '0.0';
 	my $cli_ver = $client_conf->{web_script_version} ;
