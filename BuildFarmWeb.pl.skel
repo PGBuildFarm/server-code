@@ -1,0 +1,56 @@
+
+
+=comment
+
+Copyright (c) 2003-2010, Andrew Dunstan
+
+See accompanying License file for license details
+
+=cut 
+
+
+
+use vars 
+    qw(
+       $dbhost $dbname $dbuser $dbpass $dbport
+       $notifyapp
+       $all_stat $fail_stat $change_stat $green_stat
+       $captcha_pubkey $captcha_privkey
+       $template_dir
+       $default_host
+       );
+
+my $base_install_dir = '/path/to/install/website';
+
+$template_dir = "$base_install_dir/templates";
+
+$default_host = 'foohost.pgbuildfarm.org';
+
+$dbhost = undef; # undef = unix socket
+$dbname = "mydb";
+$dbuser = "myuser";
+$dbpass = "mypas";
+$dbport = undef; # undef = default
+
+# addresses to email about new applications
+$notifyapp=[qw( someone@somewhere.com )];
+
+# addresses for mailing lists for status notifications
+
+$all_stat=['foo-status-all@somewhere.org'];
+$fail_stat=['foo-status-fail@somewhere.org'];
+$change_stat=['foo-status-chngs@somewhere.org'];
+$green_stat=['foo-status-green@somewhere.org'];
+
+# minimum acceptable script versions
+
+$min_script_version = "99.99";
+$min_web_script_version = "99.99";
+
+# captcha keys for site
+$captcha_pubkey = 'foo';
+$captcha_privkey = 'bar';
+
+
+
+1;
