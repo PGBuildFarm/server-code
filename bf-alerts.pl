@@ -244,9 +244,9 @@ foreach my $clearme (@need_cleared)
     print "alert cleared $animal $branch\n";
 }
 
-foreach my $clearme (@need_alerts)
+foreach my $needme (@need_alerts)
 {
-    my ($sysbranch, $setting) = @$clearme;
+    my ($sysbranch, $setting) = @$needme;
     my ($animal, $branch) = ($sysbranch->{sysname},$sysbranch->{branch});
     my $hours = sprintf("%.2f",($now - $sysbranch->{snapshot}) / 3600);
     my $text = "$sysbranch->{sysname} has not reported " .
