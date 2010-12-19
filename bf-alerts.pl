@@ -116,6 +116,10 @@ print "starting alert run: $lts\n";
 
 foreach my $sysbranch (@last_heard)
 {
+	# not all versions of DBD::Pg decode modern bytea literals nicely. cope.
+	$sysbranch->{config} =~ s/^(\\?x)([a-fA-F0-9]+)$/pack('H*',$2)/e;
+
+
     my $client_conf = thaw $sysbranch->{config};
 
     my %client_alert_settings = %{ $client_conf->{alerts} || {} };
