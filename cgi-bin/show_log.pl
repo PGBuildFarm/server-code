@@ -72,7 +72,7 @@ if ($system && $logdate)
 	$sth->execute($system,$logdate);
 	my $row=$sth->fetchrow_arrayref;
 	$sth->finish;
-	$git_head_ref = $row>[9];
+	$git_head_ref = $row->[9];
 	my $last_build_row;
 	if ($git_head_ref)
 	{
@@ -166,6 +166,9 @@ $template->process('log.tt',
 		changed_this_run_logs => $changed_this_run_logs,
 		changed_since_success_logs => $changed_since_success_logs,
 		info_row => $info_row,
+	    git_head_ref => $git_head_ref,
+	    last_build_git_ref => $last_build_git_ref,
+	    last_success_git_ref => $last_success_git_ref,
 
 	});
 
@@ -194,20 +197,20 @@ sub process_changed
 	if ($git_from && $git_to)
 	{
 		my $format = 
-		  'commit %H%nAuthor: %cN <%ce>%nDate: %cd UTC%n%n' .
-			'%w(80,4,4)%s%n%n%b%n';
-		my $gitlog = `$gitcmd --pretty="$format" $git_from..$git_to 2>&1`;
+		  'commit %H%nAuthor: %cN <%ce>%nDate: %cd UTC%n%n%w(80,4,4)%s%n%n%b%n';
+		my $gitlog = `$gitcmd --pretty=format:"$format" $git_from..$git_to 2>&1`;
 		@commit_logs = split(/(?=^commit)/m,$gitlog)
 	}
 	else
 	{
+		# normally we expect to have the git refs. this is just a fallback.
 		my $format = 
 		  'epoch: %at%ncommit %H%nAuthor: %cN <%ce>%nDate: %cd UTC%n%n' .
 			'%w(80,4,4)%s%n%n%b%n';
 		foreach my $commit ( keys %commits )
 		{
 			my $commitlog = 
-			  `$gitcmd -n 1--pretty="$format" $commit 2>&1`;
+			  `$gitcmd -n 1 --pretty=format:"$format" $commit 2>&1`;
 			push(@commit_logs,$commitlog);
 		}
 		@commit_logs = reverse (sort @commit_logs);

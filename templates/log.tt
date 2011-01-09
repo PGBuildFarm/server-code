@@ -90,6 +90,8 @@ commit <a href="[% giturl ; commitref %]">[% commitref %]</a>
 <a href="[% IF scm == 'git' ; giturl; changed.1; ELSE ; cvsurl ; changed.0; 'rev='; changed.1; END %]">[% changed.0 ; IF scm == 'cvs'; ' '; changed.1; END %]</a>
 [%- END -%]
 </pre>
+[% END %]
+[% IF changed_this_run_logs.0 %]
 <h5>Git log</h5>
 <blockquote><pre>
 [%- FOREACH clog IN changed_this_run_logs ; PROCESS gitlog -%]
@@ -111,6 +113,8 @@ not recorded
 <a href="[% IF scm == 'git' ; giturl; changed.1; ELSE ; cvsurl ; changed.0; 'rev='; changed.1; END %]">[% changed.0 ; IF scm == 'cvs'; ' '; changed.1; END %]</a>
 [%- END -%]
 </pre>
+[% END %]
+[% IF changed_since_success_logs.0 %]
 <h5>Git log</h5>
 <blockquote><pre>
 [%- FOREACH clog IN changed_since_success_logs ; PROCESS gitlog -%]
