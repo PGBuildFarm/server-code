@@ -18,6 +18,15 @@
 	bodyclass = 'none'
 	pagebutton = 'none'
 %]
+[%- BLOCK gitlog ;
+	loglines = clog.split('\n');
+	firstline = loglines.shift;
+	commitref = firstline.replace('commit ([0-9A-Fa-f]+)','$1');
+%]
+commit <a href="[% giturl ; commitref %]">[% commitref %]</a>
+[% loglines.join("\n")  | html %]
+
+[% END -%]
 <h1>PostgreSQL Build Farm Log</h1>
 <h2>Details for system "[% system %]"[% IF stage != 'OK' %] failure at stage [% stage ; ELSE %], status 'OK'[% END %], snapshot taken [% urldt %]</h2>
 <table cellspacing="0">
@@ -75,26 +84,46 @@
 [% conf | html %]
 </pre>
 <h3>Files changed this run</h3>
-<pre>
 [%- IF changed_this_run.0 -%]
+<pre>
 [%- FOREACH changed IN changed_this_run %]
 <a href="[% IF scm == 'git' ; giturl; changed.1; ELSE ; cvsurl ; changed.0; 'rev='; changed.1; END %]">[% changed.0 ; IF scm == 'cvs'; ' '; changed.1; END %]</a>
 [%- END -%]
-[%- ELSE %]
-not recorded
-[% END -%]
 </pre>
+<h5>Git log</h5>
+<blockquote><pre>
+[%- FOREACH clog IN changed_this_run_logs ; PROCESS gitlog -%]
+[%IF not loop.last %]
+===================================================================
+[% END -%]
+[%- END -%]
+</pre></blockquote>
+[%- ELSE %]
+<pre>
+not recorded
+</pre>
+[% END -%]
 [% IF stage != 'OK' %]
 <h3>Files changed since last success</h3>
-<pre>
 [%- IF changed_since_success.0 %]
+<pre>
 [%- FOREACH changed IN changed_since_success %]
 <a href="[% IF scm == 'git' ; giturl; changed.1; ELSE ; cvsurl ; changed.0; 'rev='; changed.1; END %]">[% changed.0 ; IF scm == 'cvs'; ' '; changed.1; END %]</a>
 [%- END -%]
-[%- ELSE %]
-not recorded
-[% END -%]
 </pre>
+<h5>Git log</h5>
+<blockquote><pre>
+[%- FOREACH clog IN changed_since_success_logs ; PROCESS gitlog -%]
+[%IF not loop.last %]
+===================================================================
+[% END -%]
+[%- END -%]
+</pre></blockquote>
+[%- ELSE %]
+<pre>
+not recorded
+</pre>
+[% END -%]
 [% END %]
 <h3>Log</h3>
 <pre>

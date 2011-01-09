@@ -13,7 +13,8 @@ use DBI;
 use Template;
 use CGI;
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir @log_file_names);
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport 
+			$template_dir @log_file_names $local_git_clone);
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
@@ -36,6 +37,7 @@ my $log = "";
 my $conf = "";
 my ($stage,$changed_this_run,$changed_since_success,$sysinfo,$branch,$scmurl);
 my $scm;
+my ($git_head_ref, $last_build_git_ref, $last_success_git_ref);
 
 use vars qw($info_row);
 
@@ -48,15 +50,48 @@ if ($system && $logdate)
 
 	my $statement = q{
 
-  		select log,conf_sum,stage, changed_this_run, changed_since_success,branch,
-      			log_archive_filenames, scm, scmurl
+  		select log,conf_sum,stage, changed_this_run, changed_since_success,
+                branch,	log_archive_filenames, scm, scmurl, git_head_ref
   		from build_status
   		where sysname = ? and snapshot = ?
 
 	};
+	my $last_build_statement = q{
+		select distinct on (sysname) sysname, snapshot, stage, git_head_ref 
+        from build_status 
+        where sysname = ? and snapshot < ? 
+        order by sysname, snapshot desc limit 1
+	};
+	my $last_success_statement = q{
+		select distinct on (sysname) sysname, snapshot, git_head_ref 
+        from build_status 
+        where sysname = ? and snapshot < ? and stage = 'OK' 
+        order by sysname, snapshot desc limit 1
+	};
 	my $sth=$db->prepare($statement);
 	$sth->execute($system,$logdate);
 	my $row=$sth->fetchrow_arrayref;
+	$sth->finish;
+	$git_head_ref = $row>[9];
+	my $last_build_row;
+	if ($git_head_ref)
+	{
+		$last_build_row = 
+		  $db->selectrow_hashref($last_build_statement,undef,
+								 $system,$logdate);
+		$last_build_git_ref = $last_build_row->{git_head_ref}
+		  if $last_build_row;
+		
+	}
+	my $last_success_row;
+	if (ref $last_build_row && $last_build_row->{stage} ne 'OK')
+	{
+		$last_success_row =
+		  $db->selectrow_hashref($last_success_statement,undef,
+								 $system,$logdate);
+		$last_success_git_ref = $last_success_row->{git_head_ref}
+		  if $last_success_row;
+	}
 	$log=$row->[0];
 	$conf=$row->[1] || "not recorded" ;
 	$stage=$row->[2] || "unknown";
@@ -70,7 +105,6 @@ if ($system && $logdate)
 	$log_file_names =~ s/^\{(.*)\}$/$1/;
 	@log_file_names=split(',',$log_file_names)
 	    if $log_file_names;
-	$sth->finish;
 
 	$statement = q{
 
@@ -95,7 +129,6 @@ if ($system && $logdate)
 	    and name = ?
 	    order by effective_date desc limit 1
 	}, undef, $logdate, $system);
-        # $sysinfo = join(" ",@$row);
 	if ($latest_personality)
 	{
 	    $info_row->{os_version} = $latest_personality->[0];
@@ -105,19 +138,13 @@ if ($system && $logdate)
 	$db->disconnect;
 }
 
-foreach my $chgd ($changed_this_run,$changed_since_success)
-{
-	my $cvsurl = 'http://anoncvs.postgresql.org/cvsweb.cgi';
-	my $giturl = $scmurl || 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;h=';
-    my @lines = split(/!/,$chgd);
-    my $changed_rows = [];
-    foreach (@lines)
-    {
-	next if ($scm eq 'cvs' and ! m!^(pgsql|master|REL\d_\d_STABLE)/!);
-	push(@$changed_rows,[$1,$3]) if (m!(^\S+)(\s+)(\S+)!);
-    }
-    $chgd = $changed_rows;
-}
+my ($changed_this_run_logs, $changed_since_success_logs);
+($changed_this_run, $changed_this_run_logs) = 
+  process_changed($changed_this_run,
+				  $git_head_ref,$last_build_git_ref);
+($changed_since_success, $changed_since_success_logs) = 
+  process_changed($changed_since_success,
+				  $last_build_git_ref,$last_success_git_ref);
 
 $conf =~ s/\@/ [ a t ] /g;
 
@@ -136,7 +163,56 @@ $template->process('log.tt',
 		log => $log,
 		changed_this_run => $changed_this_run,
 		changed_since_success => $changed_since_success,
+		changed_this_run_logs => $changed_this_run_logs,
+		changed_since_success_logs => $changed_since_success_logs,
 		info_row => $info_row,
 
 	});
+
+exit;
+
+##########################################################
+
+sub process_changed
+{
+
+	my $chgd = shift;
+	my $git_to = shift;
+	my $git_from = shift;
+
+    my @lines = split(/!/,$chgd);
+    my @changed_rows;
+	my %commits;
+	my @commit_logs;
+	my $gitcmd = "TZ=UTC GIT_DIR=$local_git_clone git log --stat --date=local";
+    foreach (@lines)
+    {
+		next if ($scm eq 'cvs' and ! m!^(pgsql|master|REL\d_\d_STABLE)/!);
+		push(@changed_rows,[$1,$3]) if (m!(^\S+)(\s+)(\S+)!);
+		$commits{$3} = 1 if $scm eq 'git';
+    }
+	if ($git_from && $git_to)
+	{
+		my $format = 
+		  'commit %H%nAuthor: %cN <%ce>%nDate: %cd UTC%n%n' .
+			'%w(80,4,4)%s%n%n%b%n';
+		my $gitlog = `$gitcmd --pretty="$format" $git_from..$git_to 2>&1`;
+		@commit_logs = split(/(?=^commit)/m,$gitlog)
+	}
+	else
+	{
+		my $format = 
+		  'epoch: %at%ncommit %H%nAuthor: %cN <%ce>%nDate: %cd UTC%n%n' .
+			'%w(80,4,4)%s%n%n%b%n';
+		foreach my $commit ( keys %commits )
+		{
+			my $commitlog = 
+			  `$gitcmd -n 1--pretty="$format" $commit 2>&1`;
+			push(@commit_logs,$commitlog);
+		}
+		@commit_logs = reverse (sort @commit_logs);
+		s/epoch:.*\n// for (@commit_logs);
+	}
+		return (\@changed_rows,\@commit_logs);
+}
 
