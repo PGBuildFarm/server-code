@@ -30,6 +30,11 @@ See accompanying License file for license details
 	firstline = loglines.shift;
 	commitref = firstline.replace('commit ([0-9A-Fa-f]+)','$1');
 %]
+<!--
+git_head_ref [% git_head_ref %]
+last_build_git_ref [% last_build_git_ref %]
+last_success_git_ref [% last_success_git_ref %]
+-->
 commit <a href="[% giturl ; commitref %]">[% commitref %]</a>
 [% loglines.join("\n")  | html %]
 

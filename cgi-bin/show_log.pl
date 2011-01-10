@@ -59,26 +59,27 @@ if ($system && $logdate)
 	my $last_build_statement = q{
 		select distinct on (sysname) sysname, snapshot, stage, git_head_ref 
         from build_status 
-        where sysname = ? and snapshot < ? 
+        where sysname = ? and branch = ? and snapshot < ? 
         order by sysname, snapshot desc limit 1
 	};
 	my $last_success_statement = q{
 		select distinct on (sysname) sysname, snapshot, git_head_ref 
         from build_status 
-        where sysname = ? and snapshot < ? and stage = 'OK' 
+        where sysname = ? and branch = ? and snapshot < ? and stage = 'OK' 
         order by sysname, snapshot desc limit 1
 	};
 	my $sth=$db->prepare($statement);
 	$sth->execute($system,$logdate);
 	my $row=$sth->fetchrow_arrayref;
-	$sth->finish;
+	$branch = $row->[5];
 	$git_head_ref = $row->[9];
+	$sth->finish;
 	my $last_build_row;
 	if ($git_head_ref)
 	{
 		$last_build_row = 
 		  $db->selectrow_hashref($last_build_statement,undef,
-								 $system,$logdate);
+								 $system,$branch,$logdate);
 		$last_build_git_ref = $last_build_row->{git_head_ref}
 		  if $last_build_row;
 		
@@ -88,7 +89,7 @@ if ($system && $logdate)
 	{
 		$last_success_row =
 		  $db->selectrow_hashref($last_success_statement,undef,
-								 $system,$logdate);
+								 $system,$branch,$logdate);
 		$last_success_git_ref = $last_success_row->{git_head_ref}
 		  if $last_success_row;
 	}
@@ -97,7 +98,6 @@ if ($system && $logdate)
 	$stage=$row->[2] || "unknown";
 	$changed_this_run = $row->[3];
 	$changed_since_success = $row->[4];
-	$branch = $row->[5];
 	my $log_file_names = $row->[6];
 	$scm = $row->[7];
 	$scm ||= 'cvs'; # legacy scripts
