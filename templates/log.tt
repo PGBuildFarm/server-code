@@ -26,18 +26,11 @@ See accompanying License file for license details
 	pagebutton = 'none'
 %]
 [%- BLOCK gitlog ;
-	loglines = clog.split('\n');
-	firstline = loglines.shift;
-	commitref = firstline.replace('commit ([0-9A-Fa-f]+)','$1');
-%]
-<!--
-git_head_ref [% git_head_ref %]
-last_build_git_ref [% last_build_git_ref %]
-last_success_git_ref [% last_success_git_ref %]
--->
-commit <a href="[% giturl ; commitref %]">[% commitref %]</a>
-[% loglines.join("\n")  | html %]
+	commitref = clog.replace('commit ([0-9A-Fa-f]+)(.|\n)*','$1');
+	logtail = clog.replace('commit ([0-9A-Fa-f]+)','');
+	logtail = logtail.replace('\n',' ');
 
+%]<a href="[% giturl ; commitref %]">[% commitref %]</a>[% logtail | html %]
 [% END -%]
 <h1>PostgreSQL Build Farm Log</h1>
 <h2>Details for system "[% system %]"[% IF stage != 'OK' %] failure at stage [% stage ; ELSE %], status 'OK'[% END %], snapshot taken [% urldt %]</h2>
@@ -95,6 +88,9 @@ commit <a href="[% giturl ; commitref %]">[% commitref %]</a>
 <pre>
 [% conf | html %]
 </pre>
+<table>
+<tr>
+<td valign="top">
 <h3>Files changed this run</h3>
 [%- IF changed_this_run.0 -%]
 <pre>
@@ -103,21 +99,26 @@ commit <a href="[% giturl ; commitref %]">[% commitref %]</a>
 [%- END -%]
 </pre>
 [% END %]
+</td>
+<td valign="top" style="padding-left: 10pt;">
 [% IF changed_this_run_logs.0 %]
 <h5>Git log</h5>
-<blockquote><pre>
-[%- FOREACH clog IN changed_this_run_logs ; PROCESS gitlog -%]
-[%IF not loop.last %]
-===================================================================
-[% END -%]
-[%- END -%]
-</pre></blockquote>
-[%- ELSE %]
 <pre>
+<a href="https://github.com/postgres/postgres/compare/[% last_build_git_ref %]...[% git_head_ref %]">Change Set for this build</a>
+
+[% FOREACH clog IN changed_this_run_logs ; PROCESS gitlog -%]
+[%- END -%]
+</pre>
+</td>
+[%- ELSE %]
 not recorded
 </pre>
+</td>
 [% END -%]
+</tr>
 [% IF stage != 'OK' %]
+<tr>
+<td valign="top">
 <h3>Files changed since last success</h3>
 [%- IF changed_since_success.0 %]
 <pre>
@@ -126,21 +127,28 @@ not recorded
 [%- END -%]
 </pre>
 [% END %]
+</td>
+<td valign="top" style="padding-left: 10pt;">
 [% IF changed_since_success_logs.0 %]
 <h5>Git log</h5>
-<blockquote><pre>
-[%- FOREACH clog IN changed_since_success_logs ; PROCESS gitlog -%]
-[%IF not loop.last %]
-===================================================================
-[% END -%]
+<pre>
+<a href="https://github.com/postgres/postgres/compare/[% last_success_git_ref %]...[% last_build_git_ref %]">Change Set prior to this build</a>
+
+<a href="https://github.com/postgres/postgres/compare/[% last_success_git_ref %]...[% git_head_ref %]">Change Set including this build</a>
+
+[% FOREACH clog IN changed_since_success_logs ; PROCESS gitlog -%]
 [%- END -%]
-</pre></blockquote>
+</pre>
+</td>
 [%- ELSE %]
 <pre>
 not recorded
 </pre>
+</td>
 [% END -%]
+</tr>
 [% END %]
+</table>
 <h3>Log</h3>
 <pre>
 [% log | html %]

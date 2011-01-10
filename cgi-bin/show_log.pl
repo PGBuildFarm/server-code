@@ -187,7 +187,7 @@ sub process_changed
     my @changed_rows;
 	my %commits;
 	my @commit_logs;
-	my $gitcmd = "TZ=UTC GIT_DIR=$local_git_clone git log --stat --date=local";
+	my $gitcmd = "TZ=UTC GIT_DIR=$local_git_clone git log --date=local";
     foreach (@lines)
     {
 		next if ($scm eq 'cvs' and ! m!^(pgsql|master|REL\d_\d_STABLE)/!);
@@ -196,17 +196,14 @@ sub process_changed
     }
 	if ($git_from && $git_to)
 	{
-		my $format = 
-		  'commit %H%nAuthor: %cN <%ce>%nDate: %cd UTC%n%n%w(80,4,4)%s%n%n%b%n';
+		my $format = 'commit %h %cd UTC%w(160,2,2)%s';
 		my $gitlog = `$gitcmd --pretty=format:"$format" $git_from..$git_to 2>&1`;
 		@commit_logs = split(/(?=^commit)/m,$gitlog)
 	}
 	else
 	{
 		# normally we expect to have the git refs. this is just a fallback.
-		my $format = 
-		  'epoch: %at%ncommit %H%nAuthor: %cN <%ce>%nDate: %cd UTC%n%n' .
-			'%w(80,4,4)%s%n%n%b%n';
+		my $format = 'epoch: %at%ncommit %h %cd UTC%w(160,2,2)%s';
 		foreach my $commit ( keys %commits )
 		{
 			my $commitlog = 
