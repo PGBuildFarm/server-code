@@ -1,3 +1,10 @@
+[%#
+
+Copyright (c) 2003-2010, Andrew Dunstan
+
+See accompanying License file for license details
+
+-%]
 [% PERL %]
 	use POSIX qw(ceil);
         my $lrfactor = 6;
