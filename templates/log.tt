@@ -26,8 +26,8 @@ See accompanying License file for license details
 	pagebutton = 'none'
 %]
 [%- BLOCK gitlog ;
-	commitref = clog.replace('commit ([0-9A-Fa-f]+)(.|\n)*','$1');
-	logtail = clog.replace('commit ([0-9A-Fa-f]+)','');
+	commitref = clog.replace('^commit ([0-9A-Fa-f]+)(.|\n)*','$1');
+	logtail = clog.replace('^commit ([0-9A-Fa-f]+)','');
 	logtail = logtail.replace('\n',' ');
 
 %]<a href="[% giturl ; commitref %]">[% commitref %]</a>[% logtail | html %]
