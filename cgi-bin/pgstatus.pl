@@ -401,6 +401,16 @@ $db->do("delete from dashboard_mat");
 $db->do("insert into dashboard_mat select * from dashboard_mat_data");
 $db->commit;
 
+if ($stage ne 'OK')
+{
+	$db->begin_work;
+	# prevent occasional duplication by forcing serialization of this operation
+	$db->do("lock table nrecent_failures in share row exclusive mode");
+	$db->do("delete from nrecent_failures");
+	$db->do("insert into nrecent_failures select bs.sysname, bs.snapshot, bs.branch from build_status bs where bs.stage <> 'OK' and bs.snapshot > now() - interval '30 days'");
+	$db->commit;
+}
+
 $db->disconnect;
 
 print "Content-Type: text/plain\n\n";
