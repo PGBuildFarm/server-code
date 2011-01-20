@@ -407,7 +407,7 @@ if ($stage ne 'OK')
 	# prevent occasional duplication by forcing serialization of this operation
 	$db->do("lock table nrecent_failures in share row exclusive mode");
 	$db->do("delete from nrecent_failures");
-	$db->do("insert into nrecent_failures select bs.sysname, bs.snapshot, bs.branch from build_status bs where bs.stage <> 'OK' and bs.snapshot > now() - interval '30 days'");
+	$db->do("insert into nrecent_failures select bs.sysname, bs.snapshot, bs.branch from build_status bs where bs.stage <> 'OK' and bs.snapshot > now() - interval '90 days'");
 	$db->commit;
 }
 

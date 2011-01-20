@@ -22,17 +22,18 @@ See accompanying License file for license details
     <div id="wrapper">
       <div id="banner">
         <a href="/index.html"><img src="/inc/pgbuildfarm-banner.png" alt="PostgreSQL BuildFarm" width="800" height="73" /></a>
-        <div id="nav">
+        <div class="nav">
           <ul>
     	    <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
     	    <li id="status"><a href="/cgi-bin/show_status.pl" title="Current results">Status</a></li>
+    	    <li id="failures"><a href="/cgi-bin/show_failures.pl" title="Recent Failures">Failures</a></li>
     	    <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested">Members</a></li>
     	    <li id="register"><a href="/cgi-bin/register-form.pl" title="Join PostgreSQL BuildFarm">Register</a></li>
     	    <li id="pgfoundry"><a href="http://pgfoundry.org/projects/pgbuildfarm/">PGFoundry</a></li>
           </ul>
         </div><!-- nav -->
       </div><!-- banner -->
-      <div id="main">
+      <div class="main">
         [% content %]
       </div><!-- main -->
       <hr />
