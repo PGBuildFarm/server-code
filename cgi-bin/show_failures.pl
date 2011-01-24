@@ -34,14 +34,6 @@ if ($sortby eq 'name')
 {
 	$sort_clause = 'lower(b.sysname),';
 }
-elsif ($sortby eq 'os')
-{
-	$sort_clause = 'lower(b.operating_system), b.os_version desc,'; 
-}
-elsif ($sortby eq 'compiler')
-{
-	$sort_clause = "lower(b.compiler), b.compiler_version,";
-}
 elsif ($sortby eq 'namenobranch')
 {
 	$presort_clause = "lower(b.sysname), b.snapshot desc,"
