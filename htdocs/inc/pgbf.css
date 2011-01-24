@@ -109,10 +109,10 @@ th.head {
 
 .status, .detail { border-bottom: 1px #fff solid; }
 tr.last td { border-bottom: 1px #aaa solid; }
-.pass td.status, .pass td.detail { background: #6f6; }
-.warn td.status, .warn td.detail { background: #fc3; }
-.warnx td.status, .warn td.detail { background: #f99; }
-.fail td.status, .fail td.detail { background: #f66; }
+.pass td.status, .pass td.detail, td.pass { background: #6f6; }
+.warn td.status, .warn td.detail, td.warn { background: #fc3; }
+.warnx td.status, .warn td.detail, td.warnx { background: #f99; }
+.fail td.status, .fail td.detail, td.fail { background: #f66; }
 body.history th { text-align: right; }
 body.application table { margin: 0 auto; }
 body.application th { text-align: right; }

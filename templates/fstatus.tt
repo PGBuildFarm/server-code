@@ -71,7 +71,7 @@ See accompanying License file for license details
 <tr><th colspan="2">Alias</th><th>System</th><th>Status</th><th>Flags</th></tr>
 [% END %]
 <tr [% PROCESS cl bgfor=row.stage %]>
-    <td><a 
+    <td [% PROCESS cl bgfor=row.current_stage %]><a 
     href="show_history.pl?nm=[% row.sysname %]&amp;br=[% row.branch %]"
     title="History"
   >[% row.sysname %]</a></td>

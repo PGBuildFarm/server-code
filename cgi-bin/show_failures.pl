@@ -32,19 +32,19 @@ my $presort_clause = "";
 my $sortby = $query->param('sortby') || 'nosort';
 if ($sortby eq 'name')
 {
-	$sort_clause = 'lower(sysname),';
+	$sort_clause = 'lower(b.sysname),';
 }
 elsif ($sortby eq 'os')
 {
-	$sort_clause = 'lower(operating_system), os_version desc,'; 
+	$sort_clause = 'lower(b.operating_system), b.os_version desc,'; 
 }
 elsif ($sortby eq 'compiler')
 {
-	$sort_clause = "lower(compiler), compiler_version,";
+	$sort_clause = "lower(b.compiler), b.compiler_version,";
 }
 elsif ($sortby eq 'namenobranch')
 {
-	$presort_clause = "lower(sysname), snapshot desc,"
+	$presort_clause = "lower(b.sysname), b.snapshot desc,"
 }
 
 my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0}) 
@@ -53,13 +53,18 @@ my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0})
 my $statement =<<EOS;
 
 
-  select timezone('GMT'::text, now())::timestamp(0) without time zone - b.snapshot AS when_ago, b.*
+  select timezone('GMT'::text, 
+	now())::timestamp(0) without time zone - b.snapshot AS when_ago, 
+	b.*,
+	d.stage as current_stage
   from nrecent_failures_db_data b
+	left join  dashboard_mat d
+		on (d.sysname = b.sysname and d.branch = b.branch)
   order by $presort_clause 
-        branch = 'HEAD' desc,
-        branch desc, 
+        b.branch = 'HEAD' desc,
+        b.branch desc, 
         $sort_clause 
-        snapshot desc
+        b.snapshot desc
 
 EOS
 ;
