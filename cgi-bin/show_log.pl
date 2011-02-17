@@ -38,6 +38,7 @@ my $conf = "";
 my ($stage,$changed_this_run,$changed_since_success,$sysinfo,$branch,$scmurl);
 my $scm;
 my ($git_head_ref, $last_build_git_ref, $last_success_git_ref);
+my ($stage_times, $run_time);
 
 use vars qw($info_row);
 
@@ -111,7 +112,7 @@ if ($system && $logdate)
           select operating_system, os_version, 
                  compiler, compiler_version, 
                  architecture,
-		 replace(owner_email,'\@',' [ a t ] ') as owner_email,
+		 replace(owner_email,E'\@',' [ a t ] ') as owner_email,
 		 sys_notes_ts::date AS sys_notes_date, sys_notes
           from buildsystems 
           where status = 'approved'
@@ -135,6 +136,21 @@ if ($system && $logdate)
 	    $info_row->{compiler_version} = $latest_personality->[1];
 	}
 	$sth->finish;
+	my $stage_times_query = q{
+           select log_stage, stage_duration
+           from build_status_log
+           where sysname = ? and snapshot = ?
+        };
+	$stage_times = 
+	    $db->selectall_hashref($stage_times_query,'log_stage',undef,
+				   $system,$logdate);
+	$stage_times_query = q{
+           select sum(stage_duration)
+           from build_status_log
+           where sysname = ? and snapshot = ?
+        };
+	($run_time) = $db->selectrow_array($stage_times_query,undef,
+				   $system,$logdate);
 	$db->disconnect;
 }
 
@@ -157,6 +173,8 @@ $template->process('log.tt',
 		system => $system,
 		branch => $branch,
 		stage => $stage,
+		stage_times => $stage_times,
+		run_time => $run_time,
 		urldt => $logdate,
 		log_file_names => \@log_file_names,
 		conf => $conf,

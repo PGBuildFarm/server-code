@@ -7,7 +7,7 @@ See accompanying License file for license details
 -%]
 [% PERL %]
 	use POSIX qw(ceil);
-        my $lrfactor = 6;
+        my $lrfactor = 4;
 	$stash->set(lrfactor => $lrfactor);
         my $rows = $stash->get('log_file_names'); 
 	my $logrows = ceil(scalar(@$rows)/$lrfactor);
@@ -69,10 +69,10 @@ See accompanying License file for license details
 [% END %]
 [% cell = 0; FOREACH logstage  IN log_file_names ; striplog = logstage.replace('\.log$','') ; cell = loop.count %]
   [% IF loop.first %] 
-    <br /> <table><tr><th class='head' rowspan='[% logrows %]'>Stage Logs</th>
+    <br /> <table><tr><th class='head' rowspan='[% logrows %]'>Stage Logs<br /><br />Total run time<br />[% run_time %]</th>
   [% END %]
     [% IF loop.count > 1 and loop.count % lrfactor == 1 %]<tr>[% END %]
-    <td><a href='show_stage_log.pl?nm=[% system %]&amp;dt=[% urldt | uri %]&amp;stg=[% striplog %]'>[% striplog %]</a></td>
+    <td><a href='show_stage_log.pl?nm=[% system %]&amp;dt=[% urldt | uri %]&amp;stg=[% striplog %]'>[% striplog %]</a> ([% stage_times.$logstage.stage_duration %])</td>
     [% IF loop.count % lrfactor == 0 %]</tr>[% END %]
 [% END %]
 
