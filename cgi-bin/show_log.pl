@@ -103,6 +103,8 @@ if ($system && $logdate)
 	$scm = $row->[7];
 	$scm ||= 'cvs'; # legacy scripts
 	$scmurl = $row->[8];
+	$scmurl = 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;h=' 
+	    if ($scmurl eq 'http://git.postgresql.org/git/postgresql.git');
 	$log_file_names =~ s/^\{(.*)\}$/$1/;
 	@log_file_names=split(',',$log_file_names)
 	    if $log_file_names;
