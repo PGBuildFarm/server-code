@@ -85,6 +85,12 @@ foreach (split "" ,"$os$osv$comp$compv$arch$owner")
 }
 
 # reject junk with too many transitions into/outof upper case
+
+=comment
+
+# disable this check now, probably redundant with captchas 
+# and we just got a false positive
+
 if ($counttrans > 20)
 {
     print 
@@ -93,6 +99,7 @@ if ($counttrans > 20)
     exit;   
 }
 
+=cut
 
 
 my $secret = "";
