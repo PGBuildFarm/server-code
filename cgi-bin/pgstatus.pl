@@ -57,6 +57,22 @@ my $changed_this_run = $query->param('changed_files');
 my $log_archive = $query->param('logtar');
 my $frozen_sconf = $query->param('frozen_sconf') || '';
 
+my $brhandle;
+if (open($brhandle,"../htdocs/branches_of_interest.txt"))
+{
+    my @branches_of_interest = <$brhandle>;
+    close($brhandle);
+    chomp(@branches_of_interest);
+    unless (grep {$_ eq $branch} @branches_of_interest)
+    {
+        print
+            "Status: 492 bad branch parameter $branch\nContent-Type: text/plain\n\n",
+            "bad branch parameter $branch\n";
+        exit;	
+    }
+}
+
+
 my $content = 
 	"branch=$branch&res=$res&stage=$stage&animal=$animal&".
 	"ts=$ts&log=$log&conf=$conf";
