@@ -20,7 +20,6 @@ See accompanying License file for license details
      xml => '/img/xml.png',
      'thread-safety' => '/img/threads.gif',
      'integer-datetimes' = '/img/days.png',
-     git => '/img/git.png',
      }
 -%]
 [%- BLOCK img ; IF flag == 'depend' or flag == 'gnu-ld' ; ; ELSIF flag_imgs.$flag %]<img src="[% flag_imgs.$flag %]" title="[% flag %]" alt="[% flag %]" height="16" width="16" class="inline" align="bottom" />  [% ELSE %][%#
