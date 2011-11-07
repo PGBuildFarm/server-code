@@ -8,12 +8,11 @@ See accompanying License file for license details
 
 =cut 
 
-use SOAP::Lite +trace;
+use SOAP::Lite ;
 
 my $obj = SOAP::Lite
     ->uri('http://www.pgbuildfarm.org/PGBuildFarm')
-    ->proxy('http://127.0.0.1/cgi-bin/show_status_soap.pl')
-    ->request->header("Host" => "www.pgbuildfarm.org")
+    ->proxy('http://www.pgbuildfarm.org/cgi-bin/show_status_soap.pl')
     ;
 
 my $data = $obj->get_status->result;
