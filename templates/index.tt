@@ -37,8 +37,8 @@ architecture, operating system and compiler.
 <p>To see what is involved in running a buildfarm member, please 
 read <a href="http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a>.
 The client code can be found at the
-<a href="http://pgfoundry.org/projects/pgbuildfarm/">project page</a> at 
-<a href="http://pgfoundry.org/">PGFoundry</a>.
+<a href="https://github.com/PGBuildFarm/client-code/downloads">downloads page</a> at 
+<a href="https://github.com/PGBuildFarm/client-code">GitHub</a>.
 </p>
 <p>The build farm software should run on all platforms that can support PostgreSQL.
 </p>

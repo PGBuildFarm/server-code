@@ -24,7 +24,7 @@ before submitting this form.</p>
      (for Windows this means MSys/MinGW with the libz and libintl stuff,  and ideally native Python and Tcl).</li>
 <li> Windows only: you will need a native perl installed as well as the one in the MSys DTK. The one from ActiveState works fine.</li>
 <li> download and unpack the latest release of client code from 
-     <a href="http://pgfoundry.org/frs/?group_id=1000040">http://pgfoundry.org/frs/?group_id=1000040</a></li>
+     <a href="https://github.com/PGBuildFarm/client-code/downloads">https://github.com/PGBuildFarm/client-code/downloads</a></li>
 <li> read instructions at 
      <a href="http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a></li>
 <li> get the software running locally using flags --force --nostatus --nosend</li>
