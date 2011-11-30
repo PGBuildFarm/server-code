@@ -21,6 +21,7 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 my $query = new CGI;
 my @members = $query->param('member');
 map { s/[^a-zA-Z0-9_ -]//g; } @members;
+my $max_days =  $query->param('max_days') + 0 || 10;
 
 my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
@@ -52,6 +53,7 @@ my $statement =<<EOS;
   from nrecent_failures_db_data b
 	left join  dashboard_mat d
 		on (d.sysname = b.sysname and d.branch = b.branch)
+  where (now()::timestamp(0) without time zone - b.snapshot) < (? * interval '1 day')
   order by $presort_clause 
         b.branch = 'HEAD' desc,
         b.branch desc, 
@@ -63,7 +65,7 @@ EOS
 
 my $statrows=[];
 my $sth=$db->prepare($statement);
-$sth->execute;
+$sth->execute($max_days);
 while (my $row = $sth->fetchrow_hashref)
 {
     next if (@members && ! grep {$_ eq $row->{sysname} } @members);
@@ -100,6 +102,7 @@ print "Content-Type: text/html\n\n";
 $template->process('fstatus.tt',
 		{statrows=>$statrows, 
 		 sortby => $sortby,
+		 max_days => $max_days,
 		 members=> \@members} );
 
 exit;

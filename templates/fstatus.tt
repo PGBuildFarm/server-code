@@ -38,7 +38,7 @@ See accompanying License file for license details
 %]
     <h1>PostgreSQL BuildFarm Recent Failures</h1>
     <p>
-      Shown here are build failures that occurred in the last 90 days.
+      Shown here are build failures that occurred in the last [% max_days %] days. For a longer (or shorter) time span, up to 90 days, add a query parameter of "max_days=nn".
     </p>
     <p>
        Use the farm member link for history of that member 
