@@ -32,6 +32,7 @@ my $query = new CGI;
 my $system = $query->param('nm'); $system =~ s/[^a-zA-Z0-9_ -]//g;
 my $logdate = $query->param('dt');$logdate =~ s/[^a-zA-Z0-9_ -]//g;
 my $stage = $query->param('stg');$stage =~ s/[^a-zA-Z0-9._ -]//g;
+my $brnch = $query->param('branch') || 'HEAD'; $brnch =~ s/[^a-zA-Z0-9._ -]//g;
 
 use vars qw($tgz);
 
@@ -41,6 +42,20 @@ if ($system && $logdate && $stage)
 
     die $DBI::errstr unless $db;
 
+    if ($logdate =~ /^latest$/i)
+    {
+	my $find_latest = qq{
+            select max(snapshot) 
+            from build_status_log 
+            where sysname = ? 
+                and snapshot > now() - interval '30 days' 
+                and log_stage = ? || '.log'
+                and branch = ?
+        };
+	my $logs = $db->selectcol_arrayref($find_latest,undef,$system,$stage,$brnch);
+	$logdate = shift(@$logs);
+    }
+
     my $statement = q(
 
         select branch, log_text
@@ -48,8 +63,6 @@ if ($system && $logdate && $stage)
         where sysname = ? and snapshot = ? and log_stage = ? || '.log'
 
         );
-
-
     
     my $sth=$db->prepare($statement);
     $sth->execute($system,$logdate,$stage);
@@ -63,7 +76,7 @@ if ($system && $logdate && $stage)
     $sth->finish;
     $db->disconnect;
 
-    print "Content-Type: text/plain\n\n", $logtext,
+    print "Content-Type: text/plain\n\nSnapshot: $logdate\n\n", $logtext,
 
     "-------------------------------------------------\n\n",
     "Hosting for the PostgreSQL Buildfarm is generously ",
