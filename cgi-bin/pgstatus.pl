@@ -14,7 +14,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
        $all_stat $fail_stat $change_stat $green_stat
        $server_time
 	   $min_script_version $min_web_script_version
-       $default_host
+       $default_host $local_git_clone
 );
 
 # force this before we do anything - even load modules
@@ -182,7 +182,10 @@ map {tr/$@/+=/; $_ = decode_base64($_); }
 if ($log =~/Last file mtime in snapshot: (.*)/)
 {
     my $snaptime = parsedate($1);
-    if ($snaptime < (time - (10 * 86400)))
+    my $brch = $branch eq 'HEAD' ? 'master' : $branch;
+    my $last_branch_time = time - (30 * 86400);
+    $last_branch_time = `TZ=UTC GIT_DIR=$local_git_clone git log -1 --pretty=format:\%ct  $brch`;
+    if ($snaptime < ($last_branch_time - 86400))
     {
 	print "Status: 493 snapshot too old: $1\nContent-Type: text/plain\n\n";
 	print "snapshot to old: $1\n";
