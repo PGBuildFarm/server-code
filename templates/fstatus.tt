@@ -21,7 +21,13 @@ See accompanying License file for license details
      'thread-safety' => '/img/threads.gif',
      'integer-datetimes' = '/img/days.png',
      git => '/img/git.png',
-     }
+     };
+
+  filter = '';
+  IF max_days ; filter = 'max_days=' _ max_days ; END ;
+  FOREACH qmemb IN qmembers ; IF filter ; filter = "$filter&" ; END ; filter = filter _ 'member=' _ qmemb ; END ;
+  FOREACH qstage IN qstages ; IF filter ; filter = "$filter&" ; END ; filter = filter _ 'stage=' _ qstage ; END ;
+  FOREACH qbranch IN qbranches ; IF filter ; filter = "$filter&" ; END ; filter = filter _ 'branch=' _ qbranch ; END ;
 -%]
 [%- BLOCK img ; IF flag == 'depend' or flag == 'gnu-ld' ; ; ELSIF flag_imgs.$flag %]<img src="[% flag_imgs.$flag %]" title="[% flag %]" alt="[% flag %]" height="16" width="16" class="inline" align="bottom" />  [% ELSE %][%#
 																									  flag ; ' '
@@ -38,7 +44,7 @@ See accompanying License file for license details
 %]
     <h1>PostgreSQL BuildFarm Recent Failures</h1>
     <p>
-      Shown here are build failures that occurred in the last [% max_days %] days. For a longer (or shorter) time span, up to 90 days, add a query parameter of "max_days=nn".
+      Shown here are build failures that occurred in the last [% max_days %] days.
     </p>
     <p>
        Use the farm member link for history of that member 
@@ -47,11 +53,44 @@ See accompanying License file for license details
 
 		<div class="nav">
           <ul>
-            <li [% IF sortby != 'name' && sortby != 'namenobranch' %] id='thismenu' [% END %]><a href="/cgi-bin/show_failures.pl" title="Sort By Branch, Date">Sort By Branch, Date</a></li>
-            <li  [% IF sortby == 'name' %] id='thismenu' [% END %]><a href="/cgi-bin/show_failures.pl?sortby=name" title="Sort By Branch, Name">Sort By Branch, Name</a></li>
-            <li [% IF sortby == 'namenobranch' %] id='thismenu' [% END %]><a href="/cgi-bin/show_failures.pl?sortby=namenobranch" title="Sort By Name">Sort By Name</a></li>
+            <li [% IF sortby != 'name' && sortby != 'namenobranch' %] id='thismenu' [% END %]><a href="/cgi-bin/show_failures.pl[% IF filter ; '?' _ filter; END %]" title="Sort By Branch, Date">Sort By Branch, Date</a></li>
+            <li  [% IF sortby == 'name' %] id='thismenu' [% END %]><a href="/cgi-bin/show_failures.pl?sortby=name[% IF filter ; "&$filter"; END %]" title="Sort By Branch, Name">Sort By Branch, Name</a></li>
+            <li [% IF sortby == 'namenobranch' %] id='thismenu' [% END %]><a href="/cgi-bin/show_failures.pl?sortby=namenobranch[% IF filter ; "&$filter"; END %]" title="Sort By Name">Sort By Name</a></li>
           </ul>
 		  </div>
+<br />
+<table border="0"><tr><td>
+<h3>Filter</h3>
+<form action="/cgi-bin/show_failures.pl" method="get">
+<table border="none">
+<tr><td>Days</td><td>Branch(es)</td><td>Member(s)</td><td>Stage(s)</td><td>&nbsp;</td></tr>
+<tr><td>
+<select name="max_days">
+[% maxday_range = [ 3 .. 90 ] ; FOREACH maxdays IN maxday_range %]<option>[% maxdays %]</option>
+[% END %]
+</selecto</td><td>>
+<select name="branch" multiple="multiple">
+<option value="">All</option>
+[% FOREACH sbranch IN all_branches %]<option>[% sbranch %]</option>
+[% END %]
+</select>
+</td><td>
+<select name="member" multiple="multiple">
+<option value="">All</option>
+[% FOREACH smemb IN all_members %]<option>[% smemb %]</option>
+[% END %]
+</select>
+</td><td>
+<select name="stage" multiple="multiple">
+<option value="">All</option>
+[% FOREACH sstage IN all_stages %]<option>[% sstage %]</option>
+[% END %]
+</select>
+</td><td>
+<input type="submit" name="filter" value="Submit" />
+</td></tr></table>
+</form>
+</td></tr><tr><td>
 <h3>&nbsp;</h3>
 <table><tr><th class="head" rowspan="2">Legend</th>
 [% FOREACH flagset IN flag_imgs %]
@@ -59,7 +98,7 @@ See accompanying License file for license details
 [% IF loop.count == 7 %]</tr><tr>[% END %]
 [% END %]
 </tr></table>
-<br />
+</td></tr></table>
     <table cellspacing="0">
 [% brch = "" %]
 [% IF sortby == 'namenobranch' %]
