@@ -327,7 +327,7 @@ $sth=$db->prepare($logst);
 
 $sth->bind_param(1,$animal);
 $sth->bind_param(2,$dbdate);
-$sth->bind_param(3,$res);
+$sth->bind_param(3,$res & 0x8fffffff); # in case we get a 64 bit int status!
 $sth->bind_param(4,$stage);
 $sth->bind_param(5,$log);
 $sth->bind_param(6,$conf);
