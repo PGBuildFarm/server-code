@@ -317,6 +317,8 @@ EOSQL
 # just for the duration of the transaction. That turns off logging the
 # bind params, so all the logs don't get stuffed on the postgres logs
 
+
+my $sqlres;
 $db->begin_work;
 $db->do("select set_local_error_terse()");
 
@@ -341,42 +343,59 @@ $sth->bind_param(14,$scmurl);
 $sth->bind_param(15,$githeadref);
 $sth->bind_param(16,$frozen_sconf,{ pg_type => DBD::Pg::PG_BYTEA });
 
-$sth->execute;
-$sth->finish;
+$sqlres = $sth->execute;
 
-
-
-my $logst2 = <<EOSQL;
-
-  insert into build_status_log 
-    (sysname, snapshot, branch, log_stage, log_text, stage_duration)
-    values (?, ?, ?, ?, ?, ?)
-
-EOSQL
-    ;
-
-$sth = $db->prepare($logst2);
-
-$/=undef;
-
-my $stage_start = $ts;
-
-foreach my $log_file( @log_file_names )
+if ($sqlres)
 {
-    next if $log_file =~ /^githead/;
-    my $handle;
-    open($handle,"$dirname/$log_file");
-    my $mtime = (stat $handle)[9];
-    my $stage_interval = $mtime - $stage_start;
-    $stage_start = $mtime;
-    my $ltext = <$handle>;
-    close($handle);
-    $ltext =~ s/\x00/\\0/g;
-    $sth->execute($animal,$dbdate,$branch,$log_file,$ltext, 
-		  "$stage_interval seconds");
+
+	$sth->finish;
+
+	my $logst2 = q{
+
+	  insert into build_status_log 
+		(sysname, snapshot, branch, log_stage, log_text, stage_duration)
+		values (?, ?, ?, ?, ?, ?)
+
+    };
+
+	$sth = $db->prepare($logst2);
+
+	$/=undef;
+
+	my $stage_start = $ts;
+
+	foreach my $log_file( @log_file_names )
+	{
+		next if $log_file =~ /^githead/;
+		my $handle;
+		open($handle,"$dirname/$log_file");
+		my $mtime = (stat $handle)[9];
+		my $stage_interval = $mtime - $stage_start;
+		$stage_start = $mtime;
+		my $ltext = <$handle>;
+		close($handle);
+		$ltext =~ s/\x00/\\0/g;
+		$sqlres = $sth->execute($animal,$dbdate,$branch,$log_file,$ltext, 
+			  "$stage_interval seconds");
+		last unless $sqlres;
+	}
+
+	$sth->finish unless $sqlres;
+
 }
 
-$sth->finish;
+if (! $sqlres)
+{
+
+	print "Status: 462 database failure\nContent-Type: text/plain\n\n";
+	print "Your report generated a database failure:\n", 
+	       $db->errstr, 
+			 "\n";
+	$db->rollback;
+	$db->disconnect;
+	exit;
+}
+
 
 $db->commit;
 
