@@ -17,12 +17,11 @@ before submitting this form.</p>
 
 <ul>
 <li> your machine will need to be able to contact <a href="http://www.pgbuildfarm.org">http://www.pgbuildfarm.org</a>
-     either directly or via proxy, and it will need access to a PostgreSQL CVS repository, 
-     either the one at postgresql.org or a mirror (you can set up your own mirror using CSVup on a Linux or FreeBSD machine - 
-     this is recommended).</li>
-<li> have a working Postgresql build environment for your platform 
-     (for Windows this means MSys/MinGW with the libz and libintl stuff,  and ideally native Python and Tcl).</li>
-<li> Windows only: you will need a native perl installed as well as the one in the MSys DTK. The one from ActiveState works fine.</li>
+     either directly or via proxy, and it will need access to a PostgreSQL Git repository, 
+     either the one at postgresql.org or a mirror.</li>
+<li> have <a href="http://git-scm.org">git</a> installed.</li>
+<li> have a working Postgresql build environment for your platform.</li>
+<li> Windows only: you will need a native perl installed (and not just the one from the MSys DTK). The one from ActiveState works fine.</li>
 <li> download and unpack the latest release of client code from 
      <a href="https://github.com/PGBuildFarm/client-code/downloads">https://github.com/PGBuildFarm/client-code/downloads</a></li>
 <li> read instructions at 
@@ -31,6 +30,7 @@ before submitting this form.</p>
 <li> register your machine on this page</li>
 <li> when you receive credentials, put them in the config file, and schedule regular builds (without those flags) 
      for the branches you want to support - which should be at least HEAD and the most recent stable branch.</li>
+<li> Note that it is possible (and quite common) to run more than one buildfarm member on a single machine.</li>
 </ul>
 <hr />
 
