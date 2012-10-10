@@ -58,16 +58,20 @@ if ($system && $logdate)
 
 	};
 	my $last_build_statement = q{
-		select distinct on (sysname) sysname, snapshot, stage, git_head_ref 
-        from build_status 
-        where sysname = ? and branch = ? and snapshot < ? 
-        order by sysname, snapshot desc limit 1
+		select git_head_ref 
+                from build_status 
+                where sysname = ? and branch = ?  and snapshot =
+                    (select max(snapshot)
+                    from build_status
+                    where sysname = ? and branch = ? and snapshot < ?)
 	};
 	my $last_success_statement = q{
-		select distinct on (sysname) sysname, snapshot, git_head_ref 
-        from build_status 
-        where sysname = ? and branch = ? and snapshot < ? and stage = 'OK' 
-        order by sysname, snapshot desc limit 1
+		select git_head_ref 
+                from build_status 
+                where sysname = ? and branch = ?  and snapshot =
+                    (select max(snapshot)
+                    from build_status
+                    where sysname = ? and branch = ? and snapshot < ? and stage = 'OK')
 	};
 	my $sth=$db->prepare($statement);
 	$sth->execute($system,$logdate);
@@ -80,7 +84,7 @@ if ($system && $logdate)
 	{
 		$last_build_row = 
 		  $db->selectrow_hashref($last_build_statement,undef,
-								 $system,$branch,$logdate);
+								 $system, $branch,$system,$branch,$logdate);
 		$last_build_git_ref = $last_build_row->{git_head_ref}
 		  if $last_build_row;
 		
@@ -90,7 +94,7 @@ if ($system && $logdate)
 	{
 		$last_success_row =
 		  $db->selectrow_hashref($last_success_statement,undef,
-								 $system,$branch,$logdate);
+								 $system,$branch,$system,$branch,$logdate);
 		$last_success_git_ref = $last_success_row->{git_head_ref}
 		  if $last_success_row;
 	}
