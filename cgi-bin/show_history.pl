@@ -43,34 +43,39 @@ my $latest_personality = $db->selectrow_arrayref(q{
             order by effective_date desc limit 1
 	}, undef, $member);
 
-# we don't really need to do this join, since we only want
-# one row from buildsystems. but it means we only have to run one
-# query. If it gets heavy we'll split it up and run two
+my $systemdata = q{
+    select operating_system, os_version, compiler, compiler_version, architecture,
+      owner_email, sys_notes_ts::date AS sys_notes_date, sys_notes
+    from buildsystems b
+    where b.status = 'approved'
+        and name = ?
+};
 
-my $statement = <<EOS;
-
-  select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
-      sysname, snapshot, b.status, stage,
-      operating_system, os_version, compiler, compiler_version, architecture,
-      owner_email,
-      sys_notes_ts::date AS sys_notes_date, sys_notes
-  from buildsystems s, 
-       build_status b 
-  where name = ?
-        and branch = ?
-        and s.status = 'approved'
-        and name = sysname
-  order by snapshot desc
-  limit $hm
-
-EOS
+my $statement = qq{
+   with x as 
+   (  select * 
+      from build_status_recent_500
+      where sysname = ? 
+         and branch = ?
+   ) 
+   select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago, 
+            sysname, snapshot, status, stage 
+   from x 
+   order by snapshot desc  
+   limit $hm
+}
 ;
 
+my $sth = $db->prepare($systemdata);
+$sth->execute($member);
+my $sysrow = $sth->fetchrow_hashref;
 my $statrows=[];
-my $sth=$db->prepare($statement);
+$sth=$db->prepare($statement);
 $sth->execute($member,$branch);
 while (my $row = $sth->fetchrow_hashref)
 {
+    last unless $sysrow;
+    while (my($k,$v) = each %$sysrow) { $row->{$k} = $v; }
     $row->{owner_email} =~ s/\@/ [ a t ] /;
     if ($latest_personality)
     {
