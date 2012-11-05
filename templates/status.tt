@@ -15,6 +15,7 @@ See accompanying License file for license details
      openssl => '/img/ssl_icon.gif',
      nls => '/img/translateicon.gif',
      krb5 => '/img/krb.gif',
+     gssapi => '/img/gssapi.gif',
      tcl => '/img/tcl.png',
      vpath => '/img/vpath.png',
      xml => '/img/xml.png',
