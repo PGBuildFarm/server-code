@@ -107,6 +107,7 @@ if ($system && $logdate)
 	$scm = $row->[7];
 	$scm ||= 'cvs'; # legacy scripts
 	$scmurl = $row->[8];
+	$scmurl = undef unless $scmurl =~ /^http/; # slight sanity check
 	$scmurl = 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;h=' 
 	    if ($scmurl eq 'http://git.postgresql.org/git/postgresql.git');
 	$log_file_names =~ s/^\{(.*)\}$/$1/;
