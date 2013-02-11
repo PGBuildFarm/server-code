@@ -10,6 +10,6 @@ See accompanying License file for license details
     bodyclass = 'application'
     pagebutton = 'none'
 %]
-<h1>PostgreSQL BuildFarm Application received</h1>\
+<h1>PostgreSQL BuildFarm Application received</h1>
 <p>Thank you. You should hear from us shortly.</p>
 [% END %]
