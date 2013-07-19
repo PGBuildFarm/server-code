@@ -73,6 +73,7 @@ See accompanying License file for license details
     <td class="status">
             [%- row.when_ago | replace('\s','&nbsp;') %]&nbsp;ago&nbsp;
             [% row.stage -%]
+	    [[% row.git_head_ref.substr(0,7) %]]
             <a href="show_log.pl?nm=
                [%- row.sysname %]&amp;dt=
                [%- row.snapshot | uri %]">
