@@ -74,6 +74,111 @@ CREATE TYPE pending2 AS (
 
 ALTER TYPE public.pending2 OWNER TO pgbuildfarm;
 
+SET default_tablespace = '';
+
+SET default_with_oids = true;
+
+--
+-- Name: build_status; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE TABLE build_status (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    status integer,
+    stage text,
+    log text,
+    conf_sum text,
+    branch text,
+    changed_this_run text,
+    changed_since_success text,
+    log_archive bytea,
+    log_archive_filenames text[],
+    build_flags text[],
+    report_time timestamp with time zone DEFAULT ('now'::text)::timestamp(6) with time zone,
+    scm text,
+    scmurl text,
+    frozen_conf bytea,
+    git_head_ref text
+);
+
+
+ALTER TABLE public.build_status OWNER TO pgbuildfarm;
+
+--
+-- Name: buildsystems; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE TABLE buildsystems (
+    name text NOT NULL,
+    secret text NOT NULL,
+    operating_system text NOT NULL,
+    os_version text NOT NULL,
+    compiler text NOT NULL,
+    compiler_version text NOT NULL,
+    architecture text NOT NULL,
+    status text NOT NULL,
+    sys_owner text NOT NULL,
+    owner_email text NOT NULL,
+    status_ts timestamp without time zone DEFAULT (('now'::text)::timestamp(6) with time zone)::timestamp without time zone,
+    no_alerts boolean DEFAULT false,
+    sys_notes text,
+    sys_notes_ts timestamp with time zone
+);
+
+
+ALTER TABLE public.buildsystems OWNER TO pgbuildfarm;
+
+--
+-- Name: personality; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE TABLE personality (
+    name text NOT NULL,
+    os_version text NOT NULL,
+    compiler_version text NOT NULL,
+    effective_date timestamp with time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL
+);
+
+
+ALTER TABLE public.personality OWNER TO pgbuildfarm;
+
+--
+-- Name: allhist_summary; Type: VIEW; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE VIEW allhist_summary AS
+    SELECT b.sysname, b.snapshot, b.status, b.stage, b.branch, CASE WHEN ((b.conf_sum ~ 'use_vpath'::text) AND (b.conf_sum !~ '''use_vpath'' => undef'::text)) THEN (b.build_flags || 'vpath'::text) ELSE b.build_flags END AS build_flags, s.operating_system, COALESCE(b.os_version, s.os_version) AS os_version, s.compiler, COALESCE(b.compiler_version, s.compiler_version) AS compiler_version, s.architecture, s.sys_notes_ts, s.sys_notes FROM buildsystems s, (SELECT DISTINCT ON (bs.sysname, bs.branch, bs.report_time) bs.sysname, bs.snapshot, bs.status, bs.stage, bs.branch, bs.build_flags, bs.conf_sum, bs.report_time, p.compiler_version, p.os_version FROM (build_status bs LEFT JOIN personality p ON (((p.name = bs.sysname) AND (p.effective_date <= bs.report_time)))) ORDER BY bs.sysname, bs.branch, bs.report_time, (p.effective_date IS NULL), p.effective_date DESC) b WHERE ((s.name = b.sysname) AND (s.status = 'approved'::text));
+
+
+ALTER TABLE public.allhist_summary OWNER TO pgbuildfarm;
+
+--
+-- Name: allhist_summary(timestamp without time zone); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION allhist_summary(ts timestamp without time zone) RETURNS SETOF allhist_summary
+    LANGUAGE sql
+    AS $_$
+
+ SELECT b.sysname, b.snapshot, b.status, b.stage, b.branch, 
+        CASE
+            WHEN b.conf_sum ~ 'use_vpath'::text AND b.conf_sum !~ '''use_vpath'' => undef'::text THEN b.build_flags || 'vpath'::text
+            ELSE b.build_flags
+        END AS build_flags, s.operating_system, COALESCE(b.os_version, s.os_version) AS os_version, s.compiler, COALESCE(b.compiler_version, s.compiler_version) AS compiler_version, s.architecture, s.sys_notes_ts, s.sys_notes
+   FROM buildsystems s, ( SELECT DISTINCT ON (bs.sysname, bs.branch, bs.report_time) bs.sysname, bs.snapshot, bs.status, bs.stage, bs.branch, bs.build_flags, bs.conf_sum, bs.report_time, p.compiler_version, p.os_version
+           FROM build_status bs
+      LEFT JOIN personality p ON p.name = bs.sysname AND p.effective_date <= bs.report_time
+      WHERE bs.snapshot > $1
+     ORDER BY bs.sysname, bs.branch, bs.report_time, p.effective_date IS NULL, p.effective_date DESC) b
+  WHERE s.name = b.sysname AND s.status = 'approved'::text
+
+
+$_$;
+
+
+ALTER FUNCTION public.allhist_summary(ts timestamp without time zone) OWNER TO pgbuildfarm;
+
 --
 -- Name: approve(text, text); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
 --
@@ -158,6 +263,17 @@ $_$;
 ALTER FUNCTION public.prevstat(text, text, timestamp without time zone) OWNER TO pgbuildfarm;
 
 --
+-- Name: purge_build_status_recent_500(); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION purge_build_status_recent_500() RETURNS void
+    LANGUAGE plpgsql
+    AS $$ begin delete from build_status_recent_500 b using (with x as (select sysname, snapshot, rank() over (partition by sysname, branch order by snapshot desc) as rank from build_status_recent_500) select * from x where rank > 500) o where o.sysname = b.sysname and o.snapshot = b.snapshot; end; $$;
+
+
+ALTER FUNCTION public.purge_build_status_recent_500() OWNER TO pgbuildfarm;
+
+--
 -- Name: script_version(text); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
 --
 
@@ -176,6 +292,17 @@ $_$;
 
 
 ALTER FUNCTION public.script_version(text) OWNER TO pgbuildfarm;
+
+--
+-- Name: set_build_status_recent_500(); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION set_build_status_recent_500() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$ begin insert into build_status_recent_500 (sysname, snapshot, status, stage, branch) values (new.sysname, new.snapshot, new.status, new.stage, new.branch); return new; end; $$;
+
+
+ALTER FUNCTION public.set_build_status_recent_500() OWNER TO pgbuildfarm;
 
 --
 -- Name: set_latest(); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
@@ -279,9 +406,7 @@ $_$;
 
 ALTER FUNCTION public.web_script_version(text) OWNER TO pgbuildfarm;
 
-SET default_tablespace = '';
-
-SET default_with_oids = true;
+SET default_with_oids = false;
 
 --
 -- Name: alerts; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
@@ -298,33 +423,6 @@ CREATE TABLE alerts (
 ALTER TABLE public.alerts OWNER TO pgbuildfarm;
 
 --
--- Name: build_status; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
---
-
-CREATE TABLE build_status (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    status integer,
-    stage text,
-    log text,
-    conf_sum text,
-    branch text,
-    changed_this_run text,
-    changed_since_success text,
-    log_archive bytea,
-    log_archive_filenames text[],
-    build_flags text[],
-    report_time timestamp with time zone DEFAULT ('now'::text)::timestamp(6) with time zone,
-    scm text,
-    scmurl text,
-    frozen_conf bytea,
-    git_head_ref text
-);
-
-
-ALTER TABLE public.build_status OWNER TO pgbuildfarm;
-
---
 -- Name: build_status_export; Type: VIEW; Schema: public; Owner: pgbuildfarm
 --
 
@@ -333,6 +431,8 @@ CREATE VIEW build_status_export AS
 
 
 ALTER TABLE public.build_status_export OWNER TO pgbuildfarm;
+
+SET default_with_oids = true;
 
 --
 -- Name: build_status_log; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
@@ -350,29 +450,23 @@ CREATE TABLE build_status_log (
 
 ALTER TABLE public.build_status_log OWNER TO pgbuildfarm;
 
+SET default_with_oids = false;
+
 --
--- Name: buildsystems; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
+-- Name: build_status_recent_500; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
 --
 
-CREATE TABLE buildsystems (
-    name text NOT NULL,
-    secret text NOT NULL,
-    operating_system text NOT NULL,
-    os_version text NOT NULL,
-    compiler text NOT NULL,
-    compiler_version text NOT NULL,
-    architecture text NOT NULL,
-    status text NOT NULL,
-    sys_owner text NOT NULL,
-    owner_email text NOT NULL,
-    status_ts timestamp without time zone DEFAULT (('now'::text)::timestamp(6) with time zone)::timestamp without time zone,
-    no_alerts boolean DEFAULT false,
-    sys_notes text,
-    sys_notes_ts timestamp with time zone
+CREATE TABLE build_status_recent_500 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    status integer,
+    stage text,
+    branch text,
+    report_time timestamp with time zone DEFAULT ('now'::text)::timestamp(6) with time zone
 );
 
 
-ALTER TABLE public.buildsystems OWNER TO pgbuildfarm;
+ALTER TABLE public.build_status_recent_500 OWNER TO pgbuildfarm;
 
 --
 -- Name: buildsystems_export; Type: VIEW; Schema: public; Owner: pgbuildfarm
@@ -383,6 +477,8 @@ CREATE VIEW buildsystems_export AS
 
 
 ALTER TABLE public.buildsystems_export OWNER TO pgbuildfarm;
+
+SET default_with_oids = true;
 
 --
 -- Name: dashboard_mat; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
@@ -401,7 +497,8 @@ CREATE TABLE dashboard_mat (
     compiler_version text,
     architecture text,
     sys_notes_ts timestamp with time zone,
-    sys_notes text
+    sys_notes text,
+    git_head_ref text
 );
 
 
@@ -421,25 +518,11 @@ CREATE TABLE latest_snapshot (
 ALTER TABLE public.latest_snapshot OWNER TO pgbuildfarm;
 
 --
--- Name: personality; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
---
-
-CREATE TABLE personality (
-    name text NOT NULL,
-    os_version text NOT NULL,
-    compiler_version text NOT NULL,
-    effective_date timestamp with time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL
-);
-
-
-ALTER TABLE public.personality OWNER TO pgbuildfarm;
-
---
 -- Name: dashboard_mat_data; Type: VIEW; Schema: public; Owner: pgbuildfarm
 --
 
 CREATE VIEW dashboard_mat_data AS
-    SELECT b.sysname, b.snapshot, b.status, b.stage, b.branch, CASE WHEN ((b.conf_sum ~ 'use_vpath'::text) AND (b.conf_sum !~ '''use_vpath'' => undef'::text)) THEN (b.build_flags || 'vpath'::text) ELSE b.build_flags END AS build_flags, s.operating_system, COALESCE(b.os_version, s.os_version) AS os_version, s.compiler, COALESCE(b.compiler_version, s.compiler_version) AS compiler_version, s.architecture, s.sys_notes_ts, s.sys_notes FROM buildsystems s, (SELECT DISTINCT ON (bs.sysname, bs.branch, bs.report_time) bs.sysname, bs.snapshot, bs.status, bs.stage, bs.branch, bs.build_flags, bs.conf_sum, bs.report_time, p.compiler_version, p.os_version FROM ((build_status bs NATURAL JOIN latest_snapshot m) LEFT JOIN personality p ON (((p.name = bs.sysname) AND (p.effective_date <= bs.report_time)))) WHERE (m.snapshot > (now() - '30 days'::interval)) ORDER BY bs.sysname, bs.branch, bs.report_time, (p.effective_date IS NULL), p.effective_date DESC) b WHERE ((s.name = b.sysname) AND (s.status = 'approved'::text));
+    SELECT b.sysname, b.snapshot, b.status, b.stage, b.branch, CASE WHEN ((b.conf_sum ~ 'use_vpath'::text) AND (b.conf_sum !~ '''use_vpath'' => undef'::text)) THEN (b.build_flags || 'vpath'::text) ELSE b.build_flags END AS build_flags, s.operating_system, COALESCE(b.os_version, s.os_version) AS os_version, s.compiler, COALESCE(b.compiler_version, s.compiler_version) AS compiler_version, s.architecture, s.sys_notes_ts, s.sys_notes, b.git_head_ref FROM buildsystems s, (SELECT DISTINCT ON (bs.sysname, bs.branch, bs.report_time) bs.sysname, bs.snapshot, bs.status, bs.stage, bs.branch, bs.build_flags, bs.conf_sum, bs.report_time, bs.git_head_ref, p.compiler_version, p.os_version FROM ((build_status bs NATURAL JOIN latest_snapshot m) LEFT JOIN personality p ON (((p.name = bs.sysname) AND (p.effective_date <= bs.report_time)))) WHERE (m.snapshot > (now() - '30 days'::interval)) ORDER BY bs.sysname, bs.branch, bs.report_time, (p.effective_date IS NULL), p.effective_date DESC) b WHERE ((s.name = b.sysname) AND (s.status = 'approved'::text));
 
 
 ALTER TABLE public.dashboard_mat_data OWNER TO pgbuildfarm;
@@ -465,18 +548,54 @@ CREATE TABLE list_subscriptions (
 
 ALTER TABLE public.list_subscriptions OWNER TO pgbuildfarm;
 
+SET default_with_oids = false;
+
 --
--- Name: penguin_save; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
+-- Name: nrecent_failures; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
 --
 
-CREATE TABLE penguin_save (
-    branch text,
-    snapshot timestamp without time zone,
-    stage text
+CREATE TABLE nrecent_failures (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text
 );
 
 
-ALTER TABLE public.penguin_save OWNER TO pgbuildfarm;
+ALTER TABLE public.nrecent_failures OWNER TO pgbuildfarm;
+
+--
+-- Name: long_term_fails; Type: VIEW; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE VIEW long_term_fails AS
+    WITH max_fail AS (SELECT nrecent_failures.sysname, nrecent_failures.branch, max(nrecent_failures.snapshot) AS snapshot FROM nrecent_failures WHERE (nrecent_failures.snapshot > (now() - '7 days'::interval)) GROUP BY nrecent_failures.sysname, nrecent_failures.branch), still_failing AS (SELECT m.sysname, m.branch, m.snapshot FROM max_fail m WHERE (NOT (EXISTS (SELECT 1 FROM dashboard_mat d WHERE (((d.sysname = m.sysname) AND (d.branch = m.branch)) AND (d.stage = 'OK'::text)))))), last_success AS (SELECT r.sysname, r.branch, max(r.snapshot) AS last_success FROM build_status_recent_500 r WHERE ((EXISTS (SELECT 1 FROM still_failing s WHERE ((r.sysname = s.sysname) AND (r.branch = s.branch)))) AND (r.stage = 'OK'::text)) GROUP BY r.sysname, r.branch) SELECT bs.sys_owner, bs.owner_email, sf.sysname, sf.branch, sf.snapshot, age(l.last_success) AS age_since_last_success FROM ((still_failing sf JOIN buildsystems bs ON ((bs.name = sf.sysname))) LEFT JOIN last_success l ON (((l.sysname = sf.sysname) AND (l.branch = sf.branch)))) WHERE ((l.last_success IS NULL) OR (l.last_success < (now() - '14 days'::interval))) ORDER BY sf.sysname, sf.branch;
+
+
+ALTER TABLE public.long_term_fails OWNER TO pgbuildfarm;
+
+--
+-- Name: notified_commits; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE TABLE notified_commits (
+    commit text NOT NULL,
+    notified timestamp with time zone NOT NULL,
+    committer_name text NOT NULL,
+    committer_email text NOT NULL
+);
+
+
+ALTER TABLE public.notified_commits OWNER TO pgbuildfarm;
+
+--
+-- Name: nrecent_failures_db_data; Type: VIEW; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE VIEW nrecent_failures_db_data AS
+    SELECT b.sysname, b.snapshot, b.status, b.stage, b.branch, CASE WHEN ((b.conf_sum ~ 'use_vpath'::text) AND (b.conf_sum !~ '''use_vpath'' => undef'::text)) THEN (b.build_flags || 'vpath'::text) ELSE b.build_flags END AS build_flags, s.operating_system, COALESCE(b.os_version, s.os_version) AS os_version, s.compiler, COALESCE(b.compiler_version, s.compiler_version) AS compiler_version, s.architecture, s.sys_notes_ts, s.sys_notes FROM buildsystems s, (SELECT DISTINCT ON (bs.sysname, bs.branch, bs.report_time) bs.sysname, bs.snapshot, bs.status, bs.stage, bs.branch, bs.build_flags, bs.conf_sum, bs.report_time, p.compiler_version, p.os_version FROM ((build_status bs NATURAL JOIN nrecent_failures m) LEFT JOIN personality p ON (((p.name = bs.sysname) AND (p.effective_date <= bs.report_time)))) WHERE (m.snapshot > (now() - '90 days'::interval)) ORDER BY bs.sysname, bs.branch, bs.report_time, (p.effective_date IS NULL), p.effective_date DESC) b WHERE ((s.name = b.sysname) AND (s.status = 'approved'::text));
+
+
+ALTER TABLE public.nrecent_failures_db_data OWNER TO pgbuildfarm;
 
 --
 -- Name: recent_failures; Type: VIEW; Schema: public; Owner: pgbuildfarm
@@ -533,6 +652,14 @@ ALTER TABLE ONLY build_status
 
 
 --
+-- Name: build_status_recent_500_pkey; Type: CONSTRAINT; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+ALTER TABLE ONLY build_status_recent_500
+    ADD CONSTRAINT build_status_recent_500_pkey PRIMARY KEY (sysname, snapshot);
+
+
+--
 -- Name: buildsystems_pkey; Type: CONSTRAINT; Schema: public; Owner: pgbuildfarm; Tablespace: 
 --
 
@@ -556,6 +683,22 @@ ALTER TABLE dashboard_mat CLUSTER ON dashboard_mat_pk;
 
 ALTER TABLE ONLY latest_snapshot
     ADD CONSTRAINT latest_snapshot_pkey PRIMARY KEY (sysname, branch);
+
+
+--
+-- Name: notified_commits_pkey; Type: CONSTRAINT; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+ALTER TABLE ONLY notified_commits
+    ADD CONSTRAINT notified_commits_pkey PRIMARY KEY (commit);
+
+
+--
+-- Name: nrecent_failures_pkey; Type: CONSTRAINT; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+ALTER TABLE ONLY nrecent_failures
+    ADD CONSTRAINT nrecent_failures_pkey PRIMARY KEY (sysname, snapshot);
 
 
 --
@@ -595,10 +738,59 @@ CREATE INDEX bs_sysname_branch_report_idx ON build_status USING btree (sysname, 
 
 
 --
+-- Name: bs_sysname_branch_snap_idx; Type: INDEX; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE INDEX bs_sysname_branch_snap_idx ON build_status USING btree (sysname, branch, snapshot DESC);
+
+
+--
+-- Name: bsr500_branch_snapshot_idx; Type: INDEX; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE INDEX bsr500_branch_snapshot_idx ON build_status_recent_500 USING btree (branch, snapshot);
+
+
+--
+-- Name: bsr500_sysname_branch_idx; Type: INDEX; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE INDEX bsr500_sysname_branch_idx ON build_status_recent_500 USING btree (sysname, branch);
+
+
+--
+-- Name: bsr500_sysname_branch_report_idx; Type: INDEX; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE INDEX bsr500_sysname_branch_report_idx ON build_status_recent_500 USING btree (sysname, branch, report_time);
+
+
+--
+-- Name: bsr500_sysname_branch_snap_idx; Type: INDEX; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE INDEX bsr500_sysname_branch_snap_idx ON build_status_recent_500 USING btree (sysname, branch, snapshot DESC);
+
+
+--
 -- Name: build_status_log_snapshot_idx; Type: INDEX; Schema: public; Owner: pgbuildfarm; Tablespace: 
 --
 
 CREATE INDEX build_status_log_snapshot_idx ON build_status_log USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_stage_idx; Type: INDEX; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE INDEX build_status_log_stage_idx ON build_status_log USING btree (log_stage);
+
+
+--
+-- Name: set_build_status_recent_500; Type: TRIGGER; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE TRIGGER set_build_status_recent_500 AFTER INSERT ON build_status FOR EACH ROW EXECUTE PROCEDURE set_build_status_recent_500();
 
 
 --
@@ -655,6 +847,38 @@ GRANT SELECT ON TABLE build_status TO rssfeed;
 
 
 --
+-- Name: buildsystems; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE buildsystems FROM PUBLIC;
+REVOKE ALL ON TABLE buildsystems FROM pgbuildfarm;
+GRANT ALL ON TABLE buildsystems TO pgbuildfarm;
+GRANT SELECT,INSERT,UPDATE ON TABLE buildsystems TO pgbfweb;
+GRANT SELECT ON TABLE buildsystems TO rssfeed;
+
+
+--
+-- Name: personality; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE personality FROM PUBLIC;
+REVOKE ALL ON TABLE personality FROM pgbuildfarm;
+GRANT ALL ON TABLE personality TO pgbuildfarm;
+GRANT SELECT,INSERT ON TABLE personality TO pgbfweb;
+GRANT SELECT ON TABLE personality TO rssfeed;
+
+
+--
+-- Name: allhist_summary; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE allhist_summary FROM PUBLIC;
+REVOKE ALL ON TABLE allhist_summary FROM pgbuildfarm;
+GRANT ALL ON TABLE allhist_summary TO pgbuildfarm;
+GRANT SELECT ON TABLE allhist_summary TO rssfeed;
+
+
+--
 -- Name: build_status_log; Type: ACL; Schema: public; Owner: pgbuildfarm
 --
 
@@ -666,14 +890,13 @@ GRANT SELECT ON TABLE build_status_log TO rssfeed;
 
 
 --
--- Name: buildsystems; Type: ACL; Schema: public; Owner: pgbuildfarm
+-- Name: build_status_recent_500; Type: ACL; Schema: public; Owner: pgbuildfarm
 --
 
-REVOKE ALL ON TABLE buildsystems FROM PUBLIC;
-REVOKE ALL ON TABLE buildsystems FROM pgbuildfarm;
-GRANT ALL ON TABLE buildsystems TO pgbuildfarm;
-GRANT SELECT,INSERT,UPDATE ON TABLE buildsystems TO pgbfweb;
-GRANT SELECT ON TABLE buildsystems TO rssfeed;
+REVOKE ALL ON TABLE build_status_recent_500 FROM PUBLIC;
+REVOKE ALL ON TABLE build_status_recent_500 FROM pgbuildfarm;
+GRANT ALL ON TABLE build_status_recent_500 TO pgbuildfarm;
+GRANT SELECT,INSERT ON TABLE build_status_recent_500 TO pgbfweb;
 
 
 --
@@ -697,17 +920,6 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE latest_snapshot TO pgbfweb;
 
 
 --
--- Name: personality; Type: ACL; Schema: public; Owner: pgbuildfarm
---
-
-REVOKE ALL ON TABLE personality FROM PUBLIC;
-REVOKE ALL ON TABLE personality FROM pgbuildfarm;
-GRANT ALL ON TABLE personality TO pgbuildfarm;
-GRANT SELECT,INSERT ON TABLE personality TO pgbfweb;
-GRANT SELECT ON TABLE personality TO rssfeed;
-
-
---
 -- Name: dashboard_mat_data; Type: ACL; Schema: public; Owner: pgbuildfarm
 --
 
@@ -715,6 +927,36 @@ REVOKE ALL ON TABLE dashboard_mat_data FROM PUBLIC;
 REVOKE ALL ON TABLE dashboard_mat_data FROM pgbuildfarm;
 GRANT ALL ON TABLE dashboard_mat_data TO pgbuildfarm;
 GRANT SELECT ON TABLE dashboard_mat_data TO pgbfweb;
+
+
+--
+-- Name: nrecent_failures; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE nrecent_failures FROM PUBLIC;
+REVOKE ALL ON TABLE nrecent_failures FROM pgbuildfarm;
+GRANT ALL ON TABLE nrecent_failures TO pgbuildfarm;
+GRANT SELECT,INSERT,DELETE ON TABLE nrecent_failures TO pgbfweb;
+
+
+--
+-- Name: notified_commits; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE notified_commits FROM PUBLIC;
+REVOKE ALL ON TABLE notified_commits FROM pgbuildfarm;
+GRANT ALL ON TABLE notified_commits TO pgbuildfarm;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE notified_commits TO pgbfweb;
+
+
+--
+-- Name: nrecent_failures_db_data; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE nrecent_failures_db_data FROM PUBLIC;
+REVOKE ALL ON TABLE nrecent_failures_db_data FROM pgbuildfarm;
+GRANT ALL ON TABLE nrecent_failures_db_data TO pgbuildfarm;
+GRANT SELECT ON TABLE nrecent_failures_db_data TO pgbfweb;
 
 
 --
