@@ -49,7 +49,7 @@ See accompanying License file for license details
     </tr>
 [% END %]
 <table border="0"> <tr>
-  [% FOREACH offset IN [0,1,2] %][% low = offset * statrows.size / 3 ; high = -1 + (offset + 1) * statrows.size / 3 %] 
+  [% FOREACH offset IN [0,1,2] ; LAST IF offset + 1 > statrows.size %][% low = offset * statrows.size / 3 ; high = -1 + (offset + 1) * statrows.size / 3 %] 
     [% TRY %][% PERL %] 
       use POSIX qw(floor); 
       $stash->set(low => floor($stash->get('low'))); 
