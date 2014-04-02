@@ -27,12 +27,19 @@ my $dbh = DBI->connect($dsn,$dbuser,$dbpass) or die("$dsn,$dbuser,$dbpass,$!");
 my %words;
 
 my $sql = q{
+    with snaps as (
     select sysname, max(snapshot) as snapshot 
     from build_status_log 
     where branch = 'HEAD' and 
         log_stage = 'typedefs.log' and 
         snapshot > current_date::timestamp - interval '30 days' 
     group by sysname
+    )
+    select snaps.sysname, snaps.snapshot , length(regexp_replace(log_text,'.','g')) as lines_found 
+    from build_status_log l
+       join snaps
+          on snaps.sysname = l.sysname and snaps.snapshot = l.snapshot
+    where log_stage = 'typedefs.log'
 };
 my $builds = $dbh->selectall_arrayref($sql, { Slice => {} });
 
@@ -42,11 +49,11 @@ if ($query->param('show_list'))
     print "Content-Type: text/html\n\n",
     "<head><title>Typedefs URLs</title></head>\n",
     "<body><h1>Typdefs URLs</h1>\n",
-    "<table border='1'><tr><th>member</th></tr>\n";
+    "<table border='1'><tr><th>member</th><th>lines</th></tr>\n";
 
     foreach my $build (@$builds)
     {
-	print "<tr><td><a href='http://www.pgbuildfarm.org/cgi-bin/show_stage_log.pl?nm=$build->{sysname}\&amp;dt=$build->{snapshot}\&amp;stg=typedefs'>$build->{sysname}</a></td></tr>\n";
+	print "<tr><td><a href='http://www.pgbuildfarm.org/cgi-bin/show_stage_log.pl?nm=$build->{sysname}\&amp;dt=$build->{snapshot}\&amp;stg=typedefs'>$build->{sysname}</a></td><td>$build->{lines_found}</td></tr>\n";
     }
     print "</table></body></html>\n";
     exit;
