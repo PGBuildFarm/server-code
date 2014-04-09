@@ -39,7 +39,7 @@ my $sql = q{
     from build_status_log l
        join snaps
           on snaps.sysname = l.sysname and snaps.snapshot = l.snapshot
-    where log_stage = 'typedefs.log'
+    where log_stage = 'typedefs.log'  and log_text !~ $$\Wstring\W$$
 };
 my $builds = $dbh->selectall_arrayref($sql, { Slice => {} });
 
