@@ -179,7 +179,21 @@ if ($calc_sig ne $sig && $calc_sig2 ne $sig)
 map {tr/$@/+=/; $_ = decode_base64($_); } 
     ($log, $conf,$changed_this_run,$changed_since_success,$log_archive, $frozen_sconf);
 
-if ($log =~/Last file mtime in snapshot: (.*)/)
+my $config_flags;
+my $client_conf;
+if ($frozen_sconf)
+{
+    $client_conf = thaw $frozen_sconf;
+}
+
+
+# CLOBBER_CACHE_RECURSIVELY can takes forever to run, so omit the snapshot
+# sanity check in such cases. Everything else needs to have been made with a
+# snapshot that is no more than 24 hours older than the last commit on the 
+# branch.
+
+if ($client_conf->{config_env}->{CPPFLAGS} !~ /CLOBBER_CACHE_RECURSIVELY/ &&
+	$log =~/Last file mtime in snapshot: (.*)/)
 {
     my $snaptime = parsedate($1);
     my $brch = $branch eq 'HEAD' ? 'master' : $branch;
@@ -227,13 +241,6 @@ if ($log_archive)
 	close $githead;
     }
     # unlink $archname;
-}
-
-my $config_flags;
-my $client_conf;
-if ($frozen_sconf)
-{
-    $client_conf = thaw $frozen_sconf;
 }
 
 if ($min_script_version)
