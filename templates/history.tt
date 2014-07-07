@@ -49,15 +49,16 @@ See accompanying License file for license details
     </tr>
 [% END %]
 <table border="0"> <tr>
-  [% FOREACH offset IN [0,1,2] ; LAST IF offset + 1 > statrows.size %][% low = offset * statrows.size / 3 ; high = -1 + (offset + 1) * statrows.size / 3 %] 
-    [% TRY %][% PERL %] 
-      use POSIX qw(floor); 
-      $stash->set(low => floor($stash->get('low'))); 
-      $stash->set(high => floor($stash->get('high'))); 
-    [% END %][% CATCH %]<!-- [% error.info %] --> [% END %]
+  [% colsize = statrows.size / 3 %]
+  [% TRY %][% PERL %] 
+      use POSIX qw(ceil);
+      $stash->set(colsize => ceil($stash->get('colsize'))); 
+	  $stash->set(colsize => 1) if $stash->get('colsize') < 1;
+  [% END %][% CATCH %]<!-- [% error.info %] --> [% END %]
+  [% low = 0; WHILE low < statrows.size ; high =  low + colsize - 1 ; IF high > statrows.max ; high = statrows.max ; END %] 
     <td><table cellspacing="0">
         [% FOREACH xrow IN statrows.slice(low,high) %][% PROCESS stdet row=xrow %][% END %]
     </table></td>
-  [% END %]
+  [% low = high + 1; END %]
 </table>
 [% END %]
