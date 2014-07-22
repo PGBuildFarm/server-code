@@ -132,24 +132,6 @@ if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time ) || (! $secret) )
     close(TX);
 }
 
-unless ($ts < time + 120)
-{
-    my $gmt = gmtime($ts);
-    print "Status: 491 bad ts parameter - $ts ($gmt GMT) is in the future.\n",
-    "Content-Type: text/plain\n\n bad ts parameter - $ts ($gmt GMT) is in the future\n";
-	$db->disconnect;
-    exit;
-}
-
-unless ($ts + 86400 > time)
-{
-    my $gmt = gmtime($ts);
-    print "Status: 491 bad ts parameter - $ts ($gmt GMT) is more than 24 hours ago.\n",
-     "Content-Type: text/plain\n\n bad ts parameter - $ts ($gmt GMT) is more than 24 hours ago.\n";
-    $db->disconnect;
-    exit;
-}
-
 unless ($secret)
 {
 	print 
@@ -186,6 +168,29 @@ if ($frozen_sconf)
     $client_conf = thaw $frozen_sconf;
 }
 
+# XXX TODO: check for clock skew using this
+my $client_now = $client_conf->{current_ts};
+$client_conf->{clock_skew} = time - $client_now;
+
+unless ($ts < time + 120)
+{
+    my $gmt = gmtime($ts);
+    print "Status: 491 bad ts parameter - $ts ($gmt GMT) is in the future.\n",
+    "Content-Type: text/plain\n\n bad ts parameter - $ts ($gmt GMT) is in the future\n";
+	$db->disconnect;
+    exit;
+}
+
+unless ($ts + 86400 > time || $client_conf->{config_env}->{CPPFLAGS} =~ /CLOBBER_CACHE_RECURSIVELY/ )
+{
+    my $gmt = gmtime($ts);
+    print "Status: 491 bad ts parameter - $ts ($gmt GMT) is more than 24 hours ago.\n",
+     "Content-Type: text/plain\n\n bad ts parameter - $ts ($gmt GMT) is more than 24 hours ago.\n";
+    $db->disconnect;
+    exit;
+}
+
+=comment
 
 # CLOBBER_CACHE_RECURSIVELY can takes forever to run, so omit the snapshot
 # sanity check in such cases. Everything else needs to have been made with a
@@ -207,6 +212,8 @@ if ($client_conf->{config_env}->{CPPFLAGS} !~ /CLOBBER_CACHE_RECURSIVELY/ &&
 	exit;	
     }
 }
+
+=cut
 
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($ts);
 $year += 1900; $mon +=1;
@@ -336,6 +343,7 @@ $sth->bind_param(1,$animal);
 $sth->bind_param(2,$dbdate);
 $sth->bind_param(3,$res & 0x8fffffff); # in case we get a 64 bit int status!
 $sth->bind_param(4,$stage);
+$log =~ s/\x00/\\0/g;
 $sth->bind_param(5,$log);
 $sth->bind_param(6,$conf);
 $sth->bind_param(7,$branch);
