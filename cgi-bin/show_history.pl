@@ -35,6 +35,7 @@ my $member = $query->param('nm'); $member =~ s/[^a-zA-Z0-9_ -]//g;
 my $branch = $query->param('br'); $branch =~ s/[^a-zA-Z0-9_ -]//g;
 my $hm = $query->param('hm');  $hm =~ s/[^a-zA-Z0-9_ -]//g;
 $hm = '240' unless $hm =~ /^\d+$/;
+$hm = '99999' unless $hm; 
 
 my $latest_personality = $db->selectrow_arrayref(q{
             select os_version, compiler_version
