@@ -39,6 +39,7 @@ my ($stage,$changed_this_run,$changed_since_success,$sysinfo,$branch,$scmurl);
 my $scm;
 my ($git_head_ref, $last_build_git_ref, $last_success_git_ref);
 my ($stage_times, $run_time);
+my $other_branches;
 
 use vars qw($info_row);
 
@@ -73,6 +74,15 @@ if ($system && $logdate)
                     from build_status
                     where sysname = ? and branch = ? and snapshot < ? and stage = 'OK')
 	};
+	my $other_branches_query = q{
+            select branch from (
+                select distinct branch
+                from build_status_recent_500
+                where sysname = ?
+                      and branch <> ? 
+                      and snapshot > now() at time zone 'GMT' - interval '30 days') q
+                 order by branch <> 'HEAD', branch desc
+        };
 	my $sth=$db->prepare($statement);
 	$sth->execute($system,$logdate);
 	my $row=$sth->fetchrow_arrayref;
@@ -158,6 +168,9 @@ if ($system && $logdate)
         };
 	($run_time) = $db->selectrow_array($stage_times_query,undef,
 				   $system,$logdate);
+
+	$other_branches = $db->selectcol_arrayref($other_branches_query, 
+						  undef, $system, $branch);
 	$db->disconnect;
 }
 
@@ -194,7 +207,7 @@ $template->process('log.tt',
 	    git_head_ref => $git_head_ref,
 	    last_build_git_ref => $last_build_git_ref,
 	    last_success_git_ref => $last_success_git_ref,
-
+	    other_branches => $other_branches,
 	});
 
 exit;

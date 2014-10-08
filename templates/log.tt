@@ -53,6 +53,17 @@ See accompanying License file for license details
         <td>[% info_row.owner_email %]</td>
     </tr>
   </table>
+[% IF other_branches %]
+    <br />
+    <table>
+      <tr>
+        <th class="head">Other branches</th>
+	[% FOREACH ob IN other_branches %]
+          <td><a href="/cgi-bin/show_history.pl?nm=[% system %]&amp;br=[% ob %]">[% ob %]</a></td>
+        [% END %]
+      </tr>
+    </table>
+[% END %]
 [% IF info_row.sys_notes %]
     <br />
     <table>
