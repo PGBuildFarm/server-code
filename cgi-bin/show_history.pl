@@ -67,6 +67,20 @@ my $statement = qq{
 }
 ;
 
+my $other_branches_query = q{
+            select branch from (
+                select distinct branch
+                from build_status_recent_500
+                where sysname = ?
+                      and branch <> ? 
+                      and snapshot > now() at time zone 'GMT' - interval '30 days') q
+                 order by branch <> 'HEAD', branch desc
+};
+
+my $other_branches = $db->selectcol_arrayref($other_branches_query, 
+						  undef, $member, $branch);
+
+
 my $sth = $db->prepare($systemdata);
 $sth->execute($member);
 my $sysrow = $sth->fetchrow_hashref;
@@ -99,7 +113,8 @@ $template->process('history.tt',
 		   {statrows=>$statrows, 
 		    branch=>$branch, 
 		    member => $member,
-		    hm => $hm
+		    hm => $hm,
+			other_branches => $other_branches,
 		    });
 
 exit;
