@@ -48,7 +48,7 @@ my $systemdata = q{
     select operating_system, os_version, compiler, compiler_version, architecture,
       owner_email, sys_notes_ts::date AS sys_notes_date, sys_notes
     from buildsystems b
-    where b.status = 'approved'
+    where true -- and b.status = 'approved'
         and name = ?
 };
 
