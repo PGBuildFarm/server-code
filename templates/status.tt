@@ -20,7 +20,7 @@ See accompanying License file for license details
      vpath => '/img/vpath.png',
      xml => '/img/xml.png',
      'thread-safety' => '/img/threads.gif',
-     'integer-datetimes' = '/img/days.png',
+     'disable-integer-datetimes' = '/img/days.png',
      }
 -%]
 [%- BLOCK img ; IF flag == 'depend' or flag == 'gnu-ld' ; ; ELSIF flag_imgs.$flag %]<img src="[% flag_imgs.$flag %]" title="[% flag %]" alt="[% flag %]" height="16" width="16" class="inline" align="bottom" />  [% ELSE %][%#
