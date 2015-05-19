@@ -57,6 +57,13 @@ my $changed_this_run = $query->param('changed_files');
 my $log_archive = $query->param('logtar');
 my $frozen_sconf = $query->param('frozen_sconf') || '';
 
+my $rawfilets = time;
+my $rawtxfile = "$buildlogs/$animal.$rawfilets";
+
+open(TX,">$rawtxfile");
+$query->save(\*TX);
+close(TX);
+
 my $brhandle;
 if (open($brhandle,"../htdocs/branches_of_interest.txt"))
 {
@@ -132,6 +139,8 @@ if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time ) || (! $secret) )
     close(TX);
 }
 
+unlink ($rawtxfile) if -e $rawtxfile;
+
 unless ($secret)
 {
 	print 
@@ -181,7 +190,7 @@ unless ($ts < time + 120)
     exit;
 }
 
-unless ($ts + 86400 > time || $client_conf->{config_env}->{CPPFLAGS} =~ /CLOBBER_CACHE_RECURSIVELY/ )
+unless ($ts + 86400 > time || $client_conf->{config_env}->{CPPFLAGS} =~ /CLOBBER_CACHE/ )
 {
     my $gmt = gmtime($ts);
     print "Status: 491 bad ts parameter - $ts ($gmt GMT) is more than 24 hours ago.\n",
@@ -269,7 +278,7 @@ if ($min_script_version)
 	}
 }
 
-if ($min_web_script_version)
+if (0 && $min_web_script_version)
 {
 	$client_conf->{web_script_version} ||= '0.0';
 	my $cli_ver = $client_conf->{web_script_version} ;
