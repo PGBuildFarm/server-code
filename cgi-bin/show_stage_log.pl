@@ -76,11 +76,22 @@ if ($system && $logdate && $stage)
     $sth->finish;
     $db->disconnect;
 
-    print "Content-Type: text/plain\n\nSnapshot: $logdate\n\n", $logtext,
+    print "Content-Type: text/plain\n\n";
 
-    "-------------------------------------------------\n\n",
-    "Hosting for the PostgreSQL Buildfarm is generously ",
-    "provided by: CommandPrompt, The PostgreSQL Company";
+    if ($stage ne 'typedefs')
+    {
+	print "Snapshot: $logdate\n\n";
+    }
+
+    print $logtext;
+
+    if ($stage ne 'typedefs')
+    {
+	print
+	    "-------------------------------------------------\n\n",
+	    "Hosting for the PostgreSQL Buildfarm is generously ",
+	    "provided by: CommandPrompt, The PostgreSQL Company";
+    }
 
 }
 

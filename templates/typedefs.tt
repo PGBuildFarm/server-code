@@ -1,0 +1,37 @@
+[%#
+
+Copyright (c) 2003-2010, Andrew Dunstan
+
+See accompanying License file for license details
+
+-%]
+[% WRAPPER 'page.tt' 
+    title = 'PostgreSQL BuildFarm Typedefs URLs'
+    bodyclass = 'none'
+    pagebutton = 'none'
+%]
+<h1>Typdefs URLs</h1>
+
+<h3>Consolidated by branch</h3>
+<table border='1'>
+  <tr><th>Branch</th></tr>
+  <tr><td><a href='/cgi-bin/typedefs.pl?branch=ALL'>ALL</a></td></tr>
+[% FOREACH branch IN branches %]
+  <tr><td><a href='/cgi-bin/typedefs.pl?branch=[% branch %]'>[% branch %]</a></td></tr>
+[% END %]
+</table>
+
+<br />
+<h3>Each contributing member</h3>
+<table border='1'>
+  <tr><th>Member and Snapshot</th><th>Branch</th><th>Lines</th></tr>
+[% FOREACH build IN builds %]
+  <tr>
+    <td><a href='http://www.pgbuildfarm.org/cgi-bin/show_stage_log.pl?nm=[% build.sysname %]&amp;dt=[% build.snapshot %]&amp;stg=typedefs'>[% build.sysname %] [% build.snapshot %]</a></td>
+    <td>[% build.branch %]</td>
+    <td>[% build.lines_found %]</td>
+  </tr>
+[% END %]
+</table>
+
+[% END %]
