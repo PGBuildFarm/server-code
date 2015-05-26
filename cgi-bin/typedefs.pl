@@ -25,7 +25,7 @@ my $show_list = $params{show_list};
 $show_list = 1 if exists $params{keywords} && $params{keywords} =~ /show_list/;
 my $branch = $query->param('branch'); $branch =~ s/[^a-zA-Z0-9_ -]//g if $branch;
 
-if (!$branch)
+if (!$branch || $branch eq 'master')
 {
     $branch='HEAD';
 }
