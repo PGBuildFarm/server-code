@@ -8,9 +8,13 @@ See accompanying License file for license details
 [% WRAPPER 'page.tt' 
     title = 'PostgreSQL BuildFarm Typedefs URLs'
     bodyclass = 'none'
-    pagebutton = 'none'
+    pagebutton = 'typedefs'
 %]
 <h1>Typdefs URLs</h1>
+
+<p>These URLs all return lists of typedefs suitable for using with pgindent.</p>
+<p>The first table shows lists of typedefs for each branch, as well as a grand consolidated list.</p>
+<p>The second table shows each of the lists that are used to construct the lists in the first table.</p>
 
 <h3>Consolidated by branch</h3>
 <table border='1'>
