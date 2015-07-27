@@ -15,7 +15,6 @@ use CGI;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir);
 
-
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $query = new CGI;
@@ -42,24 +41,29 @@ elsif ($sortby eq 'compiler')
 	$sort_clause = "lower(compiler), compiler_version,";
 }
 
+my $owner = $query->param('owner');
+
 my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0}) 
     or die("$dsn,$dbuser,$dbpass,$!");
 
-my $statement =<<EOS;
+my $statement =qq[
 
 
   select timezone('GMT'::text, now())::timestamp(0) without time zone - b.snapshot AS when_ago, b.*
   from dashboard_mat b
+        join buildsystems s 
+           on s.name = b.sysname 
+              and  case when \$1 ::text is null then true else s.owner_email = \$1 end
   order by branch = 'HEAD' desc,
         branch desc, $sort_clause 
-        snapshot desc
-
-EOS
+       snapshot desc
+]
 ;
 
 my $statrows=[];
 my $sth=$db->prepare($statement);
-$sth->execute;
+$sth->bind_param(1,$owner);
+$sth->execute();
 while (my $row = $sth->fetchrow_hashref)
 {
     next if (@members && ! grep {$_ eq $row->{sysname} } @members);
