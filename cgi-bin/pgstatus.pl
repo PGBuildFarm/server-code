@@ -505,7 +505,7 @@ if (ref $client_events)
     }
     if ($stage ne 'OK')
     {
-	$cbcc = $client_events->{all};
+	$cbcc = $client_events->{fail};
 	if (ref $cbcc)
 	{
 	    push @$bcc_stat, @$cbcc;
@@ -557,7 +557,14 @@ $from_addr =~ tr /\r\n//d;
 
 my $msg = new Mail::Send;
 
+$Data::Dumper::Indent = 0; # no indenting the lists at all
 
+open (my $maillog, ">>$buildlogs/mail");
+print $maillog "member $animal Branch $branch $stat_type $stage ($prev_stat)\n";
+print $maillog "mailto: @{[Dumper($mailto)]}\n";
+print $maillog "bcc_stat: @{[Dumper($bcc_stat)]}\n" if @$bcc_stat;
+close($maillog);
+  
 $msg->to(@$mailto);
 $msg->bcc(@$bcc_stat) if (@$bcc_stat);
 $msg->subject("PGBuildfarm member $animal Branch $branch $stat_type $stage");
@@ -588,6 +595,13 @@ exit if ($stage eq $prev_stat);
 $mailto = [@$change_stat];
 push(@$mailto,@$green_stat) if ($stage eq 'OK' || $prev_stat eq 'OK');
 
+{
+open (my $maillog, ">>$buildlogs/mail");
+print $maillog "mailto: @{[Dumper($mailto)]}\n";
+print $maillog "bcc_chg: @{[Dumper($bcc_chg)]}\n" if @$bcc_chg;
+close($maillog);
+}
+  
 $msg = new Mail::Send;
 
 
