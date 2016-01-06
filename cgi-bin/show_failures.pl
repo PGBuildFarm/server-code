@@ -19,13 +19,23 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir);
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $query = new CGI;
-my @members = grep {$_ ne "" } $query->param('member');
-map { s/[^a-zA-Z0-9_ -]//g; } @members;
-my $max_days =  $query->param('max_days') + 0 || 10;
-my @branches = grep {$_ ne "" } $query->param('branch');
+my @members; my @branches; my@stages;
+if ($CGI::VERSION < 4.08)
+{
+    @members = grep {$_ ne "" } $query->param('member');
+    @branches = grep {$_ ne "" } $query->param('branch');
+    @stages = grep {$_ ne "" } $query->param('stage');
+}
+else
+{
+    @members = grep {$_ ne "" } $query->multi_param('member');
+    @branches = grep {$_ ne "" } $query->multi_param('branch');
+    @stages = grep {$_ ne "" } $query->multi_param('stage');
+}
 map { s/[^a-zA-Z0-9_ -]//g; } @branches;
-my @stages = grep {$_ ne "" } $query->param('stage');
+map { s/[^a-zA-Z0-9_ -]//g; } @members;
 map { s/[^a-zA-Z0-9_ :-]//g; } @stages;
+my $max_days =  $query->param('max_days') + 0 || 10;
 
 my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;

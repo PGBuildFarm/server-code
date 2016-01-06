@@ -18,7 +18,16 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir);
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $query = new CGI;
-my @members = $query->param('member');
+my @members;
+if ($CGI::VERSION < 408 )
+{
+    @members = $query->param('member');
+}
+else
+{
+    @members = $query->multi_param('member');
+}
+
 map { s/[^a-zA-Z0-9_ -]//g; } @members;
 
 my $dsn="dbi:Pg:dbname=$dbname";
