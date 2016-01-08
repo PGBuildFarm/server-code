@@ -21,7 +21,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
 BEGIN { $server_time = time; }
 
 use CGI;
-use Digest::SHA1  qw(sha1_hex);
+use Digest::SHA  qw(sha1_hex);
 use MIME::Base64;
 use DBI;
 use DBD::Pg;
