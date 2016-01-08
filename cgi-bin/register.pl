@@ -18,6 +18,8 @@ use Captcha::reCAPTCHA;
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp 
 			$captcha_pubkey $captcha_privkey $template_dir $default_host);
 
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $dsn="dbi:Pg:dbname=$dbname";

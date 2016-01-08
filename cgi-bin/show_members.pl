@@ -15,6 +15,8 @@ use Template;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir $sort_by);
 
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 #require "BuildFarmWeb.pl";
 

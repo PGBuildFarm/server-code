@@ -16,6 +16,8 @@ use CGI;
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport 
 			$template_dir @log_file_names $local_git_clone);
 
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1};

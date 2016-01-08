@@ -17,6 +17,8 @@ use File::Temp qw(tempfile);
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport @log_file_names);
 
 
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 #require "BuildFarmWeb.pl";
 

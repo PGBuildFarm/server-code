@@ -30,6 +30,8 @@ use Mail::Send;
 use Time::ParseDate;
 use Storable qw(thaw);
 
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 my $buildlogs = "$ENV{BFConfDir}/buildlogs";
 

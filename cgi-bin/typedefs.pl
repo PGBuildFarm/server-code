@@ -20,6 +20,8 @@ my $query = new CGI;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir);
 
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my %params=$query->Vars;

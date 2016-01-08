@@ -13,6 +13,8 @@ use Template;
 use Captcha::reCAPTCHA;
 
 use vars qw( $template_dir $captcha_pubkey );
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 

@@ -33,6 +33,8 @@ my $content = "animal=$animal\&ts=$ts";
 $content .= "\&new_os=$os_version" if $os_version;
 $content .= "\&new_compiler=$compiler_version" if $compiler_version;
 
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 die "no dbname" unless $dbname;

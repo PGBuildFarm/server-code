@@ -12,6 +12,8 @@ use strict;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
 
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 use SOAP::Transport::HTTP;

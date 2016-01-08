@@ -29,6 +29,8 @@ my $sysnotes = $query->param('sysnotes');
 
 my $content = "animal=$animal\&sysnotes=$sysnotes";
 
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 die "no dbname" unless $dbname;
