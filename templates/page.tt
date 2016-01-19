@@ -38,12 +38,6 @@ See accompanying License file for license details
       <div class="main">
         [% content %]
       </div><!-- main -->
-      <hr />
-      <p style="text-align: center;">
-	Hosting for the PostgreSQL Buildfarm is generously 
-	provided by: 
-	<a href="http://www.commandprompt.com">CommandPrompt, The PostgreSQL Company</a>
-      </p>
     </div><!-- wrapper -->
   </body>
 </html>

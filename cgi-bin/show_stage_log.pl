@@ -87,14 +87,6 @@ if ($system && $logdate && $stage)
 
     print $logtext;
 
-    if ($stage ne 'typedefs')
-    {
-	print
-	    "-------------------------------------------------\n\n",
-	    "Hosting for the PostgreSQL Buildfarm is generously ",
-	    "provided by: CommandPrompt, The PostgreSQL Company";
-    }
-
 }
 
 else 
