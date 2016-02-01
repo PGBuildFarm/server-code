@@ -38,6 +38,7 @@ See accompanying License file for license details
       <div class="main">
         [% content %]
       </div><!-- main -->
+      <hr />
     </div><!-- wrapper -->
   </body>
 </html>
