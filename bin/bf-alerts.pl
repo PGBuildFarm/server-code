@@ -20,7 +20,7 @@ use Storable qw(thaw);
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport
        $all_stat $fail_stat $change_stat $green_stat
-       $default_host
+       $default_host $alerts_from
 );
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
@@ -205,7 +205,7 @@ $host = $default_host unless ($host =~ m/[.]/ || !defined($default_host));
 my $from_addr = "PG Build Farm <$me\@$host>";
 $from_addr =~ tr /\r\n//d;
 
-
+$from_addr = $alerts_from if $alerts_from;
 
 foreach my $clearme (@need_cleared)
 {

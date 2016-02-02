@@ -15,6 +15,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
        $server_time
 	   $min_script_version $min_web_script_version
        $default_host $local_git_clone
+	   $status_from
 );
 
 # force this before we do anything - even load modules
@@ -556,6 +557,8 @@ $host = $default_host unless ($host =~ m/[.]/ || !defined($default_host));
 
 my $from_addr = "PG Build Farm <$me\@$host>";
 $from_addr =~ tr /\r\n//d;
+
+$from_addr = $status_from if $status_from;
 
 my $msg = new Mail::Send;
 

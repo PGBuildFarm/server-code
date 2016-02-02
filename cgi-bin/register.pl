@@ -16,7 +16,8 @@ use Template;
 use Captcha::reCAPTCHA;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp 
-			$captcha_pubkey $captcha_privkey $template_dir $default_host);
+			$captcha_pubkey $captcha_privkey $template_dir $default_host
+		    $register_from);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
@@ -152,6 +153,8 @@ $host = $default_host unless ($host =~ m/[.]/ || !defined($default_host));
 
 my $from_addr = "PG Build Farm <$me\@$host>";
 $from_addr =~ tr /\r\n//d;
+
+$from_addr = $register_from if $register_from;
 
 $msg->set('From',$from_addr);
 

@@ -8,8 +8,6 @@ See accompanying License file for license details
 
 =cut 
 
-
-
 use vars 
     qw(
        $dbhost $dbname $dbuser $dbpass $dbport
@@ -18,6 +16,7 @@ use vars
        $captcha_pubkey $captcha_privkey
        $template_dir
        $default_host
+	   $status_from $register_from $reminders_from $alerts_from
        );
 
 my $base_install_dir = '/path/to/install/website';
@@ -34,6 +33,12 @@ $dbport = undef; # undef = default
 
 # addresses to email about new applications
 $notifyapp=[qw( someone@somewhere.com )];
+
+# from addresses for various mailings
+$register_from = undef;
+$alerts_from = undef;
+$status_from = undef;
+$reminders_from = undef;
 
 # addresses for mailing lists for status notifications
 
