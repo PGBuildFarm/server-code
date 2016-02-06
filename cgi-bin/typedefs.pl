@@ -55,11 +55,11 @@ my $sql = q{
         snapshot > current_date::timestamp - interval '30 days' 
     group by sysname, branch
     )
-    select snaps.sysname, snaps.branch, snaps.snapshot , length(regexp_replace(log_text,'.','g')) as lines_found 
+    select snaps.sysname, snaps.branch, snaps.snapshot , length(regexp_replace(log_text,'[^\n]','','g')) as lines_found 
     from build_status_log l
        join snaps
           on snaps.sysname = l.sysname and snaps.snapshot = l.snapshot
-    where log_stage = 'typedefs.log'  and log_text !~ $$\Wstring\W$$
+    where log_stage = 'typedefs.log'  and length(log_text) > 5000
     order by snaps.sysname, snaps.branch != 'HEAD', snaps.branch desc
 };
 my $builds = $dbh->selectall_arrayref($sql, { Slice => {} });
