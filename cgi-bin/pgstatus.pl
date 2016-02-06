@@ -542,6 +542,21 @@ if (ref $client_events)
 }
 
 
+# copied from http://www.perlmonks.org/?node_id=142710
+# not using Filter::Indent::HereDoc because the indented end token
+# seems to upset emacs
+
+sub unindent
+{
+    my ( $data, $whitespace ) = @_;
+    if ( ! defined $whitespace )
+    {
+        ( $whitespace ) = $data =~ /^(\s+)/;
+    }
+    $data =~ s/^$whitespace//mg;
+    $data;
+}
+
 my $url = $query->url(-base => 1);
 
 
@@ -560,82 +575,87 @@ $from_addr =~ tr /\r\n//d;
 
 $from_addr = $status_from if $status_from;
 
-my $msg = new Mail::Send;
+if (@$mailto or @$bcc_stat)
+{
+	my $msg = new Mail::Send;
 
-$Data::Dumper::Indent = 0; # no indenting the lists at all
+	$Data::Dumper::Indent = 0; # no indenting the lists at all
 
-open (my $maillog, ">>$buildlogs/mail");
-print $maillog "member $animal Branch $branch $stat_type $stage ($prev_stat)\n";
-print $maillog "mailto: @{[Dumper($mailto)]}\n";
-print $maillog "bcc_stat: @{[Dumper($bcc_stat)]}\n" if @$bcc_stat;
-close($maillog);
-  
-$msg->to(@$mailto);
-$msg->bcc(@$bcc_stat) if (@$bcc_stat);
-$msg->subject("PGBuildfarm member $animal Branch $branch $stat_type $stage");
-$msg->set('From',$from_addr);
-my $fh = $msg->open;
-print $fh <<EOMAIL; 
+	open (my $maillog, ">>$buildlogs/mail");
+	print $maillog "member $animal Branch $branch $stat_type $stage ($prev_stat)\n";
+	print $maillog "mailto: @{[Dumper($mailto)]}\n";
+	print $maillog "bcc_stat: @{[Dumper($bcc_stat)]}\n" if @$bcc_stat;
+	close($maillog);
 
+	$msg->to(@$mailto) if (@$mailto);
+	$msg->bcc(@$bcc_stat) if (@$bcc_stat);
+	$msg->subject("PGBuildfarm member $animal Branch $branch $stat_type $stage");
+	$msg->set('From',$from_addr);
+	my $fh = $msg->open;
+	print $fh unindent(<<EOMAIL);
 
-The PGBuildfarm member $animal had the following event on branch $branch:
+	The PGBuildfarm member $animal had the following event on branch $branch:
 
-$stat_type: $stage
+	$stat_type: $stage
 
-The snapshot timestamp for the build that triggered this notification is: $dbdate
+	The snapshot timestamp for the build that triggered this notification is: $dbdate
 
-The specs of this machine are:
-OS:  $os
-Arch: $arch
-Comp: $compiler
+	The specs of this machine are:
+	OS:  $os
+	Arch: $arch
+	Comp: $compiler
 
-For more information, see $url/cgi-bin/show_history.pl?nm=$animal&br=$branch
+	For more information, see $url/cgi-bin/show_history.pl?nm=$animal&br=$branch
 
 EOMAIL
 
-$fh->close;
+	$fh->close;
+}
 
 exit if ($stage eq $prev_stat);
 
 $mailto = [@$change_stat];
 push(@$mailto,@$green_stat) if ($stage eq 'OK' || $prev_stat eq 'OK');
 
+if (@$mailto or @$bcc_chg)
 {
-open (my $maillog, ">>$buildlogs/mail");
-print $maillog "mailto: @{[Dumper($mailto)]}\n";
-print $maillog "bcc_chg: @{[Dumper($bcc_chg)]}\n" if @$bcc_chg;
-close($maillog);
-}
-  
-$msg = new Mail::Send;
+	{
+	open (my $maillog, ">>$buildlogs/mail");
+	print $maillog "mailto: @{[Dumper($mailto)]}\n";
+	print $maillog "bcc_chg: @{[Dumper($bcc_chg)]}\n" if @$bcc_chg;
+	close($maillog);
+	}
+
+	my $msg = new Mail::Send;
 
 
-$msg->to(@$mailto);
-$msg->bcc(@$bcc_chg) if (@$bcc_chg);
+	$msg->to(@$mailto) if (@$mailto);
+	$msg->bcc(@$bcc_chg) if (@$bcc_chg);
 
-$stat_type = $prev_stat ne 'OK' ? "changed from $prev_stat failure to $stage" :
-    "changed from OK to $stage";
-$stat_type = "New member: $stage" if $prev_stat eq 'NEW';
-$stat_type .= " failure" if $stage ne 'OK';
+	$stat_type = $prev_stat ne 'OK' ? "changed from $prev_stat failure to $stage" :
+		"changed from OK to $stage";
+	$stat_type = "New member: $stage" if $prev_stat eq 'NEW';
+	$stat_type .= " failure" if $stage ne 'OK';
 
-$msg->subject("PGBuildfarm member $animal Branch $branch Status $stat_type");
-$msg->set('From',$from_addr);
-$fh = $msg->open;
-print $fh <<EOMAIL;
+	$msg->subject("PGBuildfarm member $animal Branch $branch Status $stat_type");
+	$msg->set('From',$from_addr);
+	my $fh = $msg->open;
+	print $fh unindent(<<EOMAIL);
 
-The PGBuildfarm member $animal had the following event on branch $branch:
+	The PGBuildfarm member $animal had the following event on branch $branch:
 
-Status $stat_type
+	Status $stat_type
 
-The snapshot timestamp for the build that triggered this notification is: $dbdate
+	The snapshot timestamp for the build that triggered this notification is: $dbdate
 
-The specs of this machine are:
-OS:  $os
-Arch: $arch
-Comp: $compiler
+	The specs of this machine are:
+	OS:  $os
+	Arch: $arch
+	Comp: $compiler
 
-For more information, see $url/cgi-bin/show_history.pl?nm=$animal&br=$branch
+	For more information, see $url/cgi-bin/show_history.pl?nm=$animal&br=$branch
 
 EOMAIL
 
-$fh->close;
+	$fh->close;
+}
