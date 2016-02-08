@@ -21,7 +21,7 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $query = new CGI;
 my @members;
-if ($CGI::VERSION < 408 )
+if ($CGI::VERSION < 4.08 )
 {
     @members = $query->param('member');
 }
