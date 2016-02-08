@@ -51,7 +51,7 @@ $from_addr = $reminders_from if $reminders_from;
 
 my $msg = new Mail::Send;
 $msg->set('From',$from_addr);
-$msg->to($notifyapp);
+$msg->to(@$notifyapp);
 $msg->subject("PGBuildfarm pending applications reminder");
 my $fh = $msg->open;
 
