@@ -160,7 +160,7 @@ $msg->set('From',$from_addr);
 
 $msg->to(@$notifyapp);
 $msg->subject('New Buildfarm Application');
-my $fh = $msg->open;
+my $fh = $msg->open("sendmail","-f $from_addr");
 print $fh "\n\nName: $dummyname\n",
     "OS: $os: $osv\n",
     "Arch: $arch\n",

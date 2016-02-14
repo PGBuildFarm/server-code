@@ -591,7 +591,7 @@ if (@$mailto or @$bcc_stat)
 	$msg->bcc(@$bcc_stat) if (@$bcc_stat);
 	$msg->subject("PGBuildfarm member $animal Branch $branch $stat_type $stage");
 	$msg->set('From',$from_addr);
-	my $fh = $msg->open;
+	my $fh = $msg->open("sendmail","-f $from_addr");
 	print $fh unindent(<<EOMAIL);
 
 	The PGBuildfarm member $animal had the following event on branch $branch:
@@ -639,7 +639,7 @@ if (@$mailto or @$bcc_chg)
 
 	$msg->subject("PGBuildfarm member $animal Branch $branch Status $stat_type");
 	$msg->set('From',$from_addr);
-	my $fh = $msg->open;
+	my $fh = $msg->open("sendmail","-f $from_addr");
 	print $fh unindent(<<EOMAIL);
 
 	The PGBuildfarm member $animal had the following event on branch $branch:

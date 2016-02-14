@@ -237,7 +237,7 @@ foreach my $clearme (@need_cleared)
 
     $msg->to($mailto);
     $msg->subject("PGBuildfarm member $animal Branch $branch Alert cleared");
-    my $fh = $msg->open;
+    my $fh = $msg->open("sendmail","-f $from_addr");
     print $fh "\n\n$text\n"; 
     $fh->close;
 
@@ -267,7 +267,7 @@ foreach my $needme (@need_alerts)
 
     $msg->subject("PGBuildfarm member $animal Branch $branch " .
 		  "Alert notification");
-    my $fh = $msg->open;
+    my $fh = $msg->open("sendmail","-f $from_addr");
     print $fh "\n\n$text\n"; 
     $fh->close;
 
@@ -276,6 +276,3 @@ foreach my $needme (@need_alerts)
 
 
 print "=================================\n";
-
-
-

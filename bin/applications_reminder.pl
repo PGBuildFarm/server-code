@@ -53,7 +53,7 @@ my $msg = new Mail::Send;
 $msg->set('From',$from_addr);
 $msg->to(@$notifyapp);
 $msg->subject("PGBuildfarm pending applications reminder");
-my $fh = $msg->open;
+my $fh = $msg->open("sendmail","-f $from_addr");
 
 print $fh "\nOutstanding buildfarm application(s) still pending: \n\n";
 foreach my $row (@$rows)
