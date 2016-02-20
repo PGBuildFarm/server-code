@@ -444,10 +444,10 @@ $sth->finish;
 
 my $det_st = <<EOS;
 
-          select operating_system|| ' / ' || os_version as os , 
-                 compiler || ' / ' || compiler_version as compiler, 
+          select operating_system, os_version,
+                 compiler, compiler_version,
                  architecture as arch
-          from buildsystems 
+          from buildsystems
           where status = 'approved'
                 and name = ?
 
@@ -456,8 +456,24 @@ EOS
 $sth=$db->prepare($det_st);
 $sth->execute($animal);
 $row=$sth->fetchrow_arrayref;
-my ($os, $compiler,$arch) = @$row;
 $sth->finish;
+
+my $latest_personality = $db->selectrow_arrayref(q{
+            select os_version, compiler_version
+            from personality
+            where name = ?
+            order by effective_date desc limit 1
+    }, undef, $animal);
+
+if ($latest_personality)
+{
+	$row->[1] = $latest_personality->[0];
+	$row->[3] = $latest_personality->[1];
+}
+
+my ($os, $compiler,$arch) = ("$row->[0] / $row->[1]",
+							 "$row->[2] / $row->[3]" ,
+							 $row->[4]);
 
 $db->begin_work;
 # prevent occasional duplication by forcing serialization of this operation
