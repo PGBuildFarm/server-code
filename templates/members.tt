@@ -41,11 +41,11 @@ See accompanying License file for license details
 [% END %]
     </td>
     <td>[% row.operating_system %]<br />[% row.os_version %]
-	[% prev_osver = row.osversion; 
+	[% prev_osver = row.os_version;
            FOREACH personality IN row.personalities;
 	   IF personality.os_version != prev_osver
          %]
-        <br / > w.e.f. [% personality.effective_date %]: [% personality.os_version %]
+        <br /> w.e.f. [% personality.effective_date %]: [% personality.os_version %]
         [% prev_osver = personality.os_version; END; END %]
     </td>
     <td>[% row.compiler %]<br />[% row.compiler_version %]
@@ -53,7 +53,7 @@ See accompanying License file for license details
 	   FOREACH personality IN row.personalities;
 	   IF personality.compiler_version != prev_compver
         %]
-        <br / > w.e.f. [% personality.effective_date %]: [% personality.compiler_version %]
+        <br /> w.e.f. [% personality.effective_date %]: [% personality.compiler_version %]
         [% prev_compver = personality.compiler_version; END; END %]
     </td>
     <td>[% row.arch %]</td>

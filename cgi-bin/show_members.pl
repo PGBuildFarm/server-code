@@ -49,7 +49,7 @@ my $statement = q{
 				where l.sysname = s.name
 				order by branch <> 'HEAD', branch desc 
 				) as branches, 
-			  ARRAY(select compiler_version || '\t' ||  os_version || '\t' || effective_date
+			  ARRAY(select compiler_version || E'\t' ||  os_version || E'\t' || effective_date
 				from personality p
 				where p.name = s.name 
 				order by effective_date
