@@ -10,7 +10,7 @@ See accompanying License file for license details
 
 use strict;
 
-use Digest::SHA1  qw(sha1_hex);
+use Digest::SHA  qw(sha1_hex);
 use MIME::Base64;
 use DBI;
 use DBD::Pg;
