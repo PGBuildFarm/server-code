@@ -29,7 +29,8 @@ use DBD::Pg;
 use Data::Dumper;
 use Mail::Send;
 use Time::ParseDate;
-use Storable qw(thaw);
+use Storable qw(nfreeze thaw);
+use JSON::PP;
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
@@ -177,6 +178,11 @@ my $config_flags;
 my $client_conf;
 if ($frozen_sconf)
 {
+	if ($frozen_sconf !~ /[[:cntrl:]]/)
+	{
+		# should be json, almost certainly not something frozen.
+		$frozen_sconf = nfreeze(decode_json($frozen_sconf))
+	}
     $client_conf = thaw $frozen_sconf;
 }
 
