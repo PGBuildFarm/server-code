@@ -35,8 +35,8 @@ sub wanted {
     my ($dev,$ino,$mode,$nlink,$uid,$gid);
 
     (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_)) &&
-#    (int(-M _) > 7) &&
-    ( -M _ > 0.05 ) && # 1.2 hours
+    (int(-M _) > 7) &&
+#    ( -M _ > 0.05 ) && # 1.2 hours
     -f _ &&
     push(@files,$name);
  
