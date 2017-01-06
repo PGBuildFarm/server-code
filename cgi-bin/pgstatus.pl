@@ -334,6 +334,31 @@ if (@config_flags)
 my $scm = $client_conf->{scm} || 'cvs';
 my $scmurl = $client_conf->{scm_url};
 
+# if it's a git failure, throttle it so we don't get failures too often
+
+if ($stage =~ /git/i)
+{
+	my $lsql =
+        q{select stage,
+                 extract(epoch from current_timestamp - report_time) as age,
+                 report_time
+          from build_status
+          where sysname = ? and branch = ?
+          order by report_time desc limit 1};
+
+	my $row = $db->selectrow_hashref($lsql,undef,$animal,$branch);
+	if (defined $row && ($row->{stage} eq $stage) && ($row->{age} < 3*3600))
+	{
+
+		print "Status: 494 Git failure too frequent\nContent-Type: text/plain\n\n";
+		print
+			"Frequent git failure reports are throttled\n",
+			"Please report again after 3 hours have elapsed since $row->{report_time}\n";
+		$db->disconnect;
+		exit;
+	}
+}
+
 my $logst = <<EOSQL;
     insert into build_status 
       (sysname, snapshot,status, stage, log,conf_sum, branch,
