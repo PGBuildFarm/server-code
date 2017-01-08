@@ -31,7 +31,7 @@ See accompanying License file for license details
   <tr><th>Member and Snapshot</th><th>Branch</th><th>Lines</th></tr>
 [% FOREACH build IN builds %]
   <tr>
-    <td><a href='http://www.pgbuildfarm.org/cgi-bin/show_stage_log.pl?nm=[% build.sysname %]&amp;dt=[% build.snapshot %]&amp;stg=typedefs'>[% build.sysname %] [% build.snapshot %]</a></td>
+    <td><a href='/cgi-bin/show_stage_log.pl?nm=[% build.sysname %]&amp;dt=[% build.snapshot %]&amp;stg=typedefs'>[% build.sysname %] [% build.snapshot %]</a></td>
     <td>[% build.branch %]</td>
     <td>[% build.lines_found %]</td>
   </tr>

@@ -32,6 +32,7 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $query = new CGI;
 my $pathinfo = $query->path_info();
+my $netloc = $query->url( -base => 1 );
 my ($junk,$branch,$member,$stage) = split(/\//, $pathinfo);
 map { s/[^a-zA-Z0-9_ -]//g; } ($branch,$member,$stage);
 
@@ -61,11 +62,11 @@ $row->{snapshot} =~ s/ /%20/g;
 
 if (!$stage)
 {	
-    print $query->redirect("http://www.pgbuildfarm.org/cgi-bin/show_log.pl?nm=$member&dt=$row->{snapshot}");
+    print $query->redirect("$netloc/cgi-bin/show_log.pl?nm=$member&dt=$row->{snapshot}");
 }
 else
 {
-    print $query->redirect("http://www.pgbuildfarm.org/cgi-bin/show_stage_log.pl?nm=$member&dt=$row->{snapshot}&stg=$stage");
+    print $query->redirect("$netloc/cgi-bin/show_stage_log.pl?nm=$member&dt=$row->{snapshot}&stg=$stage");
 }
 
 

@@ -11,8 +11,9 @@ See accompanying License file for license details
 use strict;
 use Template;
 use Captcha::reCAPTCHA;
+use CGI;
 
-use vars qw( $template_dir $captcha_pubkey );
+use vars qw( $template_dir $captcha_pubkey);
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
@@ -25,12 +26,10 @@ my $captcha = $c->get_html($captcha_pubkey);
 my $template_opts = { INCLUDE_PATH => $template_dir };
 my $template = new Template($template_opts);
 
+my $cgi = CGI->new();
 print "Content-Type: text/html\n\n";
 
 
-$template->process('register-form.tt',{captcha => $captcha});
-
-
-
+$template->process('register-form.tt',{captcha => $captcha, cgi => $cgi});
 
 

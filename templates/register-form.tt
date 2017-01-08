@@ -5,6 +5,9 @@ Copyright (c) 2003-2010, Andrew Dunstan
 See accompanying License file for license details
 
 -%]
+[%
+	baseurl = cgi.url( -base => 1)
+-%]
 [% WRAPPER 'page.tt' 
 	title = 'PostgreSQL BuildFarm Application'
 	bodyclass = 'application'
@@ -16,14 +19,14 @@ See accompanying License file for license details
 before submitting this form.</p>
 
 <ul>
-<li> your machine will need to be able to contact <a href="http://www.pgbuildfarm.org">http://www.pgbuildfarm.org</a>
+<li> your machine will need to be able to contact <a href="[% baseurl %]">[% baseurl %]</a>
      either directly or via proxy, and it will need access to a PostgreSQL Git repository, 
      either the one at postgresql.org or a mirror.</li>
 <li> have <a href="http://git-scm.org">git</a> installed.</li>
 <li> have a working Postgresql build environment for your platform.</li>
 <li> Windows only: you will need a native perl installed (and not just the one from the MSys DTK). The one from ActiveState works fine.</li>
 <li> download and unpack the latest release of client code from 
-     <a href="http://www.pgbuildfarm.org/downloads/">http://www.pgbuildfarm.org/downloads/</a></li>
+     <a href="[% baseurl %]/downloads/">[% baseurl %]/downloads/</a></li>
 <li> read instructions at 
      <a href="http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a></li>
 <li> get the software running locally using flags --force --nostatus --nosend</li>

@@ -8,11 +8,15 @@ See accompanying License file for license details
 
 =cut 
 
-use SOAP::Lite ;
+use SOAP::Lite;
+use CGI;
+
+my $query = new CGI;
+my $netloc = $query->url( -base => 1 );
 
 my $obj = SOAP::Lite
-    ->uri('http://www.pgbuildfarm.org/PGBuildFarm')
-    ->proxy('http://www.pgbuildfarm.org/cgi-bin/show_status_soap.pl')
+    ->uri("$netloc/PGBuildFarm")
+    ->proxy("$netloc/cgi-bin/show_status_soap.pl")
     ;
 
 my $data = $obj->get_status->result;
