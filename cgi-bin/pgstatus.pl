@@ -16,6 +16,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
 	   $min_script_version $min_web_script_version
        $default_host $local_git_clone
 	   $status_from
+	$status_url
 );
 
 # force this before we do anything - even load modules
@@ -604,7 +605,8 @@ sub unindent
     $data;
 }
 
-my $url = $query->url(-base => 1);
+my $url = $status_url;
+$url ||= $query->url(-base => 1);
 
 
 my $stat_type = $stage eq 'OK' ? 'Status' : 'Failed at Stage';

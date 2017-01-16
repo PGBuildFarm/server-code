@@ -16,8 +16,11 @@ use vars
        $captcha_pubkey $captcha_privkey
        $template_dir
        $default_host
-	   $status_from $register_from $reminders_from $alerts_from
+       $status_from $register_from $reminders_from $alerts_from
+       $status_url
        );
+
+$status_url = 'https://buildfarm.postgresql.org';
 
 my $base_install_dir = '/path/to/install/website';
 
