@@ -21,7 +21,7 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $c = Captcha::reCAPTCHA->new;
 
-my $captcha = $c->get_html($captcha_pubkey);
+my $captcha = $c->get_html($captcha_pubkey, undef, 1);
 
 my $template_opts = { INCLUDE_PATH => $template_dir };
 my $template = new Template($template_opts);
