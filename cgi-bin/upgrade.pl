@@ -6,7 +6,7 @@ Copyright (c) 2003-2010, Andrew Dunstan
 
 See accompanying License file for license details
 
-=cut 
+=cut
 
 use strict;
 
@@ -46,53 +46,47 @@ $dsn .= ";port=$dbport" if $dbport;
 
 unless ($animal && $ts && ($os_version || $compiler_version) && $sig)
 {
-	print 
-	    "Status: 490 bad parameters\nContent-Type: text/plain\n\n",
-	    "bad parameters for request\n";
-	exit;
-	
-}
+    print
+      "Status: 490 bad parameters\nContent-Type: text/plain\n\n",
+      "bad parameters for request\n";
+    exit;
 
+}
 
 my $db = DBI->connect($dsn,$dbuser,$dbpass);
 
 die $DBI::errstr unless $db;
 
 my $gethost=
-    "select secret from buildsystems where name = ? and status = 'approved'";
+  "select secret from buildsystems where name = ? and status = 'approved'";
 my $sth = $db->prepare($gethost);
 $sth->execute($animal);
 my ($secret)=$sth->fetchrow_array();
 $sth->finish;
 
-
 unless ($secret)
 {
-	print 
-	    "Status: 495 Unknown System\nContent-Type: text/plain\n\n",
-	    "System $animal is unknown\n";
-	$db->disconnect;
-	exit;
-	
+    print
+      "Status: 495 Unknown System\nContent-Type: text/plain\n\n",
+      "System $animal is unknown\n";
+    $db->disconnect;
+    exit;
+
 }
-
-
-
 
 my $calc_sig = sha1_hex($content,$secret);
 
 if ($calc_sig ne $sig)
 {
 
-	print "Status: 450 sig mismatch\nContent-Type: text/plain\n\n";
-	print "$sig mismatches $calc_sig on content:\n$content";
-	$db->disconnect;
-	exit;
+    print "Status: 450 sig mismatch\nContent-Type: text/plain\n\n";
+    print "$sig mismatches $calc_sig on content:\n$content";
+    $db->disconnect;
+    exit;
 }
 
 # undo escape-proofing of base64 data and decode it
-map {tr/$@/+=/; $_ = decode_base64($_); } 
-    ($os_version, $compiler_version);
+map {tr/$@/+=/; $_ = decode_base64($_); }($os_version, $compiler_version);
 
 my $get_latest = q{
 
@@ -113,16 +107,14 @@ $sth = $db->prepare($get_latest);
 my $rv = $sth->execute($animal);
 unless($rv)
 {
-	print "Status: 460 old data fetch\nContent-Type: text/plain\n\n";
-	print "error: ",$db->errstr,"\n";
-	$db->disconnect;
-	exit;
+    print "Status: 460 old data fetch\nContent-Type: text/plain\n\n";
+    print "error: ",$db->errstr,"\n";
+    $db->disconnect;
+    exit;
 }
 
 my ($old_os,$old_comp)=$sth->fetchrow_array();
 $sth->finish;
-
-
 
 $os_version ||= $old_os;
 $compiler_version ||= $old_comp;
@@ -132,28 +124,23 @@ my $new_personality = q{
     insert into personality (name, os_version, compiler_version)
 	values (?,?,?)
 
-}; 
-
+};
 
 $sth = $db->prepare($new_personality);
 $rv = $sth->execute($animal,$os_version, $compiler_version);
 
 unless($rv)
 {
-	print "Status: 470 new data insert\nContent-Type: text/plain\n\n";
-	print "error: $db->errstr\n";
-	$db->disconnect;
-	exit;
+    print "Status: 470 new data insert\nContent-Type: text/plain\n\n";
+    print "error: $db->errstr\n";
+    $db->disconnect;
+    exit;
 }
 
 $sth->finish;
-
-
 
 $db->disconnect;
 
 print "Content-Type: text/plain\n\n";
 print "request was on:\n$content\n";
-
-
 

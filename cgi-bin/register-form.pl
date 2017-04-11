@@ -6,7 +6,7 @@ Copyright (c) 2003-2010, Andrew Dunstan
 
 See accompanying License file for license details
 
-=cut 
+=cut
 
 use strict;
 use Template;
@@ -18,7 +18,6 @@ $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
-
 my $c = Captcha::reCAPTCHA->new;
 
 my $captcha = $c->get_html($captcha_pubkey, undef, 1);
@@ -29,7 +28,5 @@ my $template = new Template($template_opts);
 my $cgi = CGI->new();
 print "Content-Type: text/html\n\n";
 
-
 $template->process('register-form.tt',{captcha => $captcha, cgi => $cgi});
-
 

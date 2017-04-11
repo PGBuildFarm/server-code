@@ -6,15 +6,13 @@ Copyright (c) 2003-2010, Andrew Dunstan
 
 See accompanying License file for license details
 
-=cut 
+=cut
 
 use strict;
 use DBI;
 use CGI;
 use Data::Dumper;
 use Template;
-
-
 
 my $query = new CGI;
 
@@ -27,7 +25,8 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 my %params=$query->Vars;
 my $show_list = $params{show_list};
 $show_list = 1 if exists $params{keywords} && $params{keywords} =~ /show_list/;
-my $branch = $query->param('branch'); $branch =~ s/[^a-zA-Z0-9_ -]//g if $branch;
+my $branch = $query->param('branch');
+$branch =~ s/[^a-zA-Z0-9_ -]//g if $branch;
 
 if (!$branch || $branch eq 'master')
 {
@@ -37,7 +36,6 @@ elsif ($branch eq 'ALL')
 {
     $branch = undef;
 }
-    
 
 my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
@@ -49,13 +47,14 @@ my %words;
 
 my $sql = q{
     with snaps as (
-    select sysname, branch, max(snapshot) as snapshot 
-    from build_status_log 
-    where log_stage = 'typedefs.log' and 
-        snapshot > current_date::timestamp - interval '30 days' 
+    select sysname, branch, max(snapshot) as snapshot
+    from build_status_log
+    where log_stage = 'typedefs.log' and
+        snapshot > current_date::timestamp - interval '30 days'
     group by sysname, branch
     )
-    select snaps.sysname, snaps.branch, snaps.snapshot , length(regexp_replace(log_text,'[^\n]','','g')) as lines_found 
+    select snaps.sysname, snaps.branch, snaps.snapshot,
+        length(regexp_replace(log_text,'[^\n]','','g')) as lines_found
     from build_status_log l
        join snaps
           on snaps.sysname = l.sysname and snaps.snapshot = l.snapshot
@@ -66,7 +65,6 @@ my $builds = $dbh->selectall_arrayref($sql, { Slice => {} });
 my %branches;
 foreach my $build (@$builds) { $branches{$build->{branch}} = 1; }
 
-
 if (defined $show_list)
 {
 
@@ -75,14 +73,16 @@ if (defined $show_list)
 
     print "Content-Type: text/html\n\n";
 
-    my $sorter = sub { $a eq 'HEAD' ? -100 : ($b eq 'HEAD' ? 100 : $b cmp $a); };
+    my $sorter =
+      sub { $a eq 'HEAD' ? -100 : ($b eq 'HEAD' ? 100 : $b cmp $a); };
 
-    $template->process("typedefs.tt",
-		       {
-			   builds => $builds,
-			   branches => [ sort $sorter keys %branches ],
-		       }
-	);
+    $template->process(
+        "typedefs.tt",
+        {
+            builds => $builds,
+            branches => [ sort $sorter keys %branches ],
+        }
+    );
     exit;
 }
 
@@ -107,6 +107,6 @@ foreach my $build (@$builds)
 }
 
 print "Content-Type: text/plain\n\n",
-#  Dumper(\%params),
-    join("\n",sort keys %words),
-    "\n";
+
+  #  Dumper(\%params),
+  join("\n",sort keys %words),"\n";

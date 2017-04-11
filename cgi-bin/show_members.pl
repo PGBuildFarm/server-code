@@ -6,7 +6,7 @@ Copyright (c) 2003-2010, Andrew Dunstan
 
 See accompanying License file for license details
 
-=cut 
+=cut
 
 use strict;
 use CGI;
@@ -18,15 +18,19 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir $sort_by);
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
+
 #require "BuildFarmWeb.pl";
 
 my $query = new CGI;
-my %sort_ok = ('name' => 'lower(name)' , 
-	       'owner' => 'lower(owner_email)', 
-	       'os' => 'lower(operating_system), os_version', 
-	       'compiler' => 'lower(compiler), compiler_version' ,
-	       'arch' => 'lower(architecture)' );
-$sort_by = $query->param('sort_by');$sort_by =~ s/[^a-zA-Z0-9_ -]//g;
+my %sort_ok = (
+    'name' => 'lower(name)',
+    'owner' => 'lower(owner_email)',
+    'os' => 'lower(operating_system), os_version',
+    'compiler' => 'lower(compiler), compiler_version',
+    'arch' => 'lower(architecture)'
+);
+$sort_by = $query->param('sort_by');
+$sort_by =~ s/[^a-zA-Z0-9_ -]//g;
 $sort_by = $sort_ok{$sort_by} || $sort_ok{name};
 
 my $dsn="dbi:Pg:dbname=$dbname";
@@ -40,18 +44,19 @@ my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0});
 
 my $statement = q{
 
-  select name, operating_system, os_version, compiler, compiler_version, owner_email, 
-    sys_notes_ts::date AS sys_notes_date, sys_notes,
+  select name, operating_system, os_version, compiler, compiler_version,
+    owner_email, sys_notes_ts::date AS sys_notes_date, sys_notes,
     architecture as arch, ARRAY(
-				select branch || ':' || 
+				select branch || ':' ||
 				       extract(days from now() - l.snapshot)
-				from latest_snapshot l 
+				from latest_snapshot l
 				where l.sysname = s.name
-				order by branch <> 'HEAD', branch desc 
-				) as branches, 
-			  ARRAY(select compiler_version || E'\t' ||  os_version || E'\t' || effective_date
+				order by branch <> 'HEAD', branch desc
+				) as branches,
+			  ARRAY(select compiler_version || E'\t' ||  os_version ||
+                   E'\t' || effective_date
 				from personality p
-				where p.name = s.name 
+				where p.name = s.name
 				order by effective_date
 				) as personalities
   from buildsystems s
@@ -72,33 +77,38 @@ while (my $row = $sth->fetchrow_hashref)
     $row->{personalities} = [];
     foreach my $personality (@personalities)
     {
-	$personality =~ s/^"(.*)"$/$1/;
-	$personality =~ s/\\(.)/$1/g;
-	
-	my ($compiler_version, $os_version, $effective_date) = split(/\t/,$personality);
-	$effective_date =~ s/ .*//;
-	push(@{$row->{personalities}}, {compiler_version => $compiler_version, 
-					os_version => $os_version, 
-					effective_date => $effective_date });
+        $personality =~ s/^"(.*)"$/$1/;
+        $personality =~ s/\\(.)/$1/g;
+
+        my ($compiler_version, $os_version, $effective_date) =
+          split(/\t/,$personality);
+        $effective_date =~ s/ .*//;
+        push(
+            @{$row->{personalities}},
+            {
+                compiler_version => $compiler_version,
+                os_version => $os_version,
+                effective_date => $effective_date
+            }
+        );
     }
     $row->{owner_email} =~ s/\@/ [ a t ] /;
     push(@$statrows,$row);
 }
 $sth->finish;
 
-
 $db->disconnect;
 
-# use Data::Dumper; print "Content-Type: text/plain\n\n",Dumper($statrows),"VERSION: ",$DBD::Pg::VERSION,"\n"; exit;
-
+# use Data::Dumper;
+# print "Content-Type: text/plain\n\n",Dumper($statrows),"VERSION: ",
+# $DBD::Pg::VERSION,"\n"; exit;
 
 my $template_opts = { INCLUDE_PATH => $template_dir};
 my $template = new Template($template_opts);
 
 print "Content-Type: text/html\n\n";
 
-$template->process('members.tt',
-		{statrows=>$statrows});
+$template->process('members.tt',{statrows=>$statrows});
 
 exit;
 

@@ -6,7 +6,7 @@ Copyright (c) 2003-2010, Andrew Dunstan
 
 See accompanying License file for license details
 
-=cut 
+=cut
 
 use strict;
 use DBI;
@@ -36,40 +36,46 @@ my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-
 my $sort_clause = "";
 my $sortby = $query->param('sortby') || 'nosort';
 if ($sortby eq 'name')
 {
-	$sort_clause = 'lower(sysname),';
+    $sort_clause = 'lower(sysname),';
 }
 elsif ($sortby eq 'os')
 {
-	$sort_clause = 'lower(operating_system), os_version desc,'; 
+    $sort_clause = 'lower(operating_system), os_version desc,';
 }
 elsif ($sortby eq 'compiler')
 {
-	$sort_clause = "lower(compiler), compiler_version,";
+    $sort_clause = "lower(compiler), compiler_version,";
 }
 
 my $owner = $query->param('owner');
 
-my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0}) 
-    or die("$dsn,$dbuser,$dbpass,$!");
+my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0})
+  or die("$dsn,$dbuser,$dbpass,$!");
 
 my $statement =qq[
 
 
-  select timezone('GMT'::text, now())::timestamp(0) without time zone - b.snapshot AS when_ago, b.*
+  select timezone('GMT'::text, now())::timestamp(0) without time zone
+     - b.snapshot AS when_ago,
+     b.*
   from dashboard_mat b
-        join buildsystems s 
-           on s.name = b.sysname 
-              and  case when \$1 ::text is null then true else s.owner_email = \$1 end
+        join buildsystems s
+           on s.name = b.sysname
+              and case
+                     when \$1 ::text is null
+                       then true
+                     else
+                       s.owner_email = \$1
+                  end
   order by branch = 'HEAD' desc,
-        branch desc, $sort_clause 
+        branch desc, $sort_clause
        snapshot desc
 ]
-;
+  ;
 
 my $statrows=[];
 my $sth=$db->prepare($statement);
@@ -77,39 +83,38 @@ $sth->bind_param(1,$owner);
 $sth->execute();
 while (my $row = $sth->fetchrow_hashref)
 {
-    next if (@members && ! grep {$_ eq $row->{sysname} } @members);
+    next if (@members && !grep {$_ eq $row->{sysname} } @members);
     $row->{build_flags}  =~ s/^\{(.*)\}$/$1/;
     $row->{build_flags}  =~ s/,/ /g;
-	# enable-integer-datetimes is now the default
-	if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_3_STABLE')
-	{
-		$row->{build_flags} .= " --enable-integer-datetimes "
-			unless ($row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
-	}
-	# enable-thread-safety is now the default
-	if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_5_STABLE')
-	{
-		$row->{build_flags} .= " --enable-thread-safety "
-			unless ($row->{build_flags} =~ /--(en|dis)able-thread-safety/);
-	}
+
+    # enable-integer-datetimes is now the default
+    if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_3_STABLE')
+    {
+        $row->{build_flags} .= " --enable-integer-datetimes "
+          unless ($row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
+    }
+
+    # enable-thread-safety is now the default
+    if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_5_STABLE')
+    {
+        $row->{build_flags} .= " --enable-thread-safety "
+          unless ($row->{build_flags} =~ /--(en|dis)able-thread-safety/);
+    }
     $row->{build_flags}  =~ s/--((enable|with)-)?//g;
-	$row->{build_flags} =~ s/libxml/xml/;
+    $row->{build_flags} =~ s/libxml/xml/;
     $row->{build_flags}  =~ s/\S+=\S+//g;
     push(@$statrows,$row);
 }
 $sth->finish;
 
-
 $db->disconnect;
-
 
 my $template_opts = { INCLUDE_PATH => $template_dir };
 my $template = new Template($template_opts);
 
 print "Content-Type: text/html\n\n";
 
-$template->process('status.tt',
-		{statrows=>$statrows});
+$template->process('status.tt',{statrows=>$statrows});
 
 exit;
 

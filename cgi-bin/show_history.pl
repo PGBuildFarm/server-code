@@ -6,7 +6,7 @@ Copyright (c) 2003-2010, Andrew Dunstan
 
 See accompanying License file for license details
 
-=cut 
+=cut
 
 use strict;
 use DBI;
@@ -15,10 +15,10 @@ use CGI;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir);
 
-
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
+
 #require "BuildFarmWeb.pl";
 
 die "no dbname" unless $dbname;
@@ -33,55 +33,62 @@ my $db = DBI->connect($dsn,$dbuser,$dbpass);
 die $DBI::errstr unless $db;
 
 my $query = new CGI;
-my $member = $query->param('nm'); $member =~ s/[^a-zA-Z0-9_ -]//g;
-my $branch = $query->param('br'); $branch =~ s/[^a-zA-Z0-9_ -]//g;
-my $hm = $query->param('hm');  $hm =~ s/[^a-zA-Z0-9_ -]//g;
+my $member = $query->param('nm');
+$member =~ s/[^a-zA-Z0-9_ -]//g;
+my $branch = $query->param('br');
+$branch =~ s/[^a-zA-Z0-9_ -]//g;
+my $hm = $query->param('hm');
+$hm =~ s/[^a-zA-Z0-9_ -]//g;
 $hm = '240' unless $hm =~ /^\d+$/;
-$hm = '99999' unless $hm; 
+$hm = '99999' unless $hm;
 
-my $latest_personality = $db->selectrow_arrayref(q{
+my $latest_personality = $db->selectrow_arrayref(
+    q{
             select os_version, compiler_version
             from personality
             where name = ?
             order by effective_date desc limit 1
-	}, undef, $member);
+	}, undef, $member
+);
 
 my $systemdata = q{
-    select operating_system, os_version, compiler, compiler_version, architecture,
-      owner_email, sys_notes_ts::date AS sys_notes_date, sys_notes
+    select operating_system, os_version, compiler, compiler_version,
+      architecture, owner_email, sys_notes_ts::date AS sys_notes_date,
+      sys_notes
     from buildsystems b
     where true -- and b.status = 'approved'
         and name = ?
 };
 
 my $statement = qq{
-   with x as 
-   (  select * 
+   with x as
+   (  select *
       from build_status_recent_500
-      where sysname = ? 
+      where sysname = ?
          and branch = ?
-   ) 
-   select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago, 
-            sysname, snapshot, status, stage 
-   from x 
-   order by snapshot desc  
+   )
+   select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
+            sysname, snapshot, status, stage
+   from x
+   order by snapshot desc
    limit $hm
 }
-;
+  ;
 
 my $other_branches_query = q{
             select branch from (
                 select distinct branch
                 from build_status_recent_500
                 where sysname = ?
-                      and branch <> ? 
-                      and snapshot > now() at time zone 'GMT' - interval '30 days') q
+                      and branch <> ?
+                      and snapshot > now() at time zone 'GMT'
+                                     - interval '30 days'
+                 ) q
                  order by branch <> 'HEAD', branch desc
 };
 
-my $other_branches = $db->selectcol_arrayref($other_branches_query, 
-						  undef, $member, $branch);
-
+my $other_branches =
+  $db->selectcol_arrayref($other_branches_query,undef, $member, $branch);
 
 my $sth = $db->prepare($systemdata);
 $sth->execute($member);
@@ -96,8 +103,8 @@ while (my $row = $sth->fetchrow_hashref)
     $row->{owner_email} =~ s/\@/ [ a t ] /;
     if ($latest_personality)
     {
-	$row->{os_version} = $latest_personality->[0];
-	$row->{compiler_version} = $latest_personality->[1];
+        $row->{os_version} = $latest_personality->[0];
+        $row->{compiler_version} = $latest_personality->[1];
     }
     push(@$statrows,$row);
 }
@@ -111,12 +118,15 @@ my $template = new Template($template_opts);
 
 print "Content-Type: text/html\n\n";
 
-$template->process('history.tt',
-		   {statrows=>$statrows, 
-		    branch=>$branch, 
-		    member => $member,
-		    hm => $hm,
-			other_branches => $other_branches,
-		    });
+$template->process(
+    'history.tt',
+    {
+        statrows=>$statrows,
+        branch=>$branch,
+        member => $member,
+        hm => $hm,
+        other_branches => $other_branches,
+    }
+);
 
 exit;

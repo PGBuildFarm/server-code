@@ -25,7 +25,6 @@ use CGI;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir);
 
-
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
@@ -40,9 +39,8 @@ my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-
-my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0}) 
-    or die("$dsn,$dbuser,$dbpass,$!");
+my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0})
+  or die("$dsn,$dbuser,$dbpass,$!");
 
 my $statement =<<EOS;
 
@@ -52,7 +50,6 @@ my $statement =<<EOS;
   where branch = ? and sysname = ?
 
 EOS
-;
 
 my $row = $db->selectrow_hashref($statement,undef,$branch,$member);
 
@@ -61,14 +58,16 @@ $db->disconnect;
 $row->{snapshot} =~ s/ /%20/g;
 
 if (!$stage)
-{	
-    print $query->redirect("$netloc/cgi-bin/show_log.pl?nm=$member&dt=$row->{snapshot}");
+{
+    print $query->redirect(
+        "$netloc/cgi-bin/show_log.pl?nm=$member&dt=$row->{snapshot}");
 }
 else
 {
-    print $query->redirect("$netloc/cgi-bin/show_stage_log.pl?nm=$member&dt=$row->{snapshot}&stg=$stage");
+    print $query->redirect("$netloc/cgi-bin/show_stage_log.pl?"
+          . "nm=$member&dt=$row->{snapshot}&stg=$stage");
 }
 
-
-#print "\n\nbranch = $branch, member=$member, stage=$stage, ts=$row->{snapshot}\n";
+#print "\n\nbranch = $branch, member=$member, stage=$stage,
+# ts=$row->{snapshot}\n";
 #use Data::Dumper; print Dumper(\$row);
