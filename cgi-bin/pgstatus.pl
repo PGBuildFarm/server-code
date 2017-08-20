@@ -102,7 +102,7 @@ unless ($animal && $ts && $stage && $sig)
 
 }
 
-unless ($branch =~ /^(HEAD|REL\d+_\d+_STABLE)$/)
+unless ($branch =~ /^(HEAD|REL(\d+)?_\d+_STABLE)$/)
 {
     print
       "Status: 492 bad branch parameter $branch\nContent-Type: text/plain\n\n",
