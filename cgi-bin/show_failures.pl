@@ -61,7 +61,7 @@ my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0})
 
 my $get_all_branches = qq{
 
-  select distinct branch
+  select distinct branch COLLATE "C"
   from nrecent_failures
   where branch <> 'HEAD'
   order by branch COLLATE "C" desc

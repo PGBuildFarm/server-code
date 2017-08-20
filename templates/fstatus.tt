@@ -68,7 +68,7 @@ See accompanying License file for license details
 <select name="max_days">
 [% maxday_range = [ 3 .. 90 ] ; FOREACH maxdays IN maxday_range %]<option>[% maxdays %]</option>
 [% END %]
-</selecto</td><td>>
+</select></td><td>
 <select name="branch" multiple="multiple">
 <option value="">All</option>
 [% FOREACH sbranch IN all_branches %]<option>[% sbranch %]</option>
