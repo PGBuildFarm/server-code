@@ -51,7 +51,7 @@ my $statement = q{
 				       extract(days from now() - l.snapshot)
 				from latest_snapshot l
 				where l.sysname = s.name
-				order by branch <> 'HEAD', branch desc
+				order by branch <> 'HEAD', branch COLLATE "C" desc
 				) as branches,
 			  ARRAY(select compiler_version || E'\t' ||  os_version ||
                    E'\t' || effective_date

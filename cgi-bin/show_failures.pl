@@ -64,7 +64,7 @@ my $get_all_branches = qq{
   select distinct branch
   from nrecent_failures
   where branch <> 'HEAD'
-  order by branch desc
+  order by branch COLLATE "C" desc
 
 };
 
@@ -105,7 +105,7 @@ my $statement =<<EOS;
          < (? * interval '1 day')
   order by $presort_clause
         b.branch = 'HEAD' desc,
-        b.branch desc,
+        b.branch COLLATE "C" desc,
         $sort_clause
         b.snapshot desc
 

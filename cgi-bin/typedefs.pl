@@ -59,7 +59,7 @@ my $sql = q{
        join snaps
           on snaps.sysname = l.sysname and snaps.snapshot = l.snapshot
     where log_stage = 'typedefs.log'  and length(log_text) > 5000
-    order by snaps.sysname, snaps.branch != 'HEAD', snaps.branch desc
+    order by snaps.sysname, snaps.branch != 'HEAD', snaps.branch COLLATE "C" desc
 };
 my $builds = $dbh->selectall_arrayref($sql, { Slice => {} });
 my %branches;

@@ -72,7 +72,7 @@ my $statement =qq[
                        s.owner_email = \$1
                   end
   order by branch = 'HEAD' desc,
-        branch desc, $sort_clause
+        branch COLLATE "C" desc, $sort_clause
        snapshot desc
 ]
   ;
