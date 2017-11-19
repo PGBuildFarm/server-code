@@ -13,6 +13,14 @@ See accompanying License file for license details
 	bodyclass = 'application'
 	pagebutton = 'register'
 %]
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+     <script>
+	        function onSubmit(token) {
+  	           document.getElementById("register-form").submit();
+			}
+	 </script>
+
+
 <h1>Application to join PostgreSQL BuildFarm</h1>
 
 <p>Here is a short description of what is required to join the buildfarm successfully. Please read it carefully
@@ -41,7 +49,7 @@ before submitting this form.</p>
 <p>For Linux, please specify the name and version of the <b>Distribution</b> for the Operating Systems items. 
 Do not use the name "Linux". For example, for my test machine the Operating 
 Systems is "Fedora Core" and the version is "4".</p>
-<form method="post" action="/cgi-bin/register.pl">
+<form id="register-form" method="post" action="/cgi-bin/register2.pl">
 <table cellspacing="0">
 <tr>
   <th>Operating System</th>
@@ -72,10 +80,7 @@ Systems is "Fedora Core" and the version is "4".</p>
   <td><input type="text" name="email" value="" /></td>
 </tr>
 <tr>
-<th colspan="2">[% captcha %]</th>
-</tr>
-<tr>
-  <th class="submit" colspan="2"><input type="submit" /></th>
+  <th colspan="2"><button class="g-recaptcha" data-sitekey="[% captcha_publickey %]" data-callback='onSubmit'>Submit</button></th>
 </tr>
 </table>
 </form>
