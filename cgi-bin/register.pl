@@ -44,7 +44,14 @@ my $captcha = Captcha::reCAPTCHA::V2-> new;
 
 my $ok = $captcha->verify($captcha_invis_privkey, $response, $ENV{REMOTE_ADDR});
 
-unless ($ok)
+unless ($os
+		&& $osv
+		&& $comp
+		&& $compv
+		&& $arch
+		&& $email
+		&& $owner
+		&& $ok)
 {
     print "Content-Type: text/html\n\n";
     $template->process('register-incomplete.tt');
