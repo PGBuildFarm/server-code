@@ -19,6 +19,7 @@ See accompanying License file for license details
      tcl => '/img/tcl.png',
      vpath => '/img/vpath.png',
      xml => '/img/xml.png',
+	 llvm => '/img/llvm.png',
 	 'tap-tests' => '/img/tap.png',
      'thread-safety' => '/img/threads.gif',
      };
