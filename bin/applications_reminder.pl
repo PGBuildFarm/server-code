@@ -9,6 +9,7 @@ See accompanying License file for license details
 =cut 
 
 use strict;
+use warnings;
 
 use DBI;
 use DBD::Pg;
@@ -49,7 +50,7 @@ $from_addr =~ tr /\r\n//d;
 
 $from_addr = $reminders_from if $reminders_from;
 
-my $msg = new Mail::Send;
+my $msg = Mail::Send->new;
 $msg->set('From',$from_addr);
 $msg->to(@$notifyapp);
 $msg->subject("PGBuildfarm pending applications reminder");

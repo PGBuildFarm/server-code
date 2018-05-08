@@ -8,10 +8,13 @@ See accompanying License file for license details
 
 =cut
 
+use strict;
+use warnings;
+
 use SOAP::Lite;
 use CGI;
 
-my $query = new CGI;
+my $query = CGI->new;
 my $netloc = $query->url( -base => 1 );
 
 my $obj = SOAP::Lite->uri("$netloc/PGBuildFarm")

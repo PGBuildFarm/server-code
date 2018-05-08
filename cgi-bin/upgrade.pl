@@ -9,6 +9,7 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
 
 use CGI;
 use Digest::SHA  qw(sha1_hex);
@@ -19,7 +20,7 @@ use Data::Dumper;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
 
-my $query = new CGI;
+my $query = CGI->new;
 
 my $sig = $query->path_info;
 $sig =~ s!^/!!;
@@ -29,9 +30,9 @@ my $ts = $query->param('ts');
 my $os_version = $query->param('new_os');
 my $compiler_version = $query->param('new_compiler');
 
-my $content = "animal=$animal\&ts=$ts";
-$content .= "\&new_os=$os_version" if $os_version;
-$content .= "\&new_compiler=$compiler_version" if $compiler_version;
+my $content = "animal=$animal&ts=$ts";
+$content .= "&new_os=$os_version" if $os_version;
+$content .= "&new_compiler=$compiler_version" if $compiler_version;
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
@@ -86,7 +87,7 @@ if ($calc_sig ne $sig)
 }
 
 # undo escape-proofing of base64 data and decode it
-map {tr/$@/+=/; $_ = decode_base64($_); }($os_version, $compiler_version);
+do {tr/$@/+=/; $_ = decode_base64($_); } for ($os_version, $compiler_version);
 
 my $get_latest = q{
 

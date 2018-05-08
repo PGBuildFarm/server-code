@@ -19,6 +19,8 @@ foreach my $key (sort keys %ENV)
 =cut
 
 use strict;
+use warnings;
+
 use DBI;
 use Template;
 use CGI;
@@ -29,11 +31,11 @@ $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
-my $query = new CGI;
+my $query = CGI->new;
 my $pathinfo = $query->path_info();
 my $netloc = $query->url( -base => 1 );
 my ($junk,$branch,$member,$stage) = split(/\//, $pathinfo);
-map { s/[^a-zA-Z0-9_ -]//g; } ($branch,$member,$stage);
+do { s/[^a-zA-Z0-9_ -]//g; } foreach ($branch,$member,$stage);
 
 my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
@@ -42,7 +44,7 @@ $dsn .= ";port=$dbport" if $dbport;
 my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0})
   or die("$dsn,$dbuser,$dbpass,$!");
 
-my $statement =<<EOS;
+my $statement =<<"EOS";
 
 
   select b.*

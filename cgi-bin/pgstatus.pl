@@ -9,6 +9,7 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport
   $all_stat $fail_stat $change_stat $green_stat
@@ -45,7 +46,7 @@ my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-my $query = new CGI;
+my $query = CGI->new;
 
 my $sig = $query->path_info;
 $sig =~ s!^/!!;
@@ -65,12 +66,12 @@ my $frozen_sconf = $query->param('frozen_sconf') || '';
 my $rawfilets = time;
 my $rawtxfile = "$buildlogs/$animal.$rawfilets";
 
-open(TX,">$rawtxfile");
-$query->save(\*TX);
-close(TX);
+open(my $tx,">",$rawtxfile) || die "opening $rawtxfile";
+$query->save($tx);
+close($tx);
 
 my $brhandle;
-if (open($brhandle,"../htdocs/branches_of_interest.txt"))
+if (open($brhandle,"<","../htdocs/branches_of_interest.txt"))
 {
     my @branches_of_interest = <$brhandle>;
     close($brhandle);
@@ -132,17 +133,16 @@ my $date=
 
 if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time ) || (!$secret) )
 {
-    open(TX,">$buildlogs/$animal.$date");
-    print TX "sig=$sig\nlogtar-len=", length($log_archive),
+    open(my $tx,">","$buildlogs/$animal.$date") ||
+	  die "opening $buildlogs/$animal.$date";
+    print $tx "sig=$sig\nlogtar-len=", length($log_archive),
       "\nstatus=$res\nstage=$stage\nconf:\n$conf\n",
       "tsdiff:$tsdiff\n",
       "changed_this_run:\n$changed_this_run\n",
       "changed_since_success:\n$changed_since_success\n",
       "frozen_sconf:$frozen_sconf\n",
       "log:\n",$log;
-
-    #    $query->save(\*TX);
-    close(TX);
+    close($tx);
 }
 
 unlink($rawtxfile) if -e $rawtxfile;
@@ -170,7 +170,8 @@ if ($calc_sig ne $sig && $calc_sig2 ne $sig)
 }
 
 # undo escape-proofing of base64 data and decode it
-map {tr/$@/+=/; $_ = decode_base64($_); }(
+do  {tr/$@/+=/; $_ = decode_base64($_); }
+  foreach (
     $log, $conf,$changed_this_run,$changed_since_success,$log_archive,
     $frozen_sconf
 );
@@ -257,20 +258,21 @@ if ($log_archive)
 {
     my $log_handle;
     my $archname = "$buildlogs/tmp.$$.tgz";
-    open($log_handle,">$archname");
+    open($log_handle,">",$archname) || die "opening $archname";
     binmode $log_handle;
     print $log_handle $log_archive;
     close $log_handle;
     mkdir $dirname;
     @log_file_names = `tar -z -C $dirname -xvf $archname 2>/dev/null`;
-    map {s/\s+//g; } @log_file_names;
+    do {s/\s+//g; } foreach @log_file_names;
     my @qnames = grep { $_ ne 'githead.log' } @log_file_names;
-    map { $_ = qq("$_"); } @qnames;
+    do { $_ = qq("$_"); } foreach @qnames;
     $log_file_names = '{' . join(',',@qnames) . '}';
 
     if (-e "$dirname/githead.log" )
     {
-        open(my $githead,"$dirname/githead.log");
+        open(my $githead,"<","$dirname/githead.log")
+		  || die "opening $dirname/githead.log";
         $githeadref = <$githead>;
         chomp $githeadref;
         close $githead;
@@ -348,7 +350,7 @@ elsif (ref $client_conf->{config_opts} eq 'ARRAY' )
 if (@config_flags)
 {
     @config_flags = grep {!m/=/ } @config_flags;
-    map {s/\s+//g; $_=qq("$_"); } @config_flags;
+    do {s/\s+//g; $_=qq("$_"); } foreach @config_flags;
     push @config_flags,'git' if $client_conf->{scm} eq 'git';
     $config_flags = '{' . join(',',@config_flags) . '}';
 }
@@ -382,7 +384,7 @@ if ($stage =~ /git/i)
     }
 }
 
-my $logst = <<EOSQL;
+my $logst = <<"EOSQL";
     insert into build_status
       (sysname, snapshot,status, stage, log,conf_sum, branch,
        changed_this_run, changed_since_success,
@@ -446,7 +448,8 @@ if ($sqlres)
     {
         next if $log_file =~ /^githead/;
         my $handle;
-        open($handle,"$dirname/$log_file");
+        open($handle,"<","$dirname/$log_file") ||
+		  die "opening $dirname/$log_file";
         my $mtime = (stat $handle)[9];
         my $stage_interval = $mtime - $stage_start;
         $stage_start = $mtime;
@@ -474,7 +477,7 @@ if (!$sqlres)
 
 $db->commit;
 
-my $prevst = <<EOSQL;
+my $prevst = <<"EOSQL";
 
   select coalesce((select distinct on (snapshot) stage
                   from build_status
@@ -490,7 +493,7 @@ my $row=$sth->fetchrow_arrayref;
 my $prev_stat=$row->[0];
 $sth->finish;
 
-my $det_st = <<EOS;
+my $det_st = <<"EOS";
 
           select operating_system, os_version,
                  compiler, compiler_version,
@@ -561,11 +564,12 @@ my $client_events = $client_conf->{mail_events};
 if ($ENV{BF_DEBUG})
 {
     my $client_time = $client_conf->{current_ts};
-    open(TX,">>$buildlogs/$animal.$date");
-    print TX "\n",Dumper(\$client_conf),"\n";
-    print TX "server time: $server_time, client time: $client_time\n"
+    open(my $tx,">>","$buildlogs/$animal.$date") ||
+	  die "opening $buildlogs/$animal.$date";
+    print $tx "\n",Dumper(\$client_conf),"\n";
+    print $tx "server time: $server_time, client time: $client_time\n"
       if $client_time;
-    close(TX);
+    close($tx);
 }
 
 my $bcc_stat = [];
@@ -628,7 +632,7 @@ sub unindent
         ($whitespace) = $data =~ /^(\s+)/;
     }
     $data =~ s/^$whitespace//mg;
-    $data;
+    return $data;
 }
 
 my $url = $status_url;
@@ -653,11 +657,12 @@ $from_addr = $status_from if $status_from;
 
 if (@$mailto or @$bcc_stat)
 {
-    my $msg = new Mail::Send;
+    my $msg = Mail::Send->new;
 
     $Data::Dumper::Indent = 0; # no indenting the lists at all
 
-    open(my $maillog, ">>$buildlogs/mail");
+    open(my $maillog, ">>","$buildlogs/mail") ||
+	  die "opening $buildlogs/mail";
     print $maillog
       "member $animal Branch $branch $stat_type $stage ($prev_stat)\n";
     print $maillog "mailto: @{[Dumper($mailto)]}\n";
@@ -670,7 +675,7 @@ if (@$mailto or @$bcc_stat)
         "PGBuildfarm member $animal Branch $branch $stat_type $stage");
     $msg->set('From',$from_addr);
     my $fh = $msg->open("sendmail","-f $from_addr");
-    print $fh unindent(<<EOMAIL);
+    print $fh unindent(<<"EOMAIL");
 
 	The PGBuildfarm member $animal had the following event on branch $branch:
 
@@ -698,13 +703,14 @@ push(@$mailto,@$green_stat) if ($stage eq 'OK' || $prev_stat eq 'OK');
 if (@$mailto or @$bcc_chg)
 {
     {
-        open(my $maillog, ">>$buildlogs/mail");
+        open(my $maillog, ">>","$buildlogs/mail")
+		  || die "opening $buildlogs/mail";
         print $maillog "mailto: @{[Dumper($mailto)]}\n";
         print $maillog "bcc_chg: @{[Dumper($bcc_chg)]}\n" if @$bcc_chg;
         close($maillog);
     }
 
-    my $msg = new Mail::Send;
+    my $msg = Mail::Send->new;
 
     $msg->to(@$mailto) if (@$mailto);
     $msg->bcc(@$bcc_chg) if (@$bcc_chg);
@@ -720,7 +726,7 @@ if (@$mailto or @$bcc_chg)
         "PGBuildfarm member $animal Branch $branch Status $stat_type");
     $msg->set('From',$from_addr);
     my $fh = $msg->open("sendmail","-f $from_addr");
-    print $fh unindent(<<EOMAIL);
+    print $fh unindent(<<"EOMAIL");
 
 	The PGBuildfarm member $animal had the following event on branch $branch:
 

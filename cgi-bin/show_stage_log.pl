@@ -9,6 +9,8 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
+
 use DBI;
 use Template;
 use CGI;
@@ -29,7 +31,7 @@ my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-my $query = new CGI;
+my $query = CGI->new;
 
 my $system = $query->param('nm');
 $system =~ s/[^a-zA-Z0-9_ -]//g;

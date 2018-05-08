@@ -3,6 +3,8 @@
         if 0; #$running_under_some_shell
 
 use strict;
+use warnings;
+
 use File::Find ();
 
 # Set the variable $File::Find::dont_use_nlink if you're using AFS,
@@ -30,6 +32,7 @@ foreach my $fname (@files)
 
 exit;
 
+## no critic (ValuesAndExpressions::ProhibitFiletest_f)
 
 sub wanted {
     my ($dev,$ino,$mode,$nlink,$uid,$gid);
@@ -39,5 +42,5 @@ sub wanted {
 #    ( -M _ > 0.05 ) && # 1.2 hours
     -f _ &&
     push(@files,$name);
- 
+	return;
 }

@@ -6,7 +6,12 @@ Copyright (c) 2003-2010, Andrew Dunstan
 
 See accompanying License file for license details
 
-=cut 
+=cut
+
+## no critic (Modules::RequireExplicitPackage)
+
+use strict;
+use warnings;
 
 use vars 
     qw(
@@ -51,9 +56,11 @@ $change_stat=['foo-status-chngs@somewhere.org'];
 $green_stat=['foo-status-green@somewhere.org'];
 
 # minimum acceptable script versions
-
-$min_script_version = "99.99";
-$min_web_script_version = "99.99";
+{
+	no warnings qw(once);
+	$main::min_script_version = "99.99";
+	$main::min_web_script_version = "99.99";
+}
 
 # captcha keys for site
 $captcha_pubkey = 'foo';

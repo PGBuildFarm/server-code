@@ -9,6 +9,7 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
 
@@ -21,6 +22,8 @@ use SOAP::Transport::HTTP;
 SOAP::Transport::HTTP::CGI->dispatch_to('PGBuildFarm')->handle;
 
 exit;
+
+## no critic (ControlStructures::ProhibitUnreachableCode)
 
 package PGBuildFarm;
 
@@ -42,7 +45,7 @@ sub get_status
     # there is possibly some redundancy in this query, but it makes
     # a lot of the processing simpler.
 
-    my $statement =<<EOS;
+    my $statement =<<"EOS";
 
 
     select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,

@@ -9,12 +9,14 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
+
 use DBI;
 use CGI;
 use Data::Dumper;
 use Template;
 
-my $query = new CGI;
+my $query = CGI->new;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir);
 
@@ -69,7 +71,7 @@ if (defined $show_list)
 {
 
     my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1};
-    my $template = new Template($template_opts);
+    my $template = Template->new($template_opts);
 
     print "Content-Type: text/html\n\n";
 

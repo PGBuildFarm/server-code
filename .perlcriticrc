@@ -1,0 +1,134 @@
+
+# sev 5
+# tl;dr - return undef returns (undef) instead of () in list context
+# bare return returns undef in scalar context and () in list context
+# so use that instead
+# [-Subroutines::ProhibitExplicitReturnUndef]
+
+# legitimate uses of stringy eval are now marked with no critic
+#[-BuiltinFunctions::ProhibitStringyEval]
+
+# we're enforcing this now
+# [-InputOutput::ProhibitTwoArgOpen]
+
+# allow 'require "filename";'
+[-Modules::RequireBarewordIncludes]
+
+# sev 4
+
+# this one is silly and horribly named. Even if I have a local copy of the
+# value e.g. %ENV a later assignment of a value in there gets the error
+# so just disable.
+[-Variables::RequireLocalizedPunctuationVars]
+
+# allow 'no warnings qw(once)
+[TestingAndDebugging::ProhibitNoWarnings]
+allow = once
+
+# we enforce this one now too
+#[-Subroutines::RequireFinalReturn]
+
+# these two are pretty silly and I doubt we'll ever enforce them
+[-InputOutput::RequireBriefOpen]
+[-Subroutines::RequireArgUnpacking]
+
+# from perl-critic-more - don't require use of exceptions
+[-ErrorHandling::RequireUseOfExceptions ]
+
+# sev 3
+
+# server only - recheck this at some stage
+[-CodeLayout::ProhibitHardTabs ]
+
+# don't require all regexes to use /x
+[-RegularExpressions::RequireExtendedFormatting]
+
+# allow use of 'our' and 'use vars'
+[-Variables::ProhibitPackageVars]
+
+# allow 'die' and 'warn' instead of croak/carp
+[-ErrorHandling::RequireCarping]
+
+# it doesn't like our version strings, but they should really be fine
+[-ValuesAndExpressions::ProhibitComplexVersion]
+
+# allow capturing output from backticks
+[InputOutput::ProhibitBacktickOperators]
+only_in_void_context = 1
+
+# don't worry about large main sections
+[-Modules::ProhibitExcessMainComplexity]
+
+# ditto subroutines
+[-Subroutines::ProhibitExcessComplexity]
+
+# allow newlines in qq{}
+[-ValuesAndExpressions::ProhibitImplicitNewlines]
+
+# allow lots of elsif clauses
+[-ControlStructures::ProhibitCascadingIfElse]
+
+# allow negations in until and unless
+[-ControlStructures::ProhibitNegativeExpressionsInUnlessAndUntilConditions]
+
+# don't worry about this for now - possibly revisit later
+[-ErrorHandling::RequireCheckingReturnValueOfEval ]
+
+# allow multi-statement map blocks
+[-BuiltinFunctions::ProhibitComplexMappings]
+
+
+## Our aim is currently to comply down to sev 3.
+## Below are the policies that we don't comply with at levels 2 and 1.
+## In most cases we don't care and have no interest in complying.
+## Since we're not checking below 3 they are commented out for now.
+
+## sev 2
+#
+#[-RegularExpressions::RequireLineBoundaryMatching]
+#[-RegularExpressions::RequireDotMatchAnything]
+#[-ValuesAndExpressions::ProhibitMagicNumbers]
+#[-Documentation::RequirePodSections]
+#[-ValuesAndExpressions::ProhibitNoisyQuotes]
+#[-ValuesAndExpressions::ProhibitEmptyQuotes]
+#[-BuiltinFunctions::ProhibitBooleanGrep]
+#[-ControlStructures::ProhibitPostfixControls]
+#[-Variables::ProhibitPunctuationVars]
+#[-ControlStructures::ProhibitUnlessBlocks]
+#[-References::ProhibitDoubleSigils]
+#[-BuiltinFunctions::ProhibitUselessTopic]
+#[-Subroutines::ProhibitAmpersandSigils]
+#[-RegularExpressions::ProhibitFixedStringMatches]
+#
+## should probably fix these
+#[-InputOutput::RequireCheckedClose]
+#
+#
+
+# I'd like to be able to disable this on just the build-farm.conf.sample
+# but perlcritic doesn't provide a way to do that in the config file
+# and I'd rather not put the no critic annotation on line 1 which is
+# where it would have to go.
+#[-Modules::RequireVersionVar]
+
+
+## sev 1
+#
+#[-ValuesAndExpressions::RequireInterpolationOfMetachars]
+#
+## just might be worth looking at
+#[-ValuesAndExpressions::ProhibitInterpolationOfLiterals]
+#
+#[-RegularExpressions::ProhibitUnusualDelimiters]
+#[-Documentation::RequirePodAtEnd]
+#[-RegularExpressions::ProhibitEscapedMetacharacters]
+#[-CodeLayout::ProhibitParensWithBuiltins]
+#[-InputOutput::RequireBracedFileHandleWithPrint]
+#[-CodeLayout::RequireTrailingCommas]
+#[-NamingConventions::Capitalization]
+#[-RegularExpressions::ProhibitEnumeratedClasses]
+#[-RegularExpressions::RequireBracesForMultiline]
+#
+## check these too some time
+#[-InputOutput::RequireCheckedSyscalls]
+#

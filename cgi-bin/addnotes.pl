@@ -9,6 +9,7 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
 
 use CGI;
 use Digest::SHA  qw(sha1_hex);
@@ -19,7 +20,7 @@ use Data::Dumper;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
 
-my $query = new CGI;
+my $query = CGI->new;
 
 my $sig = $query->path_info;
 $sig =~ s!^/!!;
@@ -27,7 +28,7 @@ $sig =~ s!^/!!;
 my $animal = $query->param('animal');
 my $sysnotes = $query->param('sysnotes');
 
-my $content = "animal=$animal\&sysnotes=$sysnotes";
+my $content = "animal=$animal&sysnotes=$sysnotes";
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
@@ -82,7 +83,7 @@ if ($calc_sig ne $sig)
 }
 
 # undo escape-proofing of base64 data and decode it
-map {tr/$@/+=/; $_ = decode_base64($_); }($sysnotes);
+do {tr/$@/+=/; $_ = decode_base64($_); } for ($sysnotes);
 
 my  $set_notes = q{
 

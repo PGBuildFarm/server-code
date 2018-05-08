@@ -9,6 +9,8 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
+
 use DBI;
 use Template;
 use CGI;
@@ -21,7 +23,7 @@ $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1};
-my $template = new Template($template_opts);
+my $template = Template->new($template_opts);
 
 die "no dbname" unless $dbname;
 die "no dbuser" unless $dbuser;
@@ -30,7 +32,7 @@ my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-my $query = new CGI;
+my $query = CGI->new;
 
 my $system = $query->param('nm');
 $system =~ s/[^a-zA-Z0-9_ -]//g;
@@ -39,7 +41,7 @@ $logdate =~ s/[^a-zA-Z0-9_ :-]//g;
 
 my $log = "";
 my $conf = "";
-my ($stage,$changed_this_run,$changed_since_success,$sysinfo,$branch,$scmurl);
+my ($stage,$changed_this_run,$changed_since_success,$branch,$scmurl);
 my $scm;
 my ($git_head_ref, $last_build_git_ref, $last_success_git_ref);
 my ($stage_times, $run_time);
@@ -237,7 +239,9 @@ sub process_changed
     my $gitcmd = "TZ=UTC GIT_DIR=$local_git_clone git log --date=local";
     foreach (@lines)
     {
-        next if ($scm eq 'cvs' and !m!^(pgsql|master|REL\d_\d_STABLE)/!);
+		## no critic (RegularExpressions::ProhibitCaptureWithoutTest)
+		## no critic (RegularExpressions::ProhibitUnusedCapture)
+        next if ($scm eq 'cvs' and (!m!^(pgsql|master|REL\d_\d_STABLE)/!));
         push(@changed_rows,[$1,$3]) if (m!(^\S+)(\s+)(\S+)!);
         $commits{$3} = 1 if $scm eq 'git';
     }

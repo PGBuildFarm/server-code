@@ -9,6 +9,8 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
+
 use DBI;
 use Template;
 use CGI;
@@ -32,7 +34,7 @@ my $db = DBI->connect($dsn,$dbuser,$dbpass);
 
 die $DBI::errstr unless $db;
 
-my $query = new CGI;
+my $query = CGI->new;
 my $member = $query->param('nm');
 $member =~ s/[^a-zA-Z0-9_ -]//g;
 my $branch = $query->param('br');
@@ -114,7 +116,7 @@ $sth->finish;
 $db->disconnect;
 
 my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1 };
-my $template = new Template($template_opts);
+my $template = Template->new($template_opts);
 
 print "Content-Type: text/html\n\n";
 

@@ -9,6 +9,8 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
+
 use DBI;
 use Template;
 use CGI;
@@ -30,8 +32,8 @@ $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
 my $template_opts = { INCLUDE_PATH => $template_dir};
-my $template = new Template($template_opts);
-my $query = new CGI;
+my $template = Template->new($template_opts);
+my $query = CGI->new;
 
 my $params = $query->Vars;
 
@@ -73,7 +75,7 @@ foreach (9..32)
 
 my $db = DBI->connect($dsn,$dbuser,$dbpass);
 
-my $statement = <<EOS;
+my $statement = <<"EOS";
 
   insert into buildsystems
     (name, secret, operating_system, os_version, compiler, compiler_version,
@@ -96,7 +98,7 @@ $db->disconnect;
 
 use Mail::Send;
 
-my $msg = new Mail::Send;
+my $msg = Mail::Send->new;
 
 my $me = `id -un`;
 chomp($me);

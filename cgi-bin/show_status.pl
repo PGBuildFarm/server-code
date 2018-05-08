@@ -9,6 +9,8 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
+
 use DBI;
 use Template;
 use CGI;
@@ -19,7 +21,7 @@ $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
-my $query = new CGI;
+my $query = CGI->new;
 my @members;
 if ($CGI::VERSION < 4.08 )
 {
@@ -30,7 +32,7 @@ else
     @members = $query->multi_param('member');
 }
 
-map { s/[^a-zA-Z0-9_ -]//g; } @members;
+do { s/[^a-zA-Z0-9_ -]//g; } foreach @members;
 
 my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
@@ -111,7 +113,7 @@ $sth->finish;
 $db->disconnect;
 
 my $template_opts = { INCLUDE_PATH => $template_dir };
-my $template = new Template($template_opts);
+my $template = Template->new($template_opts);
 
 print "Content-Type: text/html\n\n";
 

@@ -9,6 +9,8 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
+
 use DBI;
 use Template;
 use CGI;
@@ -19,7 +21,7 @@ $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
-my $query = new CGI;
+my $query = CGI->new;
 my @members;
 my @branches;
 my@stages;
@@ -35,9 +37,9 @@ else
     @branches = grep {$_ ne "" } $query->multi_param('branch');
     @stages = grep {$_ ne "" } $query->multi_param('stage');
 }
-map { s/[^a-zA-Z0-9_ -]//g; } @branches;
-map { s/[^a-zA-Z0-9_ -]//g; } @members;
-map { s/[^a-zA-Z0-9_ :-]//g; } @stages;
+do { s/[^a-zA-Z0-9_ -]//g; } foreach @branches;
+do { s/[^a-zA-Z0-9_ -]//g; } foreach @members;
+do { s/[^a-zA-Z0-9_ :-]//g; } foreach @stages;
 my $max_days =  $query->param('max_days') + 0 || 10;
 
 my $dsn="dbi:Pg:dbname=$dbname";
@@ -91,7 +93,7 @@ my $get_all_stages = qq{
 
 my $all_stages = $db->selectcol_arrayref($get_all_stages);
 
-my $statement =<<EOS;
+my $statement =<<"EOS";
 
 
   select timezone('GMT'::text,
@@ -146,7 +148,7 @@ $sth->finish;
 $db->disconnect;
 
 my $template_opts = { INCLUDE_PATH => $template_dir };
-my $template = new Template($template_opts);
+my $template = Template->new($template_opts);
 
 print "Content-Type: text/html\n\n";
 

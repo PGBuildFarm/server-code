@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
+
 print "Content-Type: text/plain\n\n";
 
 print "Conf: $ENV{BFConfDir}\n";

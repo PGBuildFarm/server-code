@@ -9,6 +9,7 @@ See accompanying License file for license details
 =cut 
 
 use strict;
+use warnings;
 
 use Digest::SHA  qw(sha1_hex);
 use MIME::Base64;
@@ -223,7 +224,7 @@ foreach my $clearme (@need_cleared)
 	$text = "$sysbranch->{sysname} has lost alarm settings on branch: " .
 	    "$sysbranch->{branch}. Resetting alarm to off.";
     }
-    my $msg = new Mail::Send;
+    my $msg = Mail::Send->new;
 
     $msg->set('From',$from_addr);
 
@@ -251,7 +252,7 @@ foreach my $needme (@need_alerts)
     my $hours = sprintf("%.2f",($now - $sysbranch->{snapshot}) / 3600);
     my $text = "$sysbranch->{sysname} has not reported " .
 	"on $sysbranch->{branch} for $hours hours.";
-    my $msg = new Mail::Send;
+    my $msg = Mail::Send->new;
 
     $msg->set('From',$from_addr);
 

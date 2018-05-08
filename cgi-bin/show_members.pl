@@ -9,6 +9,8 @@ See accompanying License file for license details
 =cut
 
 use strict;
+use warnings;
+
 use CGI;
 use DBI;
 use Template;
@@ -21,7 +23,7 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 #require "BuildFarmWeb.pl";
 
-my $query = new CGI;
+my $query = CGI->new;
 my %sort_ok = (
     'name' => 'lower(name)',
     'owner' => 'lower(owner_email)',
@@ -104,7 +106,7 @@ $db->disconnect;
 # $DBD::Pg::VERSION,"\n"; exit;
 
 my $template_opts = { INCLUDE_PATH => $template_dir};
-my $template = new Template($template_opts);
+my $template = Template->new($template_opts);
 
 print "Content-Type: text/html\n\n";
 
