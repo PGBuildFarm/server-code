@@ -1,0 +1,57 @@
+User pgbuildfarm-web
+Group pgbuildfarm
+#FastCgiServer /home/pgbuildfarm/website/bfrest/script/bfrest_fastcgi.pl -processes 3 -user pgbuildfarm-web -group pgbuildfarm-web -initial-env BFConfDir=/home/pgbuildfarm/website
+<VirtualHost *:80>
+	     DocumentRoot "/home/pgbuildfarm/website/htdocs"
+	     ScriptAlias /cgi-bin "/home/pgbuildfarm/website/cgi-bin"
+		<Directory /home/pgbuildfarm/website/bfrest/script/>
+#			SetHandler fcgid-script
+			Options +ExecCGI
+		</Directory>
+		<Directory /home/pgbuildfarm/website/htdocs/downloads/releases/pgfoundry-archive/pgfoundry.org>
+			ForceType text/html
+		</Directory>
+		<Directory /home/pgbuildfarm/website/htdocs/downloads/releases/pgfoundry-archive/pgfoundry.org/download.php>
+			ForceType none
+		</directory>
+    		ScriptAlias /bfrest /home/pgbuildfarm/website/bfrest/script/bfrest_cgi.pl
+    		Alias /foo /home/pgbuildfarm/website/bfrest/script/foo.fcgi
+	     SetEnvIf Request_URI "favicon.ico" discard
+	     ErrorLog /home/pgbuildfarm/website/weblogs/error.log
+	     CustomLog  /home/pgbuildfarm/website/weblogs/access.log   "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\" %D" env=!discard
+	     SetEnv BFConfDir "/home/pgbuildfarm/website"
+	     FcgidInitialEnv BFConfDir "/home/pgbuildfarm/website"
+	     SetEnv BF_DEBUG "on"
+		# Don't bother looking for favicon.ico
+		Redirect 404 /favicon.ico
+
+		# Don't bother sending the custom error page for favicon.ico
+		<Location /favicon.ico>
+		    ErrorDocument 404 "No favicon"
+		</Location>
+	     TimeOut 600
+
+             RewriteEngine on
+             RewriteRule ^/latest(/.*)?$ /cgi-bin/latest.pl$1 [PT]
+
+	     <IfDefine NoSuchStuff> 
+
+
+		RewriteRule ^(/cgi-bin/show.*) /maintenance.html
+		RewriteRule ^(/cgi-bin/register-form.*) /maintenance.html
+
+		RewriteCond %{REQUEST_URI} /cgi-bin/.*
+		RewriteCond %{REQUEST_URI} !show
+		RewriteCond %{REQUEST_URI} !register-form
+		RewriteCond %{REQUEST_URI} !maintenance.pl
+		RewriteRule ^(.*)$ /cgi-bin/maintenance.pl [PT]
+
+		RewriteCond %{REQUEST_URI} html$
+		RewriteCond %{REQUEST_URI} !index.html$
+		RewriteCond %{REQUEST_URI} !maintenance.html$
+		RewriteRule ^(.*$) /maintenance.html
+
+	      </IfDefine>
+		 
+</VirtualHost>
+

@@ -1,0 +1,26 @@
+$HTTP["scheme"] =~ "https?" {
+   server.document-root = "/home/pgbuildfarm/website/htdocs"
+   accesslog.filename = "/home/pgbuildfarm/website/weblogs/lightty-access.log"
+   server.breakagelog = "/home/pgbuildfarm/website/weblogs/lightty-breakage.log"
+
+   url.rewrite-once = ( "^/latest(/.*)?$" => "/cgi-bin/latest.pl$1" )
+
+   $HTTP["url"] =~ "^/cgi-bin/" {
+      setenv.add-environment = ( "BFConfDir" => "/home/pgbuildfarm/website", "BF_DEBUG" => "on" )
+      cgi.assign = ( ".pl" => "/usr/bin/perl" )
+      alias.url = (
+         "/cgi-bin/" => "/home/pgbuildfarm/website/cgi-bin/",
+      )
+   }
+
+   $HTTP["url"] =~ "^/downloads/" {
+      dir-listing.activate = "enable"
+   }
+
+   $HTTP["scheme"] != "https" {
+	$HTTP["url"] !~ "^/(cgi-bin/(pgstatus.pl|upgrade.pl|addnotes.pl)|branches_of_interest.txt)" {
+		url.redirect = ( "^/(.*)$" => "https://buildfarm.postgresql.org/$1")
+	}
+        accesslog.filename = "/home/pgbuildfarm/website/weblogs/lighty-cleartext-access.log"
+    }
+}
