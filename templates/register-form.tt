@@ -13,14 +13,14 @@ See accompanying License file for license details
 	bodyclass = 'application'
 	pagebutton = 'register'
 %]
-[% IF NOT skip_captcha %/
+[% IF NOT skip_captcha %]
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
      <script>
 	        function onSubmit(token) {
   	           document.getElementById("register-form").submit();
 			}
 	 </script>
-%]
+[% END %]
 
 <h1>Application to join PostgreSQL BuildFarm</h1>
 
