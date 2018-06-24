@@ -18,12 +18,21 @@ use vars
        $dbhost $dbname $dbuser $dbpass $dbport
        $notifyapp
        $all_stat $fail_stat $change_stat $green_stat
-       $captcha_pubkey $captcha_privkey
+       $captcha_invis_pubkey $captcha_invis_privkey
        $template_dir
        $default_host
        $status_from $register_from $reminders_from $alerts_from
        $status_url
+	   $skip_mail
+	   $skip_captcha
        );
+
+# if skip_mail is true then $status_url and $default_host don't matter
+# same for all the email addresses
+$skip_mail = 0;
+
+# if skip_captcha is true the captcha settings doin't matter
+$skip_captcha = 0;
 
 $status_url = 'https://buildfarm.postgresql.org';
 
@@ -63,8 +72,8 @@ $green_stat=['foo-status-green@somewhere.org'];
 }
 
 # captcha keys for site
-$captcha_pubkey = 'foo';
-$captcha_privkey = 'bar';
+$captcha_invis_pubkey = 'foo';
+$captcha_invis_privkey = 'bar';
 
 
 

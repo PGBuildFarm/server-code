@@ -21,7 +21,7 @@ use Captcha::reCAPTCHA::V2;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp
   $captcha_invis_privkey $template_dir $default_host
-  $register_from);
+  $register_from $skip_mail $skip_captcha);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
@@ -42,9 +42,13 @@ my ($os, $osv, $comp, $compv, $arch, $email, $owner, $response ) =
     qw(os osv comp compv arch email owner g-recaptcha-response)
   };
 
-my $captcha = Captcha::reCAPTCHA::V2-> new;
+my $ok = 1;
 
-my $ok = $captcha->verify($captcha_invis_privkey, $response, $ENV{REMOTE_ADDR});
+unless ($skip_captcha)
+{
+	my $captcha = Captcha::reCAPTCHA::V2-> new;
+	$ok = $captcha->verify($captcha_invis_privkey, $response, $ENV{REMOTE_ADDR});
+}
 
 unless ($os
 		&& $osv
@@ -95,6 +99,8 @@ $template->process('register-ok.tt');
 
 $sth->finish;
 $db->disconnect;
+
+exit if $skip_mail;
 
 use Mail::Send;
 

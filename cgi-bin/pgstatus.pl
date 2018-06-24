@@ -18,6 +18,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
   $default_host $local_git_clone
   $status_from
   $status_url
+  $skip_mail
 );
 
 # force this before we do anything - even load modules
@@ -571,6 +572,8 @@ if ($ENV{BF_DEBUG})
       if $client_time;
     close($tx);
 }
+
+exit if $skip_mail;
 
 my $bcc_stat = [];
 my $bcc_chg=[];

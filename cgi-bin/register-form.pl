@@ -14,7 +14,7 @@ use warnings;
 use Template;
 use CGI;
 
-use vars qw( $template_dir $captcha_invis_pubkey);
+use vars qw( $template_dir $captcha_invis_pubkey $skip_captcha);
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
@@ -25,5 +25,8 @@ my $template = Template->new($template_opts);
 my $cgi = CGI->new();
 print "Content-Type: text/html\n\n";
 
-$template->process('register-form.tt',{captcha_publickey => $captcha_invis_pubkey, cgi => $cgi});
+$template->process('register-form.tt',
+				 {skip_captcha => $skip_captcha,
+				  captcha_publickey => $captcha_invis_pubkey,
+				  cgi => $cgi});
 
