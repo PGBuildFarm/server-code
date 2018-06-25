@@ -35,7 +35,7 @@ before submitting this form.</p>
 <li> have a working Postgresql build environment for your platform.</li>
 <li> Windows only: you will need a native perl installed (and not just the one from the MSys DTK). The one from ActiveState works fine.</li>
 <li> download and unpack the latest release of client code from 
-     <a href="[% baseurl %]/downloads/">[% baseurl %]/downloads/</a></li>
+     <a href="https://github.com/PGBuildFarm/client-code/releases">Github</a></li>
 <li> read instructions at 
      <a href="http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a></li>
 <li> get the software running locally using flags --force --nostatus --nosend</li>
