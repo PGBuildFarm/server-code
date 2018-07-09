@@ -21,6 +21,7 @@ use vars
        $captcha_invis_pubkey $captcha_invis_privkey
        $template_dir
        $default_host
+	   $local_git_clone
        $status_from $register_from $reminders_from $alerts_from
        $status_url
 	   $skip_mail
@@ -75,6 +76,6 @@ $green_stat=['foo-status-green@somewhere.org'];
 $captcha_invis_pubkey = 'foo';
 $captcha_invis_privkey = 'bar';
 
-
+$local_git_clone = '/path/to/bare/git/repo';
 
 1;
