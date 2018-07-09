@@ -58,6 +58,20 @@ my $owner = $query->param('owner');
 my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0})
   or die("$dsn,$dbuser,$dbpass,$!");
 
+my $ifmodsince = $query->http('If-Modified-Since') || 'Thu, 01 Jan 1970 00:00:00 GMT';
+
+my ($lastmod, $lastmodhead, $modsince) =
+  $db->selectrow_array("select ts at time zone 'UTC',
+                        to_char(ts,'Dy, DD Mon YYYY HH24:MI:SS GMT'),
+                        ts > to_timestamp('$ifmodsince','Dy, DD Mon YYYY HH24:MI:SS GMT')
+                        from dashboard_last_modified");
+
+if ($modsince eq 'f')
+{
+	print "Status: 304 Not Modified\n\n";
+	exit;
+}
+
 my $statement =qq[
 
 
@@ -115,9 +129,18 @@ $db->disconnect;
 my $template_opts = { INCLUDE_PATH => $template_dir };
 my $template = Template->new($template_opts);
 
-print "Content-Type: text/html\n\n";
+if ($lastmodhead)
+{
+	$lastmodhead = "Last-Modified: $lastmodhead\n";
+}
+else
+{
+	$lastmodhead = "";
+}
 
-$template->process('status.tt',{statrows=>$statrows});
+print "Content-Type: text/html\n$lastmodhead\n";
+
+$template->process('status.tt',{statrows=>$statrows, lastmodhead => $lastmodhead});
 
 exit;
 

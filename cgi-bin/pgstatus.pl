@@ -533,6 +533,7 @@ $db->begin_work;
 $db->do("lock table dashboard_mat in share row exclusive mode");
 $db->do("delete from dashboard_mat");
 $db->do("insert into dashboard_mat select * from dashboard_mat_data");
+$db->do("update dashboard_last_modified set ts = current_timestamp");
 $db->commit;
 
 if ($stage ne 'OK')
