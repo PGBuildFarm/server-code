@@ -66,7 +66,7 @@ my ($lastmod, $lastmodhead, $modsince) =
                         ts > to_timestamp('$ifmodsince','Dy, DD Mon YYYY HH24:MI:SS GMT')
                         from dashboard_last_modified");
 
-if ($modsince eq 'f')
+if ($lastmod && !$modsince)
 {
 	print "Status: 304 Not Modified\n\n";
 	exit;
