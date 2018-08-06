@@ -113,6 +113,7 @@ tr.last td { border-bottom: 1px #aaa solid; }
 .warn td.status, .warn td.detail, td.warn { background: #fc3; }
 .warnx td.status, .warn td.detail, td.warnx { background: #f99; }
 .fail td.status, .fail td.detail, td.fail { background: #f66; }
+.cerr td.status, .cerr td.detail, td.cerr { background: #99f; }
 body.history th { text-align: right; }
 body.application table { margin: 0 auto; }
 body.application th { text-align: right; }
