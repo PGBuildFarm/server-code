@@ -35,8 +35,8 @@ See accompanying License file for license details
 %][% END ; END -%]
 [%- BLOCK sysnotes ; IF row.sys_notes %]<img src="/img/notes.png" height="16" width="16" title="[% row.sys_notes_ts.replace(' .*','') | html %]: [% row.sys_notes | html %]" />
 [%- ELSE %]&nbsp;[% END ; END -%]
-[%- BLOCK cl %] class="[% SWITCH bgfor.replace('-.*','') -%]
-  [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE %]fail[% END %]"
+[%- BLOCK cl %] class="[% IF bgfor.match('Git|port-check') %]cerr[% ELSE; SWITCH bgfor.replace('-.*','') -%]
+  [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE [ 'pgsql' 'pgsql-Git-Dirty' 'Pre-run-port-check' ] %]cerr[% CASE %]fail[% END ; END %]"
 [%- END -%]
 [% WRAPPER 'page.tt' 
 	title = 'PostgreSQL BuildFarm Recent Failures'
