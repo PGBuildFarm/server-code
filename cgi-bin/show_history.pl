@@ -68,10 +68,16 @@ my $statement = qq{
       from build_status_recent_500
       where sysname = ?
          and branch = ?
+   ),
+   sv as
+   (
+      SELECT x.*, script_version(b.conf_sum) AS script_version
+       FROM build_status b
+         JOIN x ON b.sysname = x.sysname AND b.snapshot = x.snapshot
    )
    select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
-            sysname, snapshot, status, stage
-   from x
+            sysname, snapshot, status, stage, script_version
+   from sv
    order by snapshot desc
    limit $hm
 }
@@ -108,6 +114,8 @@ while (my $row = $sth->fetchrow_hashref)
         $row->{os_version} = $latest_personality->[0];
         $row->{compiler_version} = $latest_personality->[1];
     }
+	$row->{script_version} =~ s/^(\d{3})0(\d{2})/$1.$2/;
+	$row->{script_version} =~ s/^0+//;
     push(@$statrows,$row);
 }
 
