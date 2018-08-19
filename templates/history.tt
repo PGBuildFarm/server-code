@@ -48,7 +48,7 @@ See accompanying License file for license details
     </table>
 [% END %]
 
-  <h3>Branch: [% branch %][% IF statrows.size >= hm %] (last [% hm %] entries shown)[% END %]</h3>
+  <h3>Branch: [% branch %][% IF statrows.size >= hm %] (last [% hm %] entries shown), script version in ()[% END %]</h3>
 [% BLOCK stdet %]
     <tr [% PROCESS cl bgfor=row.stage %]>
       <td>[%- row.when_ago | replace('\s','&nbsp;') %]&nbsp;ago&nbsp;</td>
@@ -56,8 +56,8 @@ See accompanying License file for license details
       <td class="status"><a href="show_log.pl?nm=
                [%- row.sysname %]&amp;dt=
                [%- row.snapshot | uri %]">
-                [%- IF row.stage != 'OK' %]Details[% ELSE %]Config[% END -%]</a></td>
-
+                [%- IF row.stage != 'OK' %]Details[% ELSE %]Config[% END -%]</a>
+				[%- IF row.script_version %] ([% row.script_version %])[% END %]</td>
     </tr>
 [% END %]
 <table border="0"> <tr>
