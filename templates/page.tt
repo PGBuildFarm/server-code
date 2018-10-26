@@ -31,7 +31,7 @@ See accompanying License file for license details
     	    <li id="register"><a href="/cgi-bin/register-form.pl" title="Join PostgreSQL BuildFarm">Register</a></li>
     	    <li id="typedefs"><a href="/cgi-bin/typedefs.pl?show_list" title="Typedefs">Typedefs</a></li>
     	    <li id="github"><a href="https://github.com/PGBuildFarm/client-code">GitHub</a></li>
-    	    <li id="lists"><a href="http://pgfoundry.org/mail/?group_id=1000040">Email lists and status archives</a></li>
+    	    <li id="lists"><a href="/lists.html">Email lists</a></li>
           </ul>
         </div><!-- nav -->
       </div><!-- banner -->
