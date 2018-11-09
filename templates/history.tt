@@ -52,7 +52,7 @@ See accompanying License file for license details
 [% BLOCK stdet %]
     <tr [% PROCESS cl bgfor=row.stage %]>
       <td>[%- row.when_ago | replace('\s','&nbsp;') %]&nbsp;ago&nbsp;</td>
-      <td class="status">[% row.stage -%]</td>
+      <td class="status">[% row.stage -%]&nbsp;[[% row.git_head_ref.substr(0,7) %]]</td>
       <td class="status"><a href="show_log.pl?nm=
                [%- row.sysname %]&amp;dt=
                [%- row.snapshot | uri %]">

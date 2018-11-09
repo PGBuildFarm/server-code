@@ -71,7 +71,8 @@ my $statement = qq{
    )
    select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
             sysname, snapshot, status, stage,
-            coalesce(script_version,'') as script_version
+            coalesce(script_version,'') as script_version,
+            git_head_ref
    from x
    order by snapshot desc
    limit $hm
