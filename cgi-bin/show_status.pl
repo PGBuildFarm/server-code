@@ -72,6 +72,15 @@ if ($lastmod && $nomodsince)
 	exit;
 }
 
+my $brhandle;
+my @branches_of_interest;
+if (open($brhandle,"../htdocs/branches_of_interest.txt"))
+{
+   @branches_of_interest = <$brhandle>;
+   close($brhandle);
+   chomp(@branches_of_interest);
+}
+
 my $statement =qq[
 
 
@@ -100,6 +109,9 @@ $sth->execute();
 while (my $row = $sth->fetchrow_hashref)
 {
     next if (@members && !grep {$_ eq $row->{sysname} } @members);
+	next if (@branches_of_interest &&
+		 ! (grep {$_ eq $row->{branch}} @branches_of_interest));
+
     $row->{build_flags}  =~ s/^\{(.*)\}$/$1/;
     $row->{build_flags}  =~ s/,/ /g;
 
