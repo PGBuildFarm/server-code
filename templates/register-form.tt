@@ -49,7 +49,7 @@ before submitting this form.</p>
 <p>Please complete all items.</p>
 <p>For Linux, please specify the name and version of the <b>Distribution</b> for the Operating Systems items. 
 Do not use the name "Linux". For example, for my test machine the Operating 
-Systems is "Fedora Core" and the version is "4".</p>
+Systems is "Fedora" and the version is "29".</p>
 <form id="register-form" method="post" action="/cgi-bin/register.pl">
 <table cellspacing="0">
 <tr>
