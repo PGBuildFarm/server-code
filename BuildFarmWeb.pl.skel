@@ -26,6 +26,7 @@ use vars
        $status_url
 	   $skip_mail
 	   $skip_captcha
+	   $ignore_branches_of_interest
        );
 
 # if skip_mail is true then $status_url and $default_host don't matter
@@ -77,5 +78,7 @@ $captcha_invis_pubkey = 'foo';
 $captcha_invis_privkey = 'bar';
 
 $local_git_clone = '/path/to/bare/git/repo';
+
+$ignore_branches_of_interest = undef; # or some true value to ignore it
 
 1;

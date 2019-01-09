@@ -15,7 +15,8 @@ use DBI;
 use Template;
 use CGI;
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir);
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir
+			$ignore_branches_of_interest);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
@@ -74,7 +75,8 @@ if ($lastmod && $nomodsince)
 
 my $brhandle;
 my @branches_of_interest;
-if (open($brhandle,"../htdocs/branches_of_interest.txt"))
+if ((! $ignore_branches_of_interest) &&
+	  open($brhandle,"../htdocs/branches_of_interest.txt"))
 {
    @branches_of_interest = <$brhandle>;
    close($brhandle);

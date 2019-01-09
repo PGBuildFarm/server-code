@@ -19,6 +19,8 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
   $status_from
   $status_url
   $skip_mail
+  $ignore_branches_of_interest
+
 );
 
 # force this before we do anything - even load modules
@@ -72,7 +74,8 @@ $query->save($tx);
 close($tx);
 
 my $brhandle;
-if (open($brhandle,"<","../htdocs/branches_of_interest.txt"))
+if ((! $ignore_branches_of_interest) &&
+	  open($brhandle,"<","../htdocs/branches_of_interest.txt"))
 {
     my @branches_of_interest = <$brhandle>;
     close($brhandle);
