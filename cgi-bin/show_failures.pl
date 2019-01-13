@@ -61,6 +61,24 @@ elsif ($sortby eq 'namenobranch')
 my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0})
   or die("$dsn,$dbuser,$dbpass,$!");
 
+# If the dashboard hasn't been updated then the failures can't have been either
+# so we use the same test for both. That saves keeping a separate update date
+# for failures.
+
+my $ifmodsince = $query->http('If-Modified-Since') || 'Thu, 01 Jan 1970 00:00:00 GMT';
+
+my ($lastmod, $lastmodhead, $nomodsince) =
+  $db->selectrow_array("select ts at time zone 'UTC',
+                        to_char(ts,'Dy, DD Mon YYYY HH24:MI:SS GMT'),
+                        ts <= to_timestamp('$ifmodsince','Dy, DD Mon YYYY HH24:MI:SS GMT')
+                        from dashboard_last_modified");
+
+if ($lastmod && $nomodsince)
+{
+	print "Status: 304 Not Modified\n\n";
+	exit;
+}
+
 my $get_all_branches = qq{
 
   select distinct branch COLLATE "C"
@@ -150,12 +168,23 @@ $db->disconnect;
 my $template_opts = { INCLUDE_PATH => $template_dir };
 my $template = Template->new($template_opts);
 
-print "Content-Type: text/html\n\n";
+if ($lastmodhead)
+{
+   $lastmodhead = "Last-Modified: $lastmodhead\n";
+}
+else
+{
+	$lastmodhead = "";
+}
+
+print "Content-Type: text/html\n$lastmodhead\n";
+
 
 $template->process(
     'fstatus.tt',
     {
         statrows=>$statrows,
+		lastmodhead => $lastmodhead,
         sortby => $sortby,
         max_days => $max_days,
         all_branches => $all_branches,

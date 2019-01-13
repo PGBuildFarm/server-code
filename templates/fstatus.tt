@@ -43,6 +43,7 @@ See accompanying License file for license details
 	bodyclass = 'none'
 	pagebutton = 'failures'
 %]
+<!-- lastmodhead: [% lastmodhead %] -->
     <h1>PostgreSQL BuildFarm Recent Failures</h1>
     <p>
       Shown here are build failures that occurred in the last [% max_days %] days.
@@ -123,7 +124,7 @@ See accompanying License file for license details
             [% row.compiler_version %]</span> <span class="arch">
             [%- row.architecture %]</span></td>
     <td class="status">
-            [%- row.when_ago | replace('\s','&nbsp;') %]&nbsp;ago&nbsp;
+            <span class="whenago">[%- row.snapshot %]</span>&nbsp;
             [% row.stage -%]
 			[[% row.git_head_ref.substr(0,7) %]]
             <a href="show_log.pl?nm=
@@ -135,4 +136,34 @@ See accompanying License file for license details
 </tr>
 [% END %]
     </table>
+<script language="javascript">
+function whenago (agodt) {
+    agodt = agodt.replace(' ','T') + 'Z';
+	var dt = new Date(agodt);
+	var diffsecs = Math.floor((new Date() - dt) / 1000);
+	var days = Math.floor(diffsecs / 86400);
+	var result = '';
+	if (days == 1) { result = '1&nbsp;day&nbsp;'; }
+	else if (days > 0) { result = '' + days + '&nbsp;days&nbsp;'; }
+	diffsecs -= days * 86400;
+	var hours = Math.floor(diffsecs / 3600);
+    diffsecs -= hours * 3600;
+	var mins = Math.floor(diffsecs / 60);
+	var secs =  diffsecs - (mins * 60);
+	if (hours < 10) { result = result + '0'; }
+	result = result + hours + ':';
+	if (mins < 10) { result = result + '0'; }
+//	result = result + mins + ':';
+//	if (secs < 10) { result = result + '0'; }
+//	result = result + secs + '&nbsp;ago';
+    result = result + mins + '&nbsp;ago'; // who cares about seconds anyway?
+	return result;
+}
+var agospans = document.getElementsByClassName("whenago");
+var agolen = agospans.length;
+for ( i = 0 ; i < agolen; i++) {
+    var ago = agospans[i];
+	ago.innerHTML = whenago(ago.innerHTML);
+}
+</script>
 [% END %]
