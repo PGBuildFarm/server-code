@@ -44,7 +44,9 @@ $brnch =~ s/[^a-zA-Z0-9._ -]//g;
 
 use vars qw($tgz);
 
-if ($system && $logdate && $stage)
+# sanity check the date - some browsers mangle decoding it
+if ($system && $logdate && $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
+	  && $stage)
 {
     my $db = DBI->connect($dsn,$dbuser,$dbpass);
 

@@ -46,10 +46,12 @@ my $scm;
 my ($git_head_ref, $last_build_git_ref, $last_success_git_ref);
 my ($stage_times, $run_time);
 my $other_branches;
+my ($changed_this_run_logs, $changed_since_success_logs);
 
 use vars qw($info_row);
 
-if ($system && $logdate)
+# sanity check the date - some browsers mangle decoding it
+if ($system && $logdate && $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/)
 {
 
     my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0});
@@ -183,14 +185,14 @@ if ($system && $logdate)
     $other_branches =
       $db->selectcol_arrayref($other_branches_query,undef, $system, $branch);
     $db->disconnect;
-}
 
-my ($changed_this_run_logs, $changed_since_success_logs);
-($changed_this_run, $changed_this_run_logs) =
-  process_changed($changed_this_run,$git_head_ref,$last_build_git_ref);
-($changed_since_success, $changed_since_success_logs) =
-  process_changed($changed_since_success,
-    $last_build_git_ref,$last_success_git_ref);
+	($changed_this_run, $changed_this_run_logs) =
+	  process_changed($changed_this_run,$git_head_ref,$last_build_git_ref);
+	($changed_since_success, $changed_since_success_logs) =
+	  process_changed($changed_since_success,
+					  $last_build_git_ref,$last_success_git_ref);
+
+}
 
 $conf =~ s/\@/ [ a t ] /g;
 
