@@ -76,7 +76,7 @@ if ($lastmod && $nomodsince)
 my $brhandle;
 my @branches_of_interest;
 if ((! $ignore_branches_of_interest) &&
-	  open($brhandle,"../htdocs/branches_of_interest.txt"))
+	  open($brhandle, '<' , "../htdocs/branches_of_interest.txt"))
 {
    @branches_of_interest = <$brhandle>;
    close($brhandle);
