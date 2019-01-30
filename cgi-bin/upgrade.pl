@@ -87,7 +87,8 @@ if ($calc_sig ne $sig)
 }
 
 # undo escape-proofing of base64 data and decode it
-do {tr/$@/+=/; $_ = decode_base64($_); } for ($os_version, $compiler_version);
+do {tr/$@/+=/ if $_; $_ = decode_base64($_) if $_; }
+  for ($os_version, $compiler_version);
 
 my $get_latest = q{
 

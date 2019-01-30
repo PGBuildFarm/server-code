@@ -137,9 +137,10 @@ my $date=
 
 if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time ) || (!$secret) )
 {
+	my $logtar_len = defined($log_archive) ? length($log_archive) : 0;
     open(my $tx,">","$buildlogs/$animal.$date") ||
 	  die "opening $buildlogs/$animal.$date";
-    print $tx "sig=$sig\nlogtar-len=", length($log_archive),
+    print $tx "sig=$sig\nlogtar-len=$logtar_len",
       "\nstatus=$res\nstage=$stage\nconf:\n$conf\n",
       "tsdiff:$tsdiff\n",
       "changed_this_run:\n$changed_this_run\n",
@@ -174,7 +175,7 @@ if ($calc_sig ne $sig && $calc_sig2 ne $sig)
 }
 
 # undo escape-proofing of base64 data and decode it
-do  {tr/$@/+=/; $_ = decode_base64($_); }
+do  {tr/$@/+=/ if $_; $_ = decode_base64($_) if $_; }
   foreach (
     $log, $conf,$changed_this_run,$changed_since_success,$log_archive,
     $frozen_sconf
@@ -194,7 +195,7 @@ if ($frozen_sconf)
 
 # XXX TODO: check for clock skew using this
 my $client_now = $client_conf->{current_ts};
-$client_conf->{clock_skew} = time - $client_now;
+$client_conf->{clock_skew} = time - $client_now  if defined $client_now;
 
 unless ($ts < time + 120)
 {

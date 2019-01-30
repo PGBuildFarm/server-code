@@ -76,7 +76,7 @@ if ($system && $logdate && $stage)
     my $sth=$db->prepare($statement);
     $sth->execute($system,$logdate,$stage);
     my $row=$sth->fetchrow_arrayref;
-    my ($branch, $logtext) = ("unknown","no log text found");
+    my ($branch, $logtext);
     if ($row)
     {
         $branch = $row->[0];
@@ -85,14 +85,17 @@ if ($system && $logdate && $stage)
     $sth->finish;
     $db->disconnect;
 
+	$branch ||= "unknown";
+
     print "Content-Type: text/plain\n\n";
 
     if ($stage ne 'typedefs')
     {
         print "Snapshot: $logdate\n\n";
+		$logtext ||= "no log text found";
     }
 
-    print $logtext;
+    print $logtext if $logtext;
 
 }
 

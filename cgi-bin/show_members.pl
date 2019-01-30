@@ -32,8 +32,8 @@ my %sort_ok = (
     'arch' => 'lower(architecture)'
 );
 $sort_by = $query->param('sort_by');
-$sort_by =~ s/[^a-zA-Z0-9_ -]//g;
-$sort_by = $sort_ok{$sort_by} || $sort_ok{name};
+$sort_by =~ s/[^a-zA-Z0-9_ -]//g if $sort_by;
+$sort_by = $sort_by ? $sort_ok{$sort_by} || $sort_ok{name} : $sort_ok{name};
 
 my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;

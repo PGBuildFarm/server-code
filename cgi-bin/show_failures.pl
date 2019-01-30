@@ -40,7 +40,8 @@ else
 do { s/[^a-zA-Z0-9_ -]//g; } foreach @branches;
 do { s/[^a-zA-Z0-9_ -]//g; } foreach @members;
 do { s/[^a-zA-Z0-9_ :-]//g; } foreach @stages;
-my $max_days =  $query->param('max_days') + 0 || 10;
+my $qmdays = $query->param('max_days');
+my $max_days =  $qmdays ? $qmdays + 0 : 10;
 
 my $dsn="dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;

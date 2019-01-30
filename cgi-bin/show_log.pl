@@ -35,9 +35,9 @@ $dsn .= ";port=$dbport" if $dbport;
 my $query = CGI->new;
 
 my $system = $query->param('nm');
-$system =~ s/[^a-zA-Z0-9_ -]//g;
+$system =~ s/[^a-zA-Z0-9_ -]//g if $system;
 my $logdate = $query->param('dt');
-$logdate =~ s/[^a-zA-Z0-9_ :-]//g;
+$logdate =~ s/[^a-zA-Z0-9_ :-]//g if $logdate;
 
 my $log = "";
 my $conf = "";
@@ -109,7 +109,8 @@ if ($system && $logdate)
 
     }
     my $last_success_row;
-    if (ref $last_build_row && $last_build_row->{stage} ne 'OK')
+    if (ref $last_build_row && defined $last_build_row->{stage} &&
+		  $last_build_row->{stage} ne 'OK')
     {
         $last_success_row =$db->selectrow_hashref($last_success_statement,
             undef,$system,$branch,$system,$branch,$logdate);
@@ -125,10 +126,10 @@ if ($system && $logdate)
     $scm = $row->[7];
     $scm ||= 'cvs'; # legacy scripts
     $scmurl = $row->[8];
-    $scmurl = undef unless $scmurl =~ /^http/; # slight sanity check
+    $scmurl = undef unless $scmurl && $scmurl =~ /^http/; # slight sanity check
     $scmurl = 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;h='
-      if ($scmurl eq 'http://git.postgresql.org/git/postgresql.git');
-    $log_file_names =~ s/^\{(.*)\}$/$1/;
+      if ($scmurl && $scmurl eq 'http://git.postgresql.org/git/postgresql.git');
+    $log_file_names =~ s/^\{(.*)\}$/$1/ if $log_file_names;
     @log_file_names=split(',',$log_file_names)
       if $log_file_names;
 
@@ -232,7 +233,8 @@ sub process_changed
     my $git_to = shift;
     my $git_from = shift;
 
-    my @lines = split(/!/,$chgd);
+    my @lines;
+	$lines = split(/!/,$chgd) if $chgd;
     my @changed_rows;
     my %commits;
     my @commit_logs;

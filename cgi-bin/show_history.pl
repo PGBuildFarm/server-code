@@ -36,13 +36,19 @@ die $DBI::errstr unless $db;
 
 my $query = CGI->new;
 my $member = $query->param('nm');
-$member =~ s/[^a-zA-Z0-9_ -]//g;
+$member =~ s/[^a-zA-Z0-9_ -]//g if $member;
 my $branch = $query->param('br');
-$branch =~ s/[^a-zA-Z0-9_ -]//g;
+$branch =~ s/[^a-zA-Z0-9_ -]//g if $branch;
 my $hm = $query->param('hm');
-$hm =~ s/[^a-zA-Z0-9_ -]//g;
-$hm = '240' unless $hm =~ /^\d+$/;
-$hm = '99999' unless $hm;
+if ($hm)
+{
+	$hm =~ s/[^a-zA-Z0-9_ -]//g;
+	$hm = '240' unless $hm =~ /^\d+$/;
+}
+else
+{
+	$hm = '99999';
+}
 
 my $latest_personality = $db->selectrow_arrayref(
     q{
