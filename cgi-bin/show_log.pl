@@ -234,7 +234,7 @@ sub process_changed
     my $git_from = shift;
 
     my @lines;
-	$lines = split(/!/,$chgd) if $chgd;
+	@lines = split(/!/,$chgd) if $chgd;
     my @changed_rows;
     my %commits;
     my @commit_logs;
