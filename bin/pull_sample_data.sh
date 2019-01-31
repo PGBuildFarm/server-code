@@ -44,7 +44,27 @@ commit;
 
 EOF
 
-tar -z -cf sample-data.tgz *.data load-sample-data.sql && mv sample-data.tgz /home/pgbuildfarm/website/htdocs/downloads
+cat > unload-sample-data.sql <<EOF
+
+begin;
+set client_encoding = 'sql_ascii';
+alter table build_status disable trigger user;
+truncate buildsystems
+ ,  alerts
+ ,  build_status
+ ,  build_status_log
+ ,  build_status_recent_500
+ ,  dashboard_last_modified
+ ,  dashboard_mat
+ ,  latest_snapshot
+ ,  nrecent_failures
+ ,  personality;
+alter table build_status enable trigger user;
+commit;
+
+EOF
+
+tar -z -cf sample-data.tgz *.data *load-sample-data.sql && mv sample-data.tgz /home/pgbuildfarm/website/htdocs/downloads
 
 cd
 
