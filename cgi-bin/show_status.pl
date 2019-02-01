@@ -47,11 +47,11 @@ if ($sortby eq 'name')
 }
 elsif ($sortby eq 'os')
 {
-    $sort_clause = 'lower(operating_system), os_version desc,';
+    $sort_clause = 'lower(s.operating_system), s.os_version desc,';
 }
 elsif ($sortby eq 'compiler')
 {
-    $sort_clause = "lower(compiler), compiler_version,";
+    $sort_clause = "lower(s.compiler), s.compiler_version,";
 }
 
 my $owner = $query->param('owner');
