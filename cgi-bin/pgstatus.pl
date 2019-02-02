@@ -52,7 +52,7 @@ $dsn .= ";port=$dbport" if $dbport;
 my $query = CGI->new;
 
 my $sig = $query->path_info;
-$sig =~ s!^/!!;
+$sig =~ s!^/!! if $sig;
 
 my $stage = $query->param('stage');
 my $ts = $query->param('ts');
@@ -66,12 +66,22 @@ my $changed_this_run = $query->param('changed_files');
 my $log_archive = $query->param('logtar');
 my $frozen_sconf = $query->param('frozen_sconf') || '';
 
+my $txanimal = $animal || 'unknown';
 my $rawfilets = time;
-my $rawtxfile = "$buildlogs/$animal.$rawfilets";
+my $rawtxfile = "$buildlogs/$txanimal.$rawfilets";
 
 open(my $tx,">",$rawtxfile) || die "opening $rawtxfile";
 $query->save($tx);
 close($tx);
+
+unless ($animal && $ts && $stage && $sig && $branch && $res)
+{
+    print
+      "Status: 490 bad parameters\nContent-Type: text/plain\n\n",
+      "bad parameters for request\n";
+    exit;
+
+}
 
 my $brhandle;
 if ((! $ignore_branches_of_interest) &&
@@ -98,23 +108,6 @@ my $extra_content =
    "changed_files=$changed_this_run&"
   ."changed_since_success=$changed_since_success&";
 
-unless ($animal && $ts && $stage && $sig)
-{
-    print
-      "Status: 490 bad parameters\nContent-Type: text/plain\n\n",
-      "bad parameters for request\n";
-    exit;
-
-}
-
-unless ($branch =~ /^(HEAD|REL(\d+)?_\d+_STABLE)$/)
-{
-    print
-      "Status: 492 bad branch parameter $branch\nContent-Type: text/plain\n\n",
-      "bad branch parameter $branch\n";
-    exit;
-
-}
 
 my $db = DBI->connect($dsn,$dbuser,$dbpass);
 
