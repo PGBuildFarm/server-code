@@ -74,7 +74,7 @@ open(my $tx,">",$rawtxfile) || die "opening $rawtxfile";
 $query->save($tx);
 close($tx);
 
-unless ($animal && $ts && $stage && $sig && $branch && $res)
+unless ($animal && $ts && $stage && $sig && $branch && defined($res))
 {
     print
       "Status: 490 bad parameters\nContent-Type: text/plain\n\n",
