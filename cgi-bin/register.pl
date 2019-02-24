@@ -46,8 +46,16 @@ my $ok = 1;
 
 unless ($skip_captcha)
 {
-	my $captcha = Captcha::reCAPTCHA::V2-> new;
-	$ok = $captcha->verify($captcha_invis_privkey, $response, $ENV{REMOTE_ADDR});
+	if (defined($response))
+	{
+		my $captcha = Captcha::reCAPTCHA::V2-> new;
+		$ok = $captcha->verify($captcha_invis_privkey, $response,
+							   $ENV{REMOTE_ADDR});
+	}
+	else
+	{
+		$ok = undef;
+	}
 }
 
 unless ($os
