@@ -114,14 +114,15 @@ while (my $row = $sth->fetchrow_hashref)
 	next if (@branches_of_interest &&
 		 ! (grep {$_ eq $row->{branch}} @branches_of_interest));
 
-    $row->{build_flags}  =~ s/^\{(.*)\}$/$1/;
-    $row->{build_flags}  =~ s/,/ /g;
+    $row->{build_flags}  =~ s/^\{(.*)\}$/$1/ if $row->{build_flags};
+    $row->{build_flags}  =~ s/,/ /g if $row->{build_flags};
 
     # enable-integer-datetimes is now the default
     if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_3_STABLE')
     {
         $row->{build_flags} .= " --enable-integer-datetimes "
-          unless ($row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
+          unless ($row->{build_flags} &&
+				  $row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
     }
 
     # enable-thread-safety is now the default

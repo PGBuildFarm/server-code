@@ -34,11 +34,11 @@ $dsn .= ";port=$dbport" if $dbport;
 my $query = CGI->new;
 
 my $system = $query->param('nm');
-$system =~ s/[^a-zA-Z0-9_ -]//g;
+$system =~ s/[^a-zA-Z0-9_ -]//g if $system;
 my $logdate = $query->param('dt');
-$logdate =~ s/[^a-zA-Z0-9:_ -]//g;
+$logdate =~ s/[^a-zA-Z0-9:_ -]//g if $logdate;
 my $stage = $query->param('stg');
-$stage =~ s/[^a-zA-Z0-9._ -]//g;
+$stage =~ s/[^a-zA-Z0-9._ -]//g if $stage;
 my $brnch = $query->param('branch') || 'HEAD';
 $brnch =~ s/[^a-zA-Z0-9._ -]//g;
 

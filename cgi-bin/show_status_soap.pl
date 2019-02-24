@@ -65,10 +65,13 @@ EOS
     while (my $row = $sth->fetchrow_hashref)
     {
         next if (@members && !grep {$_ eq $row->{sysname} } @members);
-        $row->{build_flags}  =~ s/^\{(.*)\}$/$1/;
-        $row->{build_flags}  =~ s/,/ /g;
-        $row->{build_flags}  =~ s/--((enable|with)-)?//g;
-        $row->{build_flags}  =~ s/\S+=\S+//g;
+		if ($row->{build_flags})
+		{
+			$row->{build_flags}  =~ s/^\{(.*)\}$/$1/;
+			$row->{build_flags}  =~ s/,/ /g;
+			$row->{build_flags}  =~ s/--((enable|with)-)?//g;
+			$row->{build_flags}  =~ s/\S+=\S+//g;
+		}
         push(@$statrows,$row);
     }
     $sth->finish;
