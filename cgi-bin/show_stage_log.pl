@@ -89,7 +89,7 @@ if ($system && $logdate && $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
 
 	$branch ||= "unknown";
 
-    print "Content-Type: text/plain\n\n";
+    print "Content-Type: text/plain\nContent-disposition: inline; filename=$stage.log\n\n";
 
     if ($stage ne 'typedefs')
     {
@@ -97,6 +97,8 @@ if ($system && $logdate && $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
 		$logtext ||= "no log text found";
     }
 
+
+	$logtext =~ s/([\x00-\x08\x0B\x0C\x0E-\x1F\x80-\xff])/sprintf("\\x%.02x",ord($1))/ge if $logtext;
     print $logtext if $logtext;
 
 }
