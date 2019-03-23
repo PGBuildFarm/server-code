@@ -67,7 +67,7 @@ if ($system && $logdate && $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/)
 
 	};
     my $last_build_statement = q{
-		select git_head_ref
+		select git_head_ref, stage
                 from build_status
                 where sysname = ? and branch = ?  and snapshot =
                     (select max(snapshot)
