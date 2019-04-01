@@ -140,21 +140,21 @@ while (my $row = $sth->fetchrow_hashref)
     next if (@members && !grep {$_ eq $row->{sysname} } @members);
     next if (@stages && !grep {$_ eq $row->{stage} } @stages);
     next if (@branches && !grep {$_ eq $row->{branch} } @branches);
-    $row->{build_flags}  =~ s/^\{(.*)\}$/$1/;
-    $row->{build_flags}  =~ s/,/ /g;
+    $row->{build_flags}  =~ s/^\{(.*)\}$/$1/ if $row->{build_flags};
+    $row->{build_flags}  =~ s/,/ /g if $row->{build_flags};
 
     # enable-integer-datetimes is now the default
     if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_3_STABLE')
     {
         $row->{build_flags} .= " --enable-integer-datetimes "
-          unless ($row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
+          unless ($row->{build_flags} && $row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
     }
 
     # enable-thread-safety is now the default
     if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_5_STABLE')
     {
         $row->{build_flags} .= " --enable-thread-safety "
-          unless ($row->{build_flags} =~ /--(en|dis)able-thread-safety/);
+          unless ($row->{build_flags} && $row->{build_flags} =~ /--(en|dis)able-thread-safety/);
     }
     $row->{build_flags}  =~ s/--((enable|with)-)?//g;
     $row->{build_flags} =~ s/libxml/xml/;
