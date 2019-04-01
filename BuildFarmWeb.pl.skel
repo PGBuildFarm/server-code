@@ -25,6 +25,7 @@ use vars
        $status_from $register_from $reminders_from $alerts_from
        $status_url
 	   $skip_mail
+	   $skip_rss
 	   $skip_captcha
 	   $ignore_branches_of_interest
        );
@@ -35,6 +36,9 @@ $skip_mail = 0;
 
 # if skip_captcha is true the captcha settings doin't matter
 $skip_captcha = 0;
+
+# keep RSS by default
+$skip_rss = 0;
 
 $status_url = 'https://buildfarm.postgresql.org';
 

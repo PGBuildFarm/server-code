@@ -19,6 +19,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
   $status_from
   $status_url
   $skip_mail
+  $skip_rss
   $ignore_branches_of_interest
 
 );
@@ -36,6 +37,11 @@ use Mail::Send;
 use Time::ParseDate;
 use Storable qw(nfreeze thaw);
 use JSON::PP;
+
+# for RSS work
+use XML::RSS;
+use File::Copy;
+use Fcntl qw(:flock);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
@@ -571,6 +577,33 @@ if ($ENV{BF_DEBUG})
     close($tx);
 }
 
+my $url = $status_url;
+$url ||= $query->url(-base => 1);
+
+if (! $skip_rss && $stage ne $prev_stat)
+{
+	my ($rsec,$rmin,$rhour,$rmday,$rmon,$ryear,$rwday,$ryday,$risdst) =
+	  gmtime(time);
+	$ryear += 1900;
+	$rmon +=1;
+	my $rssdate=sprintf("%d-%.2d-%.2dT%.2d:%.2d:%.2d+00:00",
+						$ryear,$rmon,$rmday,$rhour,$rmin,$rsec);
+	my $rssfile = "../htdocs/rss/bf-rss.xml";
+	open(my $rsslock,">","/tmp/rsslock") || die "opening rsslock: $!";
+	flock($rsslock,LOCK_EX);
+	my $rss = parse_file($rssfile);
+	$rss->add_item(
+		title => "$branch: $animal change",
+		link => "$url/cgi-bin/show_log.pl?nm=$animal&dt=$dbdate",
+		description =>
+		  "$animal changed from $prev_stat to $stage on branch $branch",
+		dc => { date => $rssdate });
+	$rss->save("$rssfile.tmp") || die "saving $rssfile.tmp";
+	move("$rssfile.tmp","$rssfile");
+	close($rsslock);
+}
+
+
 exit if $skip_mail;
 
 my $bcc_stat = [];
@@ -635,9 +668,6 @@ sub unindent
     $data =~ s/^$whitespace//mg;
     return $data;
 }
-
-my $url = $status_url;
-$url ||= $query->url(-base => 1);
 
 my $stat_type = $stage eq 'OK' ? 'Status' : 'Failed at Stage';
 
