@@ -5,6 +5,7 @@ use warnings;
 
 print "Content-Type: text/plain\n\n";
 
+$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 print "Conf: $ENV{BFConfDir}\n";
 
 print `pwd`;
