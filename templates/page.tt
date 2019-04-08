@@ -17,6 +17,7 @@ See accompanying License file for license details
 	li#[% pagebutton %] a { color:rgb(17,45,137); background: url(/inc/b/r.png) no-repeat 100% -20px; } 
 	li#[% pagebutton %] { background: url(/inc/b/l.png) no-repeat 0% -20px; }
     --></style>
+  <link rel="alternate" type="application/rss+xml" title="Subscribe to Status Changes" href="https://buildfarm.postgresql.org/rss/bf-rss.xml" />
   </head>
   <body class="[% bodyclass %]">
     <div id="wrapper">

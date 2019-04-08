@@ -40,6 +40,7 @@ use JSON::PP;
 
 # for RSS work
 use XML::RSS;
+use DateTime::Format::W3CDTF;
 use File::Copy;
 use Fcntl qw(:flock);
 
@@ -580,7 +581,11 @@ if ($ENV{BF_DEBUG})
 my $url = $status_url;
 $url ||= $query->url(-base => 1);
 
-if (! $skip_rss && $stage ne $prev_stat)
+# replace space with a plus for use in URLs
+my $urldbdate = $dbdate;
+$urldbdate =~ s/ /+/;
+
+if (! $skip_rss && $stage ne $prev_stat && "$stage$prev_stat" !~ /Git/)
 {
 	my ($rsec,$rmin,$rhour,$rmday,$rmon,$ryear,$rwday,$ryday,$risdst) =
 	  gmtime(time);
@@ -591,14 +596,48 @@ if (! $skip_rss && $stage ne $prev_stat)
 	my $rssfile = "../htdocs/rss/bf-rss.xml";
 	open(my $rsslock,">","/tmp/rsslock") || die "opening rsslock: $!";
 	flock($rsslock,LOCK_EX);
-	my $rss = parse_file($rssfile);
+	my $rss;
+	if (-e $rssfile)
+	{
+		$rss = XML::RSS->new;
+		$rss->parsefile($rssfile);
+	}
+	else
+	{
+		# bootstrap RSS
+		$rss = XML::RSS->new(version => '1.0');
+		$rss->channel(
+			  title        => "PostgreSQL Build farm",
+			  link         => "http://buildfarm.postgresql.org/cgi-bin/show_status.pl",
+			  description  => "Status changes for PostgreSQL Build Farm animals",
+		 );
+		$rss->image (
+			 title => "PostgreSQL Build Farm",
+			 url => "http://buildfarm.postgresql.org/inc/pbbuildfarm-banner.png",
+			 link => "http://buildfarm.postgresql.org/cgi-bin/show_status.pl");
+	}
 	$rss->add_item(
-		title => "$branch: $animal change",
-		link => "$url/cgi-bin/show_log.pl?nm=$animal&dt=$dbdate",
+		title => "$branch: $animal to $stage",
+		link => "$url/cgi-bin/show_log.pl?nm=$animal&dt=$urldbdate",
 		description =>
-		  "$animal changed from $prev_stat to $stage on branch $branch",
-		dc => { date => $rssdate });
+		   "$animal changed from $prev_stat to $stage on branch $branch\n" .
+		   "<br />OS: $os Arch: $arch Comp: $compiler\n",
+				   dc => { date => $rssdate });
+	while (@{$rss->{'items'}} > 15)
+	{
+		# trim old entries but keep a minimum of 15
+		# assume items are in date order - they should be
+		my $rssdt = $rss->{items}->[0]->{dc}->{date};
+		my $horizon = time - (48 * 3600); # 48 hours ago
+		my $w3c = DateTime::Format::W3CDTF->new;
+		my $dt = $w3c->parse_datetime($rssdt)->epoch;
+		last if $dt > $horizon;
+
+		shift (@{ $rss->{'items'} });
+	}
+
 	$rss->save("$rssfile.tmp") || die "saving $rssfile.tmp";
+	chmod 0664, "$rssfile.tmp";
 	move("$rssfile.tmp","$rssfile");
 	close($rsslock);
 }
