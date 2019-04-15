@@ -107,6 +107,7 @@ my $get_all_stages = qq{
   select distinct stage
   from build_status
     join nrecent_failures using (sysname,snapshot,branch)
+  order by 1
 
 };
 
