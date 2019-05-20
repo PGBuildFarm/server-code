@@ -8,16 +8,8 @@ SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
-
---
--- Name: sfrost; Type: SCHEMA; Schema: -; Owner: sfrost
---
-
-CREATE SCHEMA sfrost;
-
-
-ALTER SCHEMA sfrost OWNER TO sfrost;
 
 --
 -- Name: plperl; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: pgbuildfarm
