@@ -40,7 +40,7 @@ $logdate =~ s/[^a-zA-Z0-9:_ -]//g if $logdate;
 my $stage = $query->param('stg');
 $stage =~ s/[^a-zA-Z0-9._ -]//g if $stage;
 my $brnch = $query->param('branch') || 'HEAD';
-$brnch =~ s/[^a-zA-Z0-9._ -]//g;
+$brnch =~ s{[^a-zA-Z0-9._/ -]}{}g;
 
 use vars qw($tgz);
 

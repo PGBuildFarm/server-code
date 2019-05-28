@@ -37,7 +37,7 @@ else
     @branches = grep {$_ ne "" } $query->multi_param('branch');
     @stages = grep {$_ ne "" } $query->multi_param('stage');
 }
-do { s/[^a-zA-Z0-9_ -]//g; } foreach @branches;
+do { s{[^a-zA-Z0-9_/ -]}{}g; } foreach @branches;
 do { s/[^a-zA-Z0-9_ -]//g; } foreach @members;
 do { s/[^a-zA-Z0-9_ :-]//g; } foreach @stages;
 my $qmdays = $query->param('max_days');

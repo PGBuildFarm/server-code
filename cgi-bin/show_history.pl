@@ -38,7 +38,7 @@ my $query = CGI->new;
 my $member = $query->param('nm');
 $member =~ s/[^a-zA-Z0-9_ -]//g if $member;
 my $branch = $query->param('br');
-$branch =~ s/[^a-zA-Z0-9_ -]//g if $branch;
+$branch =~ s{[^a-zA-Z0-9_/ -]}{}g if $branch;
 my $hm = $query->param('hm');
 if ($hm)
 {
