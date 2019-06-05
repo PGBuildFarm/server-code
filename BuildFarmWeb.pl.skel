@@ -28,7 +28,11 @@ use vars
 	   $skip_rss
 	   $skip_captcha
 	   $ignore_branches_of_interest
+	   $envtestenabled
        );
+
+# if on enable envtest.pl to produce output, should normally be off
+$envtestenabled = 0;
 
 # if skip_mail is true then $status_url and $default_host don't matter
 # same for all the email addresses
