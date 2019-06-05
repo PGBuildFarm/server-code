@@ -37,6 +37,8 @@ use Mail::Send;
 use Time::ParseDate;
 use Storable qw(nfreeze thaw);
 use JSON::PP;
+use URI::Escape;
+use Scalar::Util qw(looks_like_number);
 
 # for RSS work
 use XML::RSS;
@@ -58,8 +60,18 @@ $dsn .= ";port=$dbport" if $dbport;
 
 my $query = CGI->new;
 
+# don't let people play games with GET requests - this should be called via POST
+# the URL should only contain the signature
+if ($query->request_method eq 'GET')
+{
+    print
+      "Status: 496 wrong request method\n\nContent-Type: text/plain\n\n",
+      "wrong request method\n";
+    exit;
+}
+
 my $sig = $query->path_info;
-$sig =~ s!^/!! if $sig;
+$sig =~ s/[^0-9a-fA-F]//g if $sig; # must be hex digits, also trim leading /
 
 my $stage = $query->param('stage');
 my $ts = $query->param('ts');
@@ -74,6 +86,7 @@ my $log_archive = $query->param('logtar');
 my $frozen_sconf = $query->param('frozen_sconf') || '';
 
 my $txanimal = $animal || 'unknown';
+$txanimal =~ s/[^a-zA-Z0-9_-]//g; # no funky chars in filename
 my $rawfilets = time;
 my $rawtxfile = "$buildlogs/$txanimal.$rawfilets";
 
@@ -81,7 +94,7 @@ open(my $tx,">",$rawtxfile) || die "opening $rawtxfile";
 $query->save($tx);
 close($tx);
 
-unless ($animal && $ts && $stage && $sig && $branch && defined($res))
+unless ($animal && looks_like_number($ts) && $stage && $sig && $branch && defined($res))
 {
     print
       "Status: 490 bad parameters\nContent-Type: text/plain\n\n",
@@ -99,10 +112,11 @@ if ((! $ignore_branches_of_interest) &&
     chomp(@branches_of_interest);
     unless (grep {$_ eq $branch} @branches_of_interest)
     {
+		my $msgbranch = uri_escape($branch, "^A-Za-z0-9\-\._~/");
         print
-          "Status: 492 bad branch parameter $branch\n",
+          "Status: 492 bad branch parameter\n",
           "Content-Type: text/plain\n\n",
-          "bad branch parameter $branch\n";
+          "bad branch parameter $msgbranch\n";
         exit;
     }
 }
@@ -138,8 +152,8 @@ my $date=
 if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time ) || (!$secret) )
 {
 	my $logtar_len = defined($log_archive) ? length($log_archive) : 0;
-    open(my $tx,">","$buildlogs/$animal.$date") ||
-	  die "opening $buildlogs/$animal.$date";
+    open(my $tx,">","$buildlogs/$txanimal.$date") ||
+	  die "opening $buildlogs/$txanimal.$date";
     print $tx "sig=$sig\nlogtar-len=$logtar_len",
       "\nstatus=$res\nstage=$stage\nconf:\n$conf\n",
       "tsdiff:$tsdiff\n",
@@ -154,9 +168,10 @@ unlink($rawtxfile) if -e $rawtxfile;
 
 unless ($secret)
 {
+	my $msganimal = uri_escape($animal, "^A-Za-z0-9\-\._~/");
     print
       "Status: 495 Unknown System\nContent-Type: text/plain\n\n",
-      "System $animal is unknown\n";
+      "System $msganimal is unknown\n";
     $db->disconnect;
     exit;
 
@@ -167,9 +182,8 @@ my $calc_sig2 = sha1_hex($extra_content,$content,$secret);
 
 if ($calc_sig ne $sig && $calc_sig2 ne $sig)
 {
-
     print "Status: 450 sig mismatch\nContent-Type: text/plain\n\n";
-    print "$sig mismatches $calc_sig($calc_sig2) on content:\n$content";
+    print "$sig mismatches $calc_sig($calc_sig2)\n";
     $db->disconnect;
     exit;
 }
