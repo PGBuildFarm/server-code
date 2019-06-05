@@ -65,7 +65,7 @@ my $query = CGI->new;
 if ($query->request_method eq 'GET')
 {
     print
-      "Status: 496 wrong request method\n\nContent-Type: text/plain\n\n",
+      "Status: 496 wrong request method\nContent-Type: text/plain\n\n",
       "wrong request method\n";
     exit;
 }
