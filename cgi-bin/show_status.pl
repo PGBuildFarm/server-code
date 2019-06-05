@@ -64,8 +64,9 @@ my $ifmodsince = $query->http('If-Modified-Since') || 'Thu, 01 Jan 1970 00:00:00
 my ($lastmod, $lastmodhead, $nomodsince) =
   $db->selectrow_array("select ts at time zone 'UTC',
                         to_char(ts,'Dy, DD Mon YYYY HH24:MI:SS GMT'),
-                        ts <= to_timestamp('$ifmodsince','Dy, DD Mon YYYY HH24:MI:SS GMT')
-                        from dashboard_last_modified");
+                        ts <= to_timestamp(? ,'Dy, DD Mon YYYY HH24:MI:SS GMT')
+                        from dashboard_last_modified",
+					  undef, $ifmodsince);
 
 if ($lastmod && $nomodsince)
 {
