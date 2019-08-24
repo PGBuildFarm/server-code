@@ -74,7 +74,7 @@ See accompanying License file for license details
             [% row.compiler_version %]</span> <span class="arch">
             [%- row.architecture %]</span></td>
     <td class="status">
-            <span class="whenago">[%- row.snapshot %]</span>&nbsp;
+            <span title="[%- row.snapshot %] UTC" class="whenago">[%- row.snapshot %]</span>&nbsp;
             [% row.stage -%]
 	    [[% row.git_head_ref.substr(0,7) %]]
             <a href="show_log.pl?nm=
@@ -109,11 +109,23 @@ function whenago (agodt) {
     result = result + mins + '&nbsp;ago'; // who cares about seconds anyway?
 	return result;
 }
-var agospans = document.getElementsByClassName("whenago");
-var agolen = agospans.length;
-for ( i = 0 ; i < agolen; i++) {
-    var ago = agospans[i];
-	ago.innerHTML = whenago(ago.innerHTML);
+
+function set_ago () {
+    var agospans = document.getElementsByClassName("whenago");
+    var agolen = agospans.length;
+    for ( i = 0 ; i < agolen; i++) {
+        var ago = agospans[i];
+	    ago.innerHTML = whenago(ago.getAttribute('title').replace(' UTC',''));
+    }
 }
+
+set_ago();
+var ago_timer = setInterval(set_ago, 60*1000); // refresh ago text every 60s
+
+// if we ever want to clear it we can call:
+//    clearInterval(ago_timer);
+// if we do we should probably use the title text in place of the
+// previous ago text
+
 </script>
 [% END %]
