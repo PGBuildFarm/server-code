@@ -207,9 +207,20 @@ if ($frozen_sconf)
     $client_conf = thaw $frozen_sconf;
 }
 
-# XXX TODO: check for clock skew using this
+# adjust snapshot timestamp for clock skew
+# essentially this means we believe the client on how long the run took
+# but we don't believe its clock setting
 my $client_now = $client_conf->{current_ts};
-$client_conf->{clock_skew} = time - $client_now  if defined $client_now;
+my $skew = 0;
+if (defined $client_now)
+{
+	$skew = $server_time - $client_now;
+	$client_conf->{clock_skew} = $skew;
+	$ts += $skew;
+}
+
+# re-freeze after adding the skew setting
+$frozen_sconf = nfreeze($client_conf);
 
 unless ($ts < time + 120)
 {
