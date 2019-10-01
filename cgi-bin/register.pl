@@ -128,6 +128,7 @@ $from_addr = $register_from if $register_from;
 $msg->set('From',$from_addr);
 
 $msg->to(@$notifyapp);
+$msg->set('Reply-To',@$notify_app);
 $msg->subject('New Buildfarm Application');
 my $fh = $msg->open("sendmail","-f $from_addr");
 print $fh "\n\nName: $dummyname\n",
