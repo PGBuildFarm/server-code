@@ -51,7 +51,7 @@ my ($changed_this_run_logs, $changed_since_success_logs);
 use vars qw($info_row);
 
 # sanity check the date - some browsers mangle decoding it
-if ($system && $logdate && $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/)
+if ($system && $logdate && $logdate =~ /^20\d{2}-[01]\d-[0123]\d [012]\d:[0-5]\d:[0-5]\d$/)
 {
 
     my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0});
