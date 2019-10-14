@@ -53,7 +53,7 @@ $from_addr = $reminders_from if $reminders_from;
 my $msg = Mail::Send->new;
 $msg->set('From',$from_addr);
 $msg->to(@$notifyapp);
-$msg->set('Reply-To',@$notify_app);
+$msg->set('Reply-To',@$notifyapp);
 $msg->subject("PGBuildfarm pending applications reminder");
 my $fh = $msg->open("sendmail","-f $from_addr");
 
