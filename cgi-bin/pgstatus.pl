@@ -28,7 +28,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
 BEGIN { $server_time = time; }
 
 use CGI;
-use Digest::SHA  qw(sha1_hex);
+use Digest::SHA  qw(sha1_hex sha256_hex);
 use MIME::Base64;
 use DBI;
 use DBD::Pg;
@@ -177,13 +177,19 @@ unless ($secret)
 
 }
 
+my $orig_sig = $sig;
 my $calc_sig = sha1_hex($content,$secret);
 my $calc_sig2 = sha1_hex($extra_content,$content,$secret);
+if ($sig =~ /^#256#/)
+{
+	$calc_sig2 = sha256_hex($extra_content, $content, $secret);
+	$sig = substr($sig,5);
+}
 
 if ($calc_sig ne $sig && $calc_sig2 ne $sig)
 {
     print "Status: 450 sig mismatch\nContent-Type: text/plain\n\n";
-    print "$sig mismatches $calc_sig($calc_sig2)\n";
+    print "$orig_sig mismatches $calc_sig($calc_sig2)\n";
     $db->disconnect;
     exit;
 }
