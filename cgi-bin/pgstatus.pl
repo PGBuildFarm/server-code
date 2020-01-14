@@ -71,7 +71,7 @@ if ($query->request_method eq 'GET')
 }
 
 my $sig = $query->path_info;
-$sig =~ s/[^0-9a-fA-F]//g if $sig; # must be hex digits, also trim leading /
+$sig =~ s/[^0-9a-fA-F.]//g if $sig; # must be hex digits or ".", also trim leading /
 
 my $stage = $query->param('stage');
 my $ts = $query->param('ts');
@@ -94,7 +94,7 @@ open(my $tx,">",$rawtxfile) || die "opening $rawtxfile";
 $query->save($tx);
 close($tx);
 
-unless ($animal && looks_like_number($ts) && $stage && $sig && $branch && defined($res))
+unless ($animal && looks_like_number($ts) && $stage && defined($sig) && $branch && defined($res))
 {
     print
       "Status: 490 bad parameters\nContent-Type: text/plain\n\n",
@@ -180,7 +180,7 @@ unless ($secret)
 my $orig_sig = $sig;
 my $calc_sig = sha1_hex($content,$secret);
 my $calc_sig2 = sha1_hex($extra_content,$content,$secret);
-if ($sig =~ /^#256#/)
+if (substr($sig,0,5) eq ".256.")
 {
 	$calc_sig2 = sha256_hex($extra_content, $content, $secret);
 	$sig = substr($sig,5);
@@ -240,7 +240,7 @@ unless ($ts < time + 120)
 }
 
 unless ($ts + 86400 > time
-    || $client_conf->{config_env}->{CPPFLAGS} =~ /CLOBBER_CACHE/ )
+    || ($client_conf->{config_env}->{CPPFLAGS} || "x") =~ /CLOBBER_CACHE/ )
 {
     my $gmt = gmtime($ts);
     print
