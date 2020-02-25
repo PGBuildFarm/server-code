@@ -26,15 +26,15 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 die "no dbname" unless $dbname;
 die "no dbuser" unless $dbuser;
 
-my $dsn="dbi:Pg:dbname=$dbname";
+my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-my $db = DBI->connect($dsn,$dbuser,$dbpass);
+my $db = DBI->connect($dsn, $dbuser, $dbpass);
 
 die $DBI::errstr unless $db;
 
-my $query = CGI->new;
+my $query  = CGI->new;
 my $member = $query->param('nm');
 $member =~ s/[^a-zA-Z0-9_ -]//g if $member;
 my $branch = $query->param('br');
@@ -51,7 +51,7 @@ else
 }
 
 my $latest_personality = $db->selectrow_arrayref(
-    q{
+	q{
             select os_version, compiler_version
             from personality
             where name = ?
@@ -98,27 +98,27 @@ my $other_branches_query = q{
 };
 
 my $other_branches =
-  $db->selectcol_arrayref($other_branches_query,undef, $member, $branch);
+  $db->selectcol_arrayref($other_branches_query, undef, $member, $branch);
 
 my $sth = $db->prepare($systemdata);
 $sth->execute($member);
-my $sysrow = $sth->fetchrow_hashref;
-my $statrows=[];
-$sth=$db->prepare($statement);
-$sth->execute($member,$branch);
+my $sysrow   = $sth->fetchrow_hashref;
+my $statrows = [];
+$sth = $db->prepare($statement);
+$sth->execute($member, $branch);
 while (my $row = $sth->fetchrow_hashref)
 {
-    last unless $sysrow;
-    while (my($k,$v) = each %$sysrow) { $row->{$k} = $v; }
-    $row->{owner_email} =~ s/\@/ [ a t ] /;
-    if ($latest_personality)
-    {
-        $row->{os_version} = $latest_personality->[0];
-        $row->{compiler_version} = $latest_personality->[1];
-    }
+	last unless $sysrow;
+	while (my ($k, $v) = each %$sysrow) { $row->{$k} = $v; }
+	$row->{owner_email} =~ s/\@/ [ a t ] /;
+	if ($latest_personality)
+	{
+		$row->{os_version}       = $latest_personality->[0];
+		$row->{compiler_version} = $latest_personality->[1];
+	}
 	$row->{script_version} =~ s/^(\d{3})0(\d{2})/$1.$2/;
 	$row->{script_version} =~ s/^0+//;
-    push(@$statrows,$row);
+	push(@$statrows, $row);
 }
 
 $sth->finish;
@@ -126,19 +126,19 @@ $sth->finish;
 $db->disconnect;
 
 my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1 };
-my $template = Template->new($template_opts);
+my $template      = Template->new($template_opts);
 
 print "Content-Type: text/html\n\n";
 
 $template->process(
-    'history.tt',
-    {
-        statrows=>$statrows,
-        branch=>$branch,
-        member => $member,
-        hm => $hm,
-        other_branches => $other_branches,
-    }
+	'history.tt',
+	{
+		statrows       => $statrows,
+		branch         => $branch,
+		member         => $member,
+		hm             => $hm,
+		other_branches => $other_branches,
+	}
 );
 
 exit;

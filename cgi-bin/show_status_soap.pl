@@ -32,20 +32,20 @@ use DBI;
 sub get_status
 
 {
-    my $class = shift;
-    my @members = @_;
+	my $class   = shift;
+	my @members = @_;
 
-    my $dsn="dbi:Pg:dbname=$::dbname";
-    $dsn .= ";host=$::dbhost" if $::dbhost;
-    $dsn .= ";port=$::dbport" if $::dbport;
+	my $dsn = "dbi:Pg:dbname=$::dbname";
+	$dsn .= ";host=$::dbhost" if $::dbhost;
+	$dsn .= ";port=$::dbport" if $::dbport;
 
-    my $db = DBI->connect($dsn,$::dbuser,$::dbpass)
-      or die("$dsn,$::dbuser,$::dbpass,$!");
+	my $db = DBI->connect($dsn, $::dbuser, $::dbpass)
+	  or die("$dsn,$::dbuser,$::dbpass,$!");
 
-    # there is possibly some redundancy in this query, but it makes
-    # a lot of the processing simpler.
+	# there is possibly some redundancy in this query, but it makes
+	# a lot of the processing simpler.
 
-    my $statement =<<"EOS";
+	my $statement = <<"EOS";
 
 
     select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
@@ -59,26 +59,26 @@ sub get_status
 
 EOS
 
-    my $statrows=[];
-    my $sth=$db->prepare($statement);
-    $sth->execute;
-    while (my $row = $sth->fetchrow_hashref)
-    {
-        next if (@members && !grep {$_ eq $row->{sysname} } @members);
+	my $statrows = [];
+	my $sth      = $db->prepare($statement);
+	$sth->execute;
+	while (my $row = $sth->fetchrow_hashref)
+	{
+		next if (@members && !grep { $_ eq $row->{sysname} } @members);
 		if ($row->{build_flags})
 		{
-			$row->{build_flags}  =~ s/^\{(.*)\}$/$1/;
-			$row->{build_flags}  =~ s/,/ /g;
-			$row->{build_flags}  =~ s/--((enable|with)-)?//g;
-			$row->{build_flags}  =~ s/\S+=\S+//g;
+			$row->{build_flags} =~ s/^\{(.*)\}$/$1/;
+			$row->{build_flags} =~ s/,/ /g;
+			$row->{build_flags} =~ s/--((enable|with)-)?//g;
+			$row->{build_flags} =~ s/\S+=\S+//g;
 		}
-        push(@$statrows,$row);
-    }
-    $sth->finish;
+		push(@$statrows, $row);
+	}
+	$sth->finish;
 
-    $db->disconnect;
+	$db->disconnect;
 
-    return $statrows;
+	return $statrows;
 
 }
 

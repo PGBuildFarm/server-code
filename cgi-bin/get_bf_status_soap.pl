@@ -14,13 +14,13 @@ use warnings;
 use SOAP::Lite;
 use CGI;
 
-my $query = CGI->new;
-my $netloc = $query->url( -base => 1 );
+my $query  = CGI->new;
+my $netloc = $query->url(-base => 1);
 
 my $obj = SOAP::Lite->uri("$netloc/PGBuildFarm")
   ->proxy("$netloc/cgi-bin/show_status_soap.pl");
 
-my $data = $obj->get_status->result;
+my $data   = $obj->get_status->result;
 my @fields = qw( branch sysname stage status
   operating_system os_version
   compiler compiler_version architecture
@@ -30,11 +30,11 @@ my @fields = qw( branch sysname stage status
 print "Content-Type: text/plain\n\n";
 
 my $head = join(' | ', @fields);
-print $head,"\n";
+print $head, "\n";
 
 foreach my $datum (@$data)
 {
-    my $line = join(' | ', @{$datum}{@fields});
-    print $line,"\n";
+	my $line = join(' | ', @{$datum}{@fields});
+	print $line, "\n";
 }
 

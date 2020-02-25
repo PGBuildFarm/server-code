@@ -27,20 +27,18 @@ $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
-my $dsn="dbi:Pg:dbname=$dbname";
+my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-my $template_opts = { INCLUDE_PATH => $template_dir};
-my $template = Template->new($template_opts);
-my $query = CGI->new;
+my $template_opts = { INCLUDE_PATH => $template_dir };
+my $template      = Template->new($template_opts);
+my $query         = CGI->new;
 
 my $params = $query->Vars;
 
-my ($os, $osv, $comp, $compv, $arch, $email, $owner, $response ) =
-  @{$params}{
-    qw(os osv comp compv arch email owner g-recaptcha-response)
-  };
+my ($os, $osv, $comp, $compv, $arch, $email, $owner, $response) =
+  @{$params}{qw(os osv comp compv arch email owner g-recaptcha-response)};
 
 my $ok = 1;
 
@@ -48,9 +46,9 @@ unless ($skip_captcha)
 {
 	if (defined($response))
 	{
-		my $captcha = Captcha::reCAPTCHA::V2-> new;
+		my $captcha = Captcha::reCAPTCHA::V2->new;
 		$ok = $captcha->verify($captcha_invis_privkey, $response,
-							   $ENV{REMOTE_ADDR});
+			$ENV{REMOTE_ADDR});
 	}
 	else
 	{
@@ -59,33 +57,33 @@ unless ($skip_captcha)
 }
 
 unless ($os
-		&& $osv
-		&& $comp
-		&& $compv
-		&& $arch
-		&& $email
-		&& $owner
-		&& $ok)
+	&& $osv
+	&& $comp
+	&& $compv
+	&& $arch
+	&& $email
+	&& $owner
+	&& $ok)
 {
-    print "Content-Type: text/html\n\n";
-    $template->process('register-incomplete.tt');
-    exit;
+	print "Content-Type: text/html\n\n";
+	$template->process('register-incomplete.tt');
+	exit;
 }
 
-my $secret = "";
-my $dummyname=""; # we'll select an animal name when we approve it.
-foreach (1..8)
+my $secret    = "";
+my $dummyname = "";    # we'll select an animal name when we approve it.
+foreach (1 .. 8)
 {
-    # 8 random chars is enough for the dummy name
-    $secret .= substr("0123456789abcdefghijklmnopqrstuvwxyz",int(rand(36)),1);
-    $dummyname .= substr("0123456789abcdef",int(rand(16)),1);
+	# 8 random chars is enough for the dummy name
+	$secret .= substr("0123456789abcdefghijklmnopqrstuvwxyz", int(rand(36)), 1);
+	$dummyname .= substr("0123456789abcdef", int(rand(16)), 1);
 }
-foreach (9..32)
+foreach (9 .. 32)
 {
-    $secret .= substr("0123456789abcdef",int(rand(16)),1);
+	$secret .= substr("0123456789abcdef", int(rand(16)), 1);
 }
 
-my $db = DBI->connect($dsn,$dbuser,$dbpass);
+my $db = DBI->connect($dsn, $dbuser, $dbpass);
 
 my $statement = <<"EOS";
 
@@ -96,10 +94,11 @@ my $statement = <<"EOS";
 
 EOS
 
-my $sth=$db->prepare($statement);
-my $rv=
-  $sth->execute($dummyname,$secret,$os,$osv,$comp,$compv,$arch,$owner,$email);
-my $err=$db->errstr;
+my $sth = $db->prepare($statement);
+my $rv =
+  $sth->execute($dummyname, $secret, $os, $osv, $comp, $compv, $arch, $owner,
+	$email);
+my $err = $db->errstr;
 
 # everything looks OK, so tell them so
 print "Content-type: text/html\n\n";
@@ -125,12 +124,12 @@ $from_addr =~ tr /\r\n//d;
 
 $from_addr = $register_from if $register_from;
 
-$msg->set('From',$from_addr);
+$msg->set('From', $from_addr);
 
 $msg->to(@$notifyapp);
-$msg->set('Reply-To',@$notifyapp);
+$msg->set('Reply-To', @$notifyapp);
 $msg->subject('New Buildfarm Application');
-my $fh = $msg->open("sendmail","-f $from_addr");
+my $fh = $msg->open("sendmail", "-f $from_addr");
 print $fh "\n\nName: $dummyname\n",
   "OS: $os: $osv\n",
   "Arch: $arch\n",
