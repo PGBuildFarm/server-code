@@ -71,7 +71,7 @@ my $sth = $db->prepare(q[
     FROM build_status s join buildsystems b on (s.sysname = b.name)
     WHERE NOT b.no_alerts and
        snapshot > current_timestamp - interval '30 days'
-       and (array_length($1,1) = 0 or branch = any ($1))
+       and (array_length($1::text[],1) = 0 or branch = any ($1))
     ORDER BY sysname, branch, snapshot desc
 
 			  ]);
