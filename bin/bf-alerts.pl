@@ -21,7 +21,7 @@ use Storable qw(thaw);
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport
        $all_stat $fail_stat $change_stat $green_stat
-       $default_host $alerts_from
+       $default_host $alerts_from $template_dir $ignore_branches_of_interest
 );
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
@@ -48,6 +48,18 @@ my $clear_old = $db->do(q[
       (SELECT name FROM buildsystems WHERE no_alerts)
 			   ]);
 
+my $branches_of_interest = "$template_dir/../htdocs/branches_of_interest.txt";
+if (-e $branches_of_interest && ! $ignore_branches_of_interest)
+{
+	open (my $boi, "<" ,  "$branches_of_interest") ||
+	  die "opening $branches_of_interest: $!";
+	my @boi = <$boi>;
+	close $boi;
+	chomp @boi;
+	my $boilit = '{' . join(',',@boi) . '}';
+	$db->do(q{delete from alerts where not (branch = any ($1))},
+			undef, $boilit);
+}
 
 my $sth = $db->prepare(q[
 
