@@ -48,6 +48,7 @@ my $clear_old = $db->do(q[
       (SELECT name FROM buildsystems WHERE no_alerts)
 			   ]);
 
+my $boilit = '{}';
 my $branches_of_interest = "$template_dir/../htdocs/branches_of_interest.txt";
 if (-e $branches_of_interest && ! $ignore_branches_of_interest)
 {
@@ -56,7 +57,7 @@ if (-e $branches_of_interest && ! $ignore_branches_of_interest)
 	my @boi = <$boi>;
 	close $boi;
 	chomp @boi;
-	my $boilit = '{' . join(',',@boi) . '}';
+	$boilit = '{' . join(',',@boi) . '}';
 	$db->do(q{delete from alerts where not (branch = any ($1))},
 			undef, $boilit);
 }
@@ -70,11 +71,12 @@ my $sth = $db->prepare(q[
     FROM build_status s join buildsystems b on (s.sysname = b.name)
     WHERE NOT b.no_alerts and
        snapshot > current_timestamp - interval '30 days'
+       and (array_length($1,1) = 0 or branch = any ($1))
     ORDER BY sysname, branch, snapshot desc
 
 			  ]);
 
-$sth->execute;
+$sth->execute($boilit);
 
 my @last_heard;
 
