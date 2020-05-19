@@ -596,6 +596,11 @@ if ($ENV{BF_DEBUG})
 	print $tx "server time: $server_time, client time: $client_time\n"
 	  if $client_time;
 	close($tx);
+	# rename the file using the dbdate so they can be matched up
+	# but turn the space into a T like iso 8601
+	my $ndbdate = $dbdate;
+	$ndbdate =~ s/ /T/g;
+	move "$buildlogs/$animal.$date", "$buildlogs/$animal.$ndbdate"
 }
 
 my $url = $status_url;
