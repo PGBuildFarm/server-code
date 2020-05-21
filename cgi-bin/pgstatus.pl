@@ -140,6 +140,15 @@ my $db = DBI->connect($dsn, $dbuser, $dbpass);
 
 die $DBI::errstr unless $db;
 
+my ($raw_tables) = $db->selectrow_array(
+	q(select count(*)
+      from pg_class
+      where relanem = 'build_status_log_raw'));
+
+my ($raw_suffix, $log_text_type) = $raw_tables ?
+  ('_raw', DBD::Pg::PG_BYTEA) :
+  ('' , DBD::Pg::PG_TEXT);
+
 my $gethost =
   "select secret from buildsystems where name = ? and status = 'approved'";
 my $sth = $db->prepare($gethost);
@@ -431,7 +440,7 @@ if ($stage =~ /git/i)
 }
 
 my $logst = <<"EOSQL";
-    insert into build_status
+    insert into build_status$raw_suffix
       (sysname, snapshot,status, stage, log,conf_sum, branch,
        changed_this_run, changed_since_success,
        log_archive_filenames , log_archive, build_flags, scm, scmurl,
@@ -454,7 +463,7 @@ $sth->bind_param(2, $dbdate);
 $sth->bind_param(3, $res & 0x8fffffff);    # in case we get a 64 bit int status!
 $sth->bind_param(4, $stage);
 $log =~ s/\x00/\\0/g;
-$sth->bind_param(5,  $log);
+$sth->bind_param(5,  $log, { pg_type => $log_text_type });
 $sth->bind_param(6,  $conf);
 $sth->bind_param(7,  $branch);
 $sth->bind_param(8,  $changed_this_run);
@@ -478,11 +487,12 @@ if ($sqlres)
 
 	my $logst2 = q{
 
-	  insert into build_status_log
+	  insert into build_status_log$raw_suffix
 		(sysname, snapshot, branch, log_stage, log_text, stage_duration)
 		values (?, ?, ?, ?, ?, ?)
 
-    };
+	    };
+	}
 
 	$sth = $db->prepare($logst2);
 
@@ -502,8 +512,16 @@ if ($sqlres)
 		my $ltext = <$handle>;
 		close($handle);
 		$ltext =~ s/\x00/\\0/g;
-		$sqlres = $sth->execute($animal, $dbdate, $branch, $log_file, $ltext,
-			"$stage_interval seconds");
+		my $sinterval = "$stage_interval seconds";
+
+		$sth->bind_param(1, $animal);
+		$sth->bind_param(2, $dbdate);
+		$sth->bind_param(3, $branch);
+		$sth->bind_param(4, $log_file);
+		$sth->bind_param(5, $ltext, { pg_type => $log_text_type });
+		$sth->bind_param(6, $sinterval);
+
+		$sqlres = $sth->execute;
 		last unless $sqlres;
 	}
 
