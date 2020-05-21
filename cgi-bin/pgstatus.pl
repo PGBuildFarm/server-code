@@ -143,7 +143,7 @@ die $DBI::errstr unless $db;
 my ($raw_tables) = $db->selectrow_array(
 	q(select count(*)
       from pg_class
-      where relanem = 'build_status_log_raw'));
+      where relname = 'build_status_log_raw'));
 
 my ($raw_suffix, $log_text_type) = $raw_tables ?
   ('_raw', DBD::Pg::PG_BYTEA) :
