@@ -572,14 +572,7 @@ if ($latest_personality)
 my ($os, $compiler, $arch) =
   ("$row->[0] / $row->[1]", "$row->[2] / $row->[3]", $row->[4]);
 
-$db->begin_work;
-
-# prevent occasional duplication by forcing serialization of this operation
-$db->do("lock table dashboard_mat in share row exclusive mode");
-$db->do("delete from dashboard_mat");
-$db->do("insert into dashboard_mat select * from dashboard_mat_data");
-$db->do("update dashboard_last_modified set ts = current_timestamp");
-$db->commit;
+$db->do("select refresh_dashboard()");
 
 if ($stage ne 'OK')
 {
