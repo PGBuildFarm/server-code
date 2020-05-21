@@ -11,7 +11,7 @@ cd $DIR
 psql -q pgbfprod <<'EOF'
 
 set client_encoding = 'sql_ascii';
-\copy (select * from build_status_log x where sysname = 'prion' and branch = 'HEAD' and exists (select 1 from dashboard_mat d where d.sysname = x.sysname and d.snapshot = x.snapshot)) to build_status_log.data
+\copy (select * from build_status_log x where sysname in ('prion','drongo') and branch = 'HEAD' and exists (select 1 from dashboard_mat d where d.sysname = x.sysname and d.snapshot = x.snapshot)) to build_status_log.data
 \copy (select * from build_status x where exists (select 1 from dashboard_mat d where d.sysname = x.sysname and d.snapshot = x.snapshot)) to build_status.data
 \copy (select * from build_status_recent_500 where report_time > now() - interval '90 days') to build_status_recent_500.data
 \copy (select name,name,operating_system,os_version,compiler,compiler_version,architecture,status,'foo'::text,'foo@bar.baz'::text,status_ts,no_alerts,sys_notes,sys_notes_ts from public.buildsystems) to buildsystems.data
