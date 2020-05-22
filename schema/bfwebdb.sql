@@ -12,6 +12,15 @@ SET xmloption = content;
 SET client_min_messages = warning;
 
 --
+-- Name: migration; Type: SCHEMA; Schema: -; Owner: bfarchive
+--
+
+CREATE SCHEMA migration;
+
+
+ALTER SCHEMA migration OWNER TO bfarchive;
+
+--
 -- Name: plperl; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: pgbuildfarm
 --
 
@@ -237,6 +246,23 @@ CREATE FUNCTION public.approve(text, text) RETURNS text
 ALTER FUNCTION public.approve(text, text) OWNER TO pgbuildfarm;
 
 --
+-- Name: clock_skew(bytea); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.clock_skew(bytea) RETURNS integer
+    LANGUAGE plperlu
+    AS $_X$
+
+      use Storable qw(thaw);
+      my $sconf = thaw(decode_bytea($_[0]));
+      return $sconf->{clock_skew};
+
+$_X$;
+
+
+ALTER FUNCTION public.clock_skew(bytea) OWNER TO postgres;
+
+--
 -- Name: pending(); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
 --
 
@@ -279,6 +305,49 @@ CREATE FUNCTION public.purge_build_status_recent_500() RETURNS void
 
 
 ALTER FUNCTION public.purge_build_status_recent_500() OWNER TO pgbuildfarm;
+
+--
+-- Name: refresh_dashboard(); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION public.refresh_dashboard() RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+
+begin
+    lock table dashboard_mat in share row exclusive mode;
+    delete from dashboard_mat;
+    insert into dashboard_mat select * from dashboard_mat_data;
+    update dashboard_last_modified set ts = current_timestamp;
+end;
+
+$$;
+
+
+ALTER FUNCTION public.refresh_dashboard() OWNER TO pgbuildfarm;
+
+--
+-- Name: refresh_recent_failures(); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
+--
+
+CREATE FUNCTION public.refresh_recent_failures() RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+
+begin
+   lock table nrecent_failures in share row exclusive mode;
+   delete from nrecent_failures;
+   insert into nrecent_failures
+         select bs.sysname, bs.snapshot, bs.branch
+         from build_status bs
+         where bs.stage <> 'OK'
+         and bs.snapshot > now() - interval '90 days';
+end;
+
+$$;
+
+
+ALTER FUNCTION public.refresh_recent_failures() OWNER TO pgbuildfarm;
 
 --
 -- Name: script_version(text); Type: FUNCTION; Schema: public; Owner: pgbuildfarm
@@ -378,6 +447,65 @@ $_$;
 
 ALTER FUNCTION public.web_script_version(text) OWNER TO pgbuildfarm;
 
+--
+-- Name: build_status; Type: VIEW; Schema: migration; Owner: bfarchive
+--
+
+CREATE VIEW migration.build_status AS
+ SELECT build_status.sysname,
+    build_status.snapshot,
+    build_status.status,
+    build_status.stage,
+    encode(convert_to(build_status.log, 'SQL_ASCII'::name), 'escape'::text) AS log,
+    build_status.conf_sum,
+    build_status.branch,
+    build_status.changed_this_run,
+    build_status.changed_since_success,
+    build_status.log_archive,
+    build_status.log_archive_filenames,
+    build_status.build_flags,
+    build_status.report_time,
+    build_status.scm,
+    build_status.scmurl,
+    build_status.frozen_conf,
+    build_status.git_head_ref
+   FROM public.build_status;
+
+
+ALTER TABLE migration.build_status OWNER TO bfarchive;
+
+--
+-- Name: build_status_log; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
+--
+
+CREATE TABLE public.build_status_log (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text text,
+    stage_duration interval
+);
+
+
+ALTER TABLE public.build_status_log OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log; Type: VIEW; Schema: migration; Owner: bfarchive
+--
+
+CREATE VIEW migration.build_status_log AS
+ SELECT build_status_log.sysname,
+    build_status_log.snapshot,
+    build_status_log.branch,
+    build_status_log.log_stage,
+    encode(convert_to(build_status_log.log_text, 'SQL_ASCII'::name), 'escape'::text) AS log_text,
+    build_status_log.stage_duration
+   FROM public.build_status_log;
+
+
+ALTER TABLE migration.build_status_log OWNER TO bfarchive;
+
 SET default_with_oids = false;
 
 --
@@ -408,26 +536,6 @@ CREATE VIEW public.build_status_export AS
 
 
 ALTER TABLE public.build_status_export OWNER TO pgbuildfarm;
-
-SET default_with_oids = true;
-
---
--- Name: build_status_log; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
---
-
-CREATE TABLE public.build_status_log (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text text,
-    stage_duration interval
-);
-
-
-ALTER TABLE public.build_status_log OWNER TO pgbuildfarm;
-
-SET default_with_oids = false;
 
 --
 -- Name: build_status_recent_500; Type: TABLE; Schema: public; Owner: pgbuildfarm; Tablespace: 
@@ -995,6 +1103,18 @@ GRANT SELECT ON TABLE public.allhist_summary TO reader;
 
 
 --
+-- Name: TABLE build_status_log; Type: ACL; Schema: public; Owner: pgbuildfarm
+--
+
+REVOKE ALL ON TABLE public.build_status_log FROM PUBLIC;
+REVOKE ALL ON TABLE public.build_status_log FROM pgbuildfarm;
+GRANT ALL ON TABLE public.build_status_log TO pgbuildfarm;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.build_status_log TO pgbfweb;
+GRANT SELECT ON TABLE public.build_status_log TO rssfeed;
+GRANT SELECT ON TABLE public.build_status_log TO reader;
+
+
+--
 -- Name: TABLE alerts; Type: ACL; Schema: public; Owner: pgbuildfarm
 --
 
@@ -1012,18 +1132,6 @@ REVOKE ALL ON TABLE public.build_status_export FROM PUBLIC;
 REVOKE ALL ON TABLE public.build_status_export FROM pgbuildfarm;
 GRANT ALL ON TABLE public.build_status_export TO pgbuildfarm;
 GRANT SELECT ON TABLE public.build_status_export TO reader;
-
-
---
--- Name: TABLE build_status_log; Type: ACL; Schema: public; Owner: pgbuildfarm
---
-
-REVOKE ALL ON TABLE public.build_status_log FROM PUBLIC;
-REVOKE ALL ON TABLE public.build_status_log FROM pgbuildfarm;
-GRANT ALL ON TABLE public.build_status_log TO pgbuildfarm;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.build_status_log TO pgbfweb;
-GRANT SELECT ON TABLE public.build_status_log TO rssfeed;
-GRANT SELECT ON TABLE public.build_status_log TO reader;
 
 
 --
