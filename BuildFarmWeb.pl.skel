@@ -19,6 +19,7 @@ use vars qw(
   $all_stat $fail_stat $change_stat $green_stat
   $captcha_invis_pubkey $captcha_invis_privkey
   $template_dir
+  $buildlogs_dir
   $default_host
   $local_git_clone
   $status_from $register_from $reminders_from $alerts_from
@@ -48,6 +49,7 @@ $status_url = 'https://buildfarm.postgresql.org';
 my $base_install_dir = '/path/to/install/website';
 
 $template_dir = "$base_install_dir/templates";
+$buildlogs_dir = "$base_install_dir/buildlogs";
 
 $default_host = 'foohost.pgbuildfarm.org';
 
