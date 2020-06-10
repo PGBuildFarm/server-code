@@ -485,13 +485,12 @@ if ($sqlres)
 
 	$sth->finish;
 
-	my $logst2 = q{
+	my $logst2 = <<"EOSQL";
 
 	  insert into build_status_log$raw_suffix
 		(sysname, snapshot, branch, log_stage, log_text, stage_duration)
 		values (?, ?, ?, ?, ?, ?)
-
-	    };
+EOSQL
 
 	$sth = $db->prepare($logst2);
 
