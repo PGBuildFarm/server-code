@@ -492,7 +492,6 @@ if ($sqlres)
 		values (?, ?, ?, ?, ?, ?)
 
 	    };
-	}
 
 	$sth = $db->prepare($logst2);
 
