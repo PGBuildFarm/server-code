@@ -485,14 +485,13 @@ if ($sqlres)
 
 	$sth->finish;
 
-	my $logst2 = q{
+	my $logst2 = qq{
 
 	  insert into build_status_log$raw_suffix
 		(sysname, snapshot, branch, log_stage, log_text, stage_duration)
 		values (?, ?, ?, ?, ?, ?)
 
-	    };
-	}
+	};
 
 	$sth = $db->prepare($logst2);
 
