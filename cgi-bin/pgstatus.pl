@@ -88,12 +88,6 @@ my $frozen_sconf          = $query->param('frozen_sconf') || '';
 
 my $txanimal = $animal || 'unknown';
 $txanimal =~ s/[^a-zA-Z0-9_-]//g;    # no funky chars in filename
-my $rawfilets = time;
-my $rawtxfile = "$buildlogs/$txanimal.$rawfilets";
-
-open(my $tx, ">", $rawtxfile) || die "opening $rawtxfile";
-$query->save($tx);
-close($tx);
 
 unless ($animal
 	&& looks_like_number($ts)
@@ -179,8 +173,6 @@ if ($ENV{BF_DEBUG} || ($ts > time) || ($ts + 86400 < time) || (!$secret))
 	  "log:\n", $log;
 	close($tx);
 }
-
-unlink($rawtxfile) if -e $rawtxfile;
 
 unless ($secret)
 {
