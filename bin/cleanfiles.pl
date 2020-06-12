@@ -64,7 +64,8 @@ sub wanted
 	my $file = $_;
 
 	# ignore mail file, it should be cleaned up independently.
-	if ($file eq 'mail')
+	# also ignore tmp.nnn files. They will be renamed.
+	if ($file eq 'mail' || $file =~ /^tmp\.\d+/)
 	{
 		return;
 	}
