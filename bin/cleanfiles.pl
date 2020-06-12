@@ -5,10 +5,13 @@ eval 'exec /usr/bin/perl -S $0 ${1+"$@"}'
 use strict;
 use warnings;
 
+use DBI;
+use DBD::Pg;
+
 use File::Find ();
 
-# Set the variable $File::Find::dont_use_nlink if you're using AFS,
-# since AFS cheats.
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport
+  $default_host $buildlogs_dir);
 
 # for the convenience of &wanted calls, including -eval statements:
 use vars qw/*name *dir *prune/;
@@ -16,12 +19,30 @@ use vars qw/*name *dir *prune/;
 *dir   = *File::Find::dir;
 *prune = *File::Find::prune;
 
+require "$ENV{BFConfDir}/BuildFarmWeb.pl";
+
+die "no dbname" unless $dbname;
+die "no dbuser" unless $dbuser;
+
+my $dsn = "dbi:Pg:dbname=$dbname";
+$dsn .= ";host=$dbhost" if $dbhost;
+$dsn .= ";port=$dbport" if $dbport;
+
+my $db = DBI->connect($dsn, $dbuser, $dbpass);
+
+die $DBI::errstr unless $db;
+
+my $sth = $db->prepare("SELECT count(*) FROM build_status WHERE sysname = ? and snapshot = ?", { pg_server_prepare => 1 });
+
 sub wanted;
 
 my @files;
 
-# Traverse desired filesystems
-File::Find::find({ wanted => \&wanted }, '/home/pgbuildfarm/website/buildlogs');
+# Scan the buildlogs_dir, looking for only regular files (we do not
+# want to scan into any subdirectories).
+File::Find::find({ preprocess => sub { return grep { -f } @_ }, wanted => \&wanted }, $buildlogs_dir);
+
+$sth->finish();
 
 foreach my $fname (@files)
 {
@@ -29,20 +50,59 @@ foreach my $fname (@files)
 	unlink($fname) || warn "$fname: $!";
 }
 
+$db->disconnect;
+
 exit;
 
 ## no critic (ValuesAndExpressions::ProhibitFiletest_f)
 
 sub wanted
 {
-	my ($dev, $ino, $mode, $nlink, $uid, $gid);
+	# we've already filtered out everything but plain files in preprocess
 
-	(($dev, $ino, $mode, $nlink, $uid, $gid) = lstat($_))
-	  && (int(-M _) > 7)
-	  &&
+	# $_ is the file name,
+	my $file = $_;
 
-	  #    ( -M _ > 0.05 ) && # 1.2 hours
-	  -f _
-	  && push(@files, $name);
+	# ignore mail file, it should be cleaned up independently.
+	if ($file =~ /^mail$/)
+	{
+		return;
+	}
+
+	# File names we are interested in are animal.DATETIME.something, so split
+	# them up to use in the query.
+	my ($animal, $ts, $suffix) = split(/\./, $file, 3);
+
+	if (! ($animal && $ts && $suffix && ($suffix =~ /^(tgz|meta)$/)))
+	{
+		warn "unrecognized file found: `$file', ignoring";
+		return;
+	}
+
+	# Check if the run has been imported yet or not.
+	my $rows = $db->selectrow_array($sth,undef,$animal,$ts);
+	if (!defined($rows))
+	{
+		warn "error querying database for `$file': $sth->errstr";
+		return;
+	}
+
+	# animal,ts is the PK of this table, so we can only get 0 or 1 back
+	if ($rows == 1)
+	{
+		# We got a row back, so this import has been done,
+		push (@files, $name);
+	}
+	else
+	{
+		# complain if the file has gotten to be old enough that
+		# it really *should* have been imported by now
+		my ($dev, $ino, $mode, $nlink, $uid, $gid);
+		(($dev, $ino, $mode, $nlink, $uid, $gid) = lstat($_))
+		  && (int(-M _) > 7)
+		  && -f _
+		  && warn "$name hasn't been imported yet!";
+	}
+
 	return;
 }

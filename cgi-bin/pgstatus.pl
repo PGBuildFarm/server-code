@@ -609,7 +609,7 @@ if ($ENV{BF_DEBUG})
 	# but turn the space into a T like iso 8601
 	my $ndbdate = $dbdate;
 	$ndbdate =~ s/ /T/g;
-	move "$buildlogs/$animal.$date", "$buildlogs/$animal.$ndbdate";
+	move "$buildlogs/$animal.$date", "$buildlogs/$animal.$ndbdate.meta";
 	move "$buildlogs/tmp.$$.tgz", "$buildlogs/$animal.$ndbdate.tgz"
 	  if $log_archive;
 }
