@@ -74,9 +74,22 @@ sub wanted
 	# them up to use in the query.
 	my ($animal, $ts, $suffix) = split(/\./, $file, 3);
 
+	if (! $suffix)
+	{
+		# this could be the file before it's renamed to .meta, so ignore it
+		return;
+	}
+
 	if (! ($animal && $ts && $suffix && ($suffix =~ /^(tgz|meta)$/)))
 	{
 		warn "unrecognized file found: `$file', ignoring";
+		return;
+	}
+
+	if ($ts !~ /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d$/)
+	{
+		# doesn't look like a timestamp
+		warn "unrecognized timestamp in file found: `$file', ignoring";
 		return;
 	}
 
