@@ -60,11 +60,11 @@ sub wanted
 {
 	# we've already filtered out everything but plain files in preprocess
 
-	# $_ is the file name,
+	# $_ is the file name (no directory, we are chdir'ed there)
 	my $file = $_;
 
 	# ignore mail file, it should be cleaned up independently.
-	if ($file =~ /^mail$/)
+	if ($file eq 'mail')
 	{
 		return;
 	}
