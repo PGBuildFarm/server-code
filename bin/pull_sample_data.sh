@@ -21,6 +21,7 @@ set client_encoding = 'UTF8';
 \copy latest_snapshot to latest_snapshot.data
 \copy nrecent_failures to nrecent_failures.data
 \copy personality to personality.data
+\copy partman.part_config to partman_part_config.data
 
 EOF
 
@@ -39,6 +40,7 @@ alter table build_status_raw disable trigger user;
 \copy latest_snapshot from latest_snapshot.data
 \copy nrecent_failures from nrecent_failures.data
 \copy personality from personality.data
+\copy partman.part_config from partman_part_config.data
 alter table build_status_raw enable trigger user;
 commit;
 
@@ -58,7 +60,8 @@ truncate buildsystems
  ,  dashboard_mat
  ,  latest_snapshot
  ,  nrecent_failures
- ,  personality;
+ ,  personality
+ ,  partman.part_config;
 alter table build_status_raw enable trigger user;
 commit;
 
