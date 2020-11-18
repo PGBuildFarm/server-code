@@ -17,8 +17,8 @@ See accompanying License file for license details
 [% END -%]
 [% mytitle = BLOCK %]PostgreSQL BuildFarm | [% IF stage != 'OK' %]Log for system "[% system %]" failure on snapshot taken [% urldt ; ELSE %]Configuration summary for system "[% system %]" snapshot taken [% urldt ; END ; END -%]
 [%
-        cvsurl = 'http://anoncvs.postgresql.org/cvsweb.cgi';
-        giturl = 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commitdiff;h=';
+        cvsurl = 'https://anoncvs.postgresql.org/cvsweb.cgi';
+        giturl = 'https://git.postgresql.org/gitweb?p=postgresql.git;a=commitdiff;h=';
 -%]
 [% WRAPPER 'page.tt' 
 	title = mytitle
