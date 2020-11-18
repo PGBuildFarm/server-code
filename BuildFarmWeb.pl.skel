@@ -13,23 +13,23 @@ See accompanying License file for license details
 use strict;
 use warnings;
 
-use vars 
-    qw(
-       $dbhost $dbname $dbuser $dbpass $dbport
-       $notifyapp
-       $all_stat $fail_stat $change_stat $green_stat
-       $captcha_invis_pubkey $captcha_invis_privkey
-       $template_dir
-       $default_host
-	   $local_git_clone
-       $status_from $register_from $reminders_from $alerts_from
-       $status_url
-	   $skip_mail
-	   $skip_rss
-	   $skip_captcha
-	   $ignore_branches_of_interest
-	   $envtestenabled
-       );
+use vars qw(
+  $dbhost $dbname $dbuser $dbpass $dbport
+  $notifyapp
+  $all_stat $fail_stat $change_stat $green_stat
+  $captcha_invis_pubkey $captcha_invis_privkey
+  $template_dir
+  $buildlogs_dir
+  $default_host
+  $local_git_clone
+  $status_from $register_from $reminders_from $alerts_from
+  $status_url
+  $skip_mail
+  $skip_rss
+  $skip_captcha
+  $ignore_branches_of_interest
+  $envtestenabled
+);
 
 # if on enable envtest.pl to produce output, should normally be off
 $envtestenabled = 0;
@@ -49,44 +49,45 @@ $status_url = 'https://buildfarm.postgresql.org';
 my $base_install_dir = '/path/to/install/website';
 
 $template_dir = "$base_install_dir/templates";
+$buildlogs_dir = "$base_install_dir/buildlogs";
 
 $default_host = 'foohost.pgbuildfarm.org';
 
-$dbhost = undef; # undef = unix socket
+$dbhost = undef;      # undef = unix socket
 $dbname = "mydb";
 $dbuser = "myuser";
 $dbpass = "mypas";
-$dbport = undef; # undef = default
+$dbport = undef;      # undef = default
 
 # addresses to email about new applications
-$notifyapp=[qw( someone@somewhere.com )];
+$notifyapp = [qw( someone@somewhere.com )];
 
 # from addresses for various mailings
-$register_from = undef;
-$alerts_from = undef;
-$status_from = undef;
+$register_from  = undef;
+$alerts_from    = undef;
+$status_from    = undef;
 $reminders_from = undef;
 
 # addresses for mailing lists for status notifications
 
-$all_stat=['foo-status-all@somewhere.org'];
-$fail_stat=['foo-status-fail@somewhere.org'];
-$change_stat=['foo-status-chngs@somewhere.org'];
-$green_stat=['foo-status-green@somewhere.org'];
+$all_stat    = ['foo-status-all@somewhere.org'];
+$fail_stat   = ['foo-status-fail@somewhere.org'];
+$change_stat = ['foo-status-chngs@somewhere.org'];
+$green_stat  = ['foo-status-green@somewhere.org'];
 
 # minimum acceptable script versions
 {
 	no warnings qw(once);
-	$main::min_script_version = "99.99";
+	$main::min_script_version     = "99.99";
 	$main::min_web_script_version = "99.99";
 }
 
 # captcha keys for site
-$captcha_invis_pubkey = 'foo';
+$captcha_invis_pubkey  = 'foo';
 $captcha_invis_privkey = 'bar';
 
 $local_git_clone = '/path/to/bare/git/repo';
 
-$ignore_branches_of_interest = undef; # or some true value to ignore it
+$ignore_branches_of_interest = undef;    # or some true value to ignore it
 
 1;

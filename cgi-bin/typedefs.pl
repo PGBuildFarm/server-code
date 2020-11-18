@@ -24,7 +24,7 @@ $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
-my %params=$query->Vars;
+my %params    = $query->Vars;
 my $show_list = $params{show_list};
 $show_list = 1 if exists $params{keywords} && $params{keywords} =~ /show_list/;
 my $branch = $query->param('branch');
@@ -32,18 +32,19 @@ $branch =~ s{[^a-zA-Z0-9_/ -]}{}g if $branch;
 
 if (!$branch || $branch eq 'master')
 {
-    $branch='HEAD';
+	$branch = 'HEAD';
 }
 elsif ($branch eq 'ALL')
 {
-    $branch = undef;
+	$branch = undef;
 }
 
-my $dsn="dbi:Pg:dbname=$dbname";
+my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-my $dbh = DBI->connect($dsn,$dbuser,$dbpass) or die("$dsn,$dbuser,$dbpass,$!");
+my $dbh = DBI->connect($dsn, $dbuser, $dbpass)
+  or die("$dsn,$dbuser,$dbpass,$!");
 
 my %words;
 
@@ -65,27 +66,27 @@ my $sql = q{
 };
 my $builds = $dbh->selectall_arrayref($sql, { Slice => {} });
 my %branches;
-foreach my $build (@$builds) { $branches{$build->{branch}} = 1; }
+foreach my $build (@$builds) { $branches{ $build->{branch} } = 1; }
 
 if (defined $show_list)
 {
 
-    my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1};
-    my $template = Template->new($template_opts);
+	my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1 };
+	my $template      = Template->new($template_opts);
 
-    print "Content-Type: text/html\n\n";
+	print "Content-Type: text/html\n\n";
 
-    my $sorter =
-      sub { $a eq 'HEAD' ? -100 : ($b eq 'HEAD' ? 100 : $b cmp $a); };
+	my $sorter =
+	  sub { $a eq 'HEAD' ? -100 : ($b eq 'HEAD' ? 100 : $b cmp $a); };
 
-    $template->process(
-        "typedefs.tt",
-        {
-            builds => $builds,
-            branches => [ sort $sorter keys %branches ],
-        }
-    );
-    exit;
+	$template->process(
+		"typedefs.tt",
+		{
+			builds   => $builds,
+			branches => [ sort $sorter keys %branches ],
+		}
+	);
+	exit;
 }
 
 $sql = q{
@@ -101,14 +102,14 @@ my $sth = $dbh->prepare($sql);
 
 foreach my $build (@$builds)
 {
-    next if $branch && $build->{branch} ne $branch;
-    $sth->execute($build->{sysname},$build->{snapshot}, $build->{branch});
-    my @row = $sth->fetchrow;
-    my @typedefs = split(/\s+/,$row[0]);
-    @words{@typedefs} = 1 x @typedefs;
+	next if $branch && $build->{branch} ne $branch;
+	$sth->execute($build->{sysname}, $build->{snapshot}, $build->{branch});
+	my @row      = $sth->fetchrow;
+	my @typedefs = split(/\s+/, $row[0]);
+	@words{@typedefs} = 1 x @typedefs;
 }
 
 print "Content-Type: text/plain\n\n",
 
   #  Dumper(\%params),
-  join("\n",sort keys %words),"\n";
+  join("\n", sort keys %words), "\n";

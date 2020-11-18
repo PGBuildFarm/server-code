@@ -27,7 +27,7 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 die "no dbname" unless $dbname;
 die "no dbuser" unless $dbuser;
 
-my $dsn="dbi:Pg:dbname=$dbname";
+my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
@@ -45,16 +45,18 @@ $brnch =~ s{[^a-zA-Z0-9._/ -]}{}g;
 use vars qw($tgz);
 
 # sanity check the date - some browsers mangle decoding it
-if ($system && $logdate && $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
-	  && $stage)
+if (   $system
+	&& $logdate
+	&& $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
+	&& $stage)
 {
-    my $db = DBI->connect($dsn,$dbuser,$dbpass);
+	my $db = DBI->connect($dsn, $dbuser, $dbpass);
 
-    die $DBI::errstr unless $db;
+	die $DBI::errstr unless $db;
 
-    if ($logdate =~ /^latest$/i)
-    {
-        my $find_latest = qq{
+	if ($logdate =~ /^latest$/i)
+	{
+		my $find_latest = qq{
             select max(snapshot)
             from build_status_log
             where sysname = ?
@@ -62,12 +64,12 @@ if ($system && $logdate && $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
                 and log_stage = ? || '.log'
                 and branch = ?
         };
-        my $logs =
-          $db->selectcol_arrayref($find_latest,undef,$system,$stage,$brnch);
-        $logdate = shift(@$logs);
-    }
+		my $logs =
+		  $db->selectcol_arrayref($find_latest, undef, $system, $stage, $brnch);
+		$logdate = shift(@$logs);
+	}
 
-    my $statement = q(
+	my $statement = q(
 
         select branch, log_text
         from build_status_log
@@ -75,36 +77,39 @@ if ($system && $logdate && $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
 
         );
 
-    my $sth=$db->prepare($statement);
-    $sth->execute($system,$logdate,$stage);
-    my $row=$sth->fetchrow_arrayref;
-    my ($branch, $logtext);
-    if ($row)
-    {
-        $branch = $row->[0];
-        $logtext =$row->[1];
-    }
-    $sth->finish;
-    $db->disconnect;
+	my $sth = $db->prepare($statement);
+	$sth->execute($system, $logdate, $stage);
+	my $row = $sth->fetchrow_arrayref;
+	my ($branch, $logtext);
+	if ($row)
+	{
+		$branch  = $row->[0];
+		$logtext = $row->[1];
+	}
+	$sth->finish;
+	$db->disconnect;
 
 	$branch ||= "unknown";
 
-    print "Content-Type: text/plain\nContent-disposition: inline; filename=$stage.log\n\n";
+	print
+	  "Content-Type: text/plain\nContent-disposition: inline; filename=$stage.log\n\n";
 
-    if ($stage ne 'typedefs')
-    {
-        print "Snapshot: $logdate\n\n";
+	if ($stage ne 'typedefs')
+	{
+		print "Snapshot: $logdate\n\n";
 		$logtext ||= "no log text found";
-    }
+	}
 
 
-	$logtext =~ s/([\x00-\x08\x0B\x0C\x0E-\x1F\x80-\xff])/sprintf("\\x%.02x",ord($1))/ge if $logtext;
-    print $logtext if $logtext;
+	$logtext =~
+	  s/([\x00-\x08\x0B\x0C\x0E-\x1F\x80-\xff])/sprintf("\\x%.02x",ord($1))/ge
+	  if $logtext;
+	print $logtext if $logtext;
 
 }
 
 else
 {
-    print "Status: 460 bad parameters\n","Content-Type: text/plain\n\n";
+	print "Status: 460 bad parameters\n", "Content-Type: text/plain\n\n";
 }
 

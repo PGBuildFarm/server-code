@@ -23,23 +23,23 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 #require "BuildFarmWeb.pl";
 
-my $query = CGI->new;
+my $query   = CGI->new;
 my %sort_ok = (
-    'name' => 'lower(name)',
-    'owner' => 'lower(owner_email)',
-    'os' => 'lower(operating_system), os_version',
-    'compiler' => 'lower(compiler), compiler_version',
-    'arch' => 'lower(architecture)'
+	'name'     => 'lower(name)',
+	'owner'    => 'lower(owner_email)',
+	'os'       => 'lower(operating_system), os_version',
+	'compiler' => 'lower(compiler), compiler_version',
+	'arch'     => 'lower(architecture)'
 );
 $sort_by = $query->param('sort_by');
 $sort_by =~ s/[^a-zA-Z0-9_ -]//g if $sort_by;
 $sort_by = $sort_by ? $sort_ok{$sort_by} || $sort_ok{name} : $sort_ok{name};
 
-my $dsn="dbi:Pg:dbname=$dbname";
+my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-my $db = DBI->connect($dsn,$dbuser,$dbpass,{pg_expand_array => 0});
+my $db = DBI->connect($dsn, $dbuser, $dbpass, { pg_expand_array => 0 });
 
 # there is possibly some redundancy in this query, but it makes
 # a lot of the processing simpler.
@@ -67,35 +67,35 @@ my $statement = q{
 
 $statement .= "order by $sort_by";
 
-my $statrows=[];
-my $sth=$db->prepare($statement);
+my $statrows = [];
+my $sth      = $db->prepare($statement);
 $sth->execute;
 while (my $row = $sth->fetchrow_hashref)
 {
-    $row->{branches} =~ s/^\{(.*)\}$/$1/;
-    my $personalities = $row->{personalities};
-    $personalities =~ s/^\{(.*)\}$/$1/;
-    my @personalities = split(',',$personalities);
-    $row->{personalities} = [];
-    foreach my $personality (@personalities)
-    {
-        $personality =~ s/^"(.*)"$/$1/;
-        $personality =~ s/\\(.)/$1/g;
+	$row->{branches} =~ s/^\{(.*)\}$/$1/;
+	my $personalities = $row->{personalities};
+	$personalities =~ s/^\{(.*)\}$/$1/;
+	my @personalities = split(',', $personalities);
+	$row->{personalities} = [];
+	foreach my $personality (@personalities)
+	{
+		$personality =~ s/^"(.*)"$/$1/;
+		$personality =~ s/\\(.)/$1/g;
 
-        my ($compiler_version, $os_version, $effective_date) =
-          split(/\t/,$personality);
-        $effective_date =~ s/ .*//;
-        push(
-            @{$row->{personalities}},
-            {
-                compiler_version => $compiler_version,
-                os_version => $os_version,
-                effective_date => $effective_date
-            }
-        );
-    }
-    $row->{owner_email} =~ s/\@/ [ a t ] /;
-    push(@$statrows,$row);
+		my ($compiler_version, $os_version, $effective_date) =
+		  split(/\t/, $personality);
+		$effective_date =~ s/ .*//;
+		push(
+			@{ $row->{personalities} },
+			{
+				compiler_version => $compiler_version,
+				os_version       => $os_version,
+				effective_date   => $effective_date
+			}
+		);
+	}
+	$row->{owner_email} =~ s/\@/ [ a t ] /;
+	push(@$statrows, $row);
 }
 $sth->finish;
 
@@ -105,12 +105,12 @@ $db->disconnect;
 # print "Content-Type: text/plain\n\n",Dumper($statrows),"VERSION: ",
 # $DBD::Pg::VERSION,"\n"; exit;
 
-my $template_opts = { INCLUDE_PATH => $template_dir};
-my $template = Template->new($template_opts);
+my $template_opts = { INCLUDE_PATH => $template_dir };
+my $template      = Template->new($template_opts);
 
 print "Content-Type: text/html\n\n";
 
-$template->process('members.tt',{statrows=>$statrows});
+$template->process('members.tt', { statrows => $statrows });
 
 exit;
 

@@ -35,7 +35,7 @@ We are particularly interested in unusual platforms or combinations of
 architecture, operating system and compiler.
 </p>
 <p>To see what is involved in running a buildfarm member, please 
-read <a href="http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a>.
+read <a href="https://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">https://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a>.
 The client code can be found at <a href="https://github.com/PGBuildFarm/client-code/releases">Github</a>.
 </p>
 <p>The build farm software should run on all platforms that can support PostgreSQL.

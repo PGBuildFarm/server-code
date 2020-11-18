@@ -20,6 +20,6 @@ print `id`;
 
 foreach my $key (sort keys %ENV)
 {
-    my $val = $ENV{$key};
-    print "$key=$val\n";
+	my $val = $ENV{$key};
+	print "$key=$val\n";
 }

@@ -31,13 +31,13 @@ before submitting this form.</p>
 <li> Your machine will need to be able to contact <a href="[% baseurl %]">[% baseurl %]</a>
      either directly or via proxy, and it will need access to a PostgreSQL Git repository, 
      either the one at postgresql.org or a mirror.</li>
-<li> Have <a href="http://git-scm.org">git</a> installed.</li>
+<li> Have <a href="https://git-scm.org">git</a> installed.</li>
 <li> Have a working PostgreSQL build environment for your platform.</li>
 <li> Windows only: you will need a native perl installed (and not just the one from the MSys DTK). The one from ActiveState works fine.</li>
 <li> Download and unpack the latest release of client code from
      <a href="https://github.com/PGBuildFarm/client-code/releases">Github</a></li>
 <li> Read instructions at
-     <a href="http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">http://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a></li>
+     <a href="https://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">https://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a></li>
 <li> Get the software running locally using flags --test --keepall</li>
 <li> Register your machine using the form below</li>
 <li> When you receive credentials, put them in the config file, and schedule regular builds (without those flags)

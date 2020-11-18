@@ -12,7 +12,7 @@ my $query = CGI->new;
 
 my $url = $query->url();
 
-my $base = $query->url(-base=>1);
+my $base = $query->url(-base => 1);
 
 print <<"EOF";
 Content-Type: text/plain
