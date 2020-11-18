@@ -266,6 +266,9 @@ foreach my $clearme (@need_cleared)
 	# $sth->finish;
 
 	$msg->to($mailto);
+	$msg->set('Auto-Submitted', 'auto-generated');
+	$msg->set('X-Auto-Response-Suppress', 'all');
+
 	$msg->subject("PGBuildfarm member $animal Branch $branch Alert cleared");
 	my $fh = $msg->open("sendmail", "-f $from_addr");
 	print $fh "\n\n$text\n";
@@ -294,6 +297,8 @@ foreach my $needme (@need_alerts)
 	print "sending alert to $mailto\n";
 
 	$msg->to($mailto);
+	$msg->set('Auto-Submitted', 'auto-generated');
+	$msg->set('X-Auto-Response-Suppress', 'all');
 
 	$msg->subject(
 		"PGBuildfarm member $animal Branch $branch " . "Alert notification");

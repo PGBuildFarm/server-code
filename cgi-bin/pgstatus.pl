@@ -780,6 +780,8 @@ if (@$mailto or @$bcc_stat)
 
 	$msg->to(@$mailto)    if (@$mailto);
 	$msg->bcc(@$bcc_stat) if (@$bcc_stat);
+	$msg->set('Auto-Submitted', 'auto-generated');
+	$msg->set('X-Auto-Response-Suppress', 'all');
 	$msg->subject(
 		"PGBuildfarm member $animal Branch $branch $stat_type $stage");
 	$msg->set('From', $from_addr);
@@ -833,6 +835,8 @@ if (@$mailto or @$bcc_chg)
 
 	$msg->subject(
 		"PGBuildfarm member $animal Branch $branch Status $stat_type");
+	$msg->set('Auto-Submitted', 'auto-generated');
+	$msg->set('X-Auto-Response-Suppress', 'all');
 	$msg->set('From', $from_addr);
 	my $fh = $msg->open("sendmail", "-f $from_addr");
 	print $fh unindent(<<"EOMAIL");
