@@ -128,6 +128,8 @@ $msg->set('From', $from_addr);
 
 $msg->to(@$notifyapp);
 $msg->set('Reply-To', @$notifyapp);
+$msg->set('Auto-Submitted', 'auto-generated');
+$msg->set('X-Auto-Response-Suppress', 'all');
 $msg->subject('New Buildfarm Application');
 my $fh = $msg->open("sendmail", "-f $from_addr");
 print $fh "\n\nName: $dummyname\n",
