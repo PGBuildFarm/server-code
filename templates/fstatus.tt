@@ -43,7 +43,7 @@ See accompanying License file for license details
 	bodyclass = 'none'
 	pagebutton = 'failures'
 %]
-<!-- lastmodhead: [% lastmodhead %] -->
+<!-- lastmodhead: [% lastmodhead %] size: [% statrows.size %] -->
     <h1>PostgreSQL BuildFarm Recent Failures</h1>
     <p>
       Shown here are build failures that occurred in the last [% max_days %] days.

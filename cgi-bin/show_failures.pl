@@ -119,14 +119,63 @@ my $get_all_stages = qq{
 
 my $all_stages = $db->selectcol_arrayref($get_all_stages);
 
+my $pstmt = <<'EOS';
+
+    select os_version, compiler_version
+    from personality
+    where name = ? and effective_date <= ?
+    order by effective_date desc
+    limit 1
+
+EOS
+
+my $fetch_personality = $db->prepare($pstmt);
+
+
+
 my $statement = <<"EOS";
 
+  with db_data as (
 
+  SELECT b.sysname,
+    b.snapshot,
+    b.status,
+    b.stage,
+    b.branch,
+        CASE
+            WHEN b.conf_sum ~ 'use_vpath'::text AND b.conf_sum !~ '''use_vpath'' => undef'::text THEN b.build_flags || 'vpath'::text
+            ELSE b.build_flags
+        END AS build_flags,
+    s.operating_system,
+    s.compiler,
+    s.os_version,
+    s.compiler_version,
+    s.sys_notes_ts,
+    s.sys_notes,
+    b.git_head_ref,
+    b.report_time
+   FROM buildsystems s,
+    ( SELECT bs.sysname,
+            bs.snapshot,
+            bs.status,
+            bs.stage,
+            bs.branch,
+            bs.build_flags,
+            bs.conf_sum,
+            bs.report_time,
+            bs.git_head_ref
+           FROM build_status bs
+             JOIN nrecent_failures m USING (sysname, snapshot, branch)
+          WHERE m.snapshot > (now() - '90 days'::interval)
+          ORDER BY bs.sysname, bs.branch, bs.report_time  ) b
+  WHERE s.name = b.sysname AND s.status = 'approved'::text
+
+  )
   select timezone('GMT'::text,
 	now())::timestamp(0) without time zone - b.snapshot AS when_ago,
 	b.*,
 	d.stage as current_stage
-  from nrecent_failures_db_data b
+  from db_data b
 	left join  dashboard_mat d
 		on (d.sysname = b.sysname and d.branch = b.branch)
   where (now()::timestamp(0) without time zone - b.snapshot)
@@ -138,6 +187,8 @@ my $statement = <<"EOS";
         b.snapshot desc
 
 EOS
+
+
 
 my $statrows = [];
 my $sth      = $db->prepare($statement);
@@ -169,6 +220,15 @@ while (my $row = $sth->fetchrow_hashref)
 	$row->{build_flags} =~ s/libxml/xml/;
 	$row->{build_flags} =~ s/tap_tests/tap-tests/;
 	$row->{build_flags} =~ s/\S+=\S+//g;
+
+	$fetch_personality->execute($row->{sysname},$row->{report_time});
+	my @personality = $fetch_personality->fetchrow_array();
+	if (@personality)
+	{
+		$row->{os_version} = $personality[0];
+		$row->{compiler_version} = $personality[1];
+	}
+
 	push(@$statrows, $row);
 }
 $sth->finish;
