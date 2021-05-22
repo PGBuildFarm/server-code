@@ -47,7 +47,7 @@ use vars qw($tgz);
 # sanity check the date - some browsers mangle decoding it
 if (   $system
 	&& $logdate
-	&& $logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
+	&& ($logdate =~ /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/ || $logdate =~  /^latest$/i )
 	&& $stage)
 {
 	my $db = DBI->connect($dsn, $dbuser, $dbpass);

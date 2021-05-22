@@ -42,7 +42,7 @@ my ($os, $osv, $comp, $compv, $arch, $email, $owner, $response) =
 
 my $ok = 1;
 
-unless ($skip_captcha)
+unless ($ENV{SKIPCAPTCHA} || $skip_captcha)
 {
 	if (defined($response))
 	{
