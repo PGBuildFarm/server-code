@@ -42,7 +42,7 @@ my ($os, $osv, $comp, $compv, $arch, $email, $owner, $response) =
 
 my $ok = 1;
 
-unless ($ENV{SKIPCAPTCHA} || $skip_captcha)
+unless ($skip_captcha)
 {
 	if (defined($response))
 	{
@@ -107,7 +107,7 @@ $template->process('register-ok.tt');
 $sth->finish;
 $db->disconnect;
 
-exit if $skip_mail;
+exit if $skip_mail || ($owner eq 'adnoregister');
 
 use Mail::Send;
 
