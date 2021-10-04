@@ -15,6 +15,7 @@ use DBI;
 use Template;
 use CGI;
 use Template;
+use Crypt::URandom qw(urandom);
 
 use lib "$ENV{BFCONFDIR}/perl5";
 use Captcha::reCAPTCHA::V2;
@@ -70,18 +71,9 @@ unless ($os
 	exit;
 }
 
-my $secret    = "";
-my $dummyname = "";    # we'll select an animal name when we approve it.
-foreach (1 .. 8)
-{
-	# 8 random chars is enough for the dummy name
-	$secret .= substr("0123456789abcdefghijklmnopqrstuvwxyz", int(rand(36)), 1);
-	$dummyname .= substr("0123456789abcdef", int(rand(16)), 1);
-}
-foreach (9 .. 32)
-{
-	$secret .= substr("0123456789abcdef", int(rand(16)), 1);
-}
+# 8 random chars is enough for the dummy name
+my $dummyname = unpack("h*",urandom(4));
+my $secret    = unpack("h*",urandom(16));
 
 my $db = DBI->connect($dsn, $dbuser, $dbpass);
 
