@@ -193,6 +193,13 @@ if (substr($sig, 0, 5) eq ".256.")
 	$calc_sig2 = sha256_hex($extra_content, $content, $secret);
 	$sig       = substr($sig, 5);
 }
+elsif (substr($sig,0,6) eq '.256h.')
+{
+	my $rest = "&frozen_sconf=$frozen_sconf";
+	$rest .= "&logtar=$log_archive" if $log_archive;
+	$calc_sig2 = hmac_sha256_hex($extra_content, $content, $rest, $secret);
+	$sig = substr($sig,6);
+}
 
 if ($calc_sig ne $sig && $calc_sig2 ne $sig)
 {
