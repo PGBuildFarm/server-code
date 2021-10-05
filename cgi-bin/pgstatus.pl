@@ -28,7 +28,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
 BEGIN { $server_time = time; }
 
 use CGI;
-use Digest::SHA qw(sha1_hex sha256_hex);
+use Digest::SHA qw(sha1_hex sha256_hex hmac_sha256_hex);
 use MIME::Base64;
 use DBI;
 use DBD::Pg;
@@ -71,8 +71,8 @@ if ($query->request_method eq 'GET')
 }
 
 my $sig = $query->path_info;
-$sig =~ s/[^0-9a-fA-F.]//g
-  if $sig;    # must be hex digits or ".", also trim leading /
+$sig =~ s/[^0-9a-fA-Fh.]//g
+  if $sig;    # must be hex digits or "." or "h", also trim leading /
 
 my $stage                 = $query->param('stage');
 my $ts                    = $query->param('ts');
