@@ -90,14 +90,13 @@ my $statement = qq{
       select l.sysname, l.snapshot, sum(stage_duration) as runtime
       from build_status_log l
            join status s on (l.sysname = s.sysname and l.snapshot = s.snapshot)
-      group by l.sysname, l,snapshot
+      group by l.sysname, l.snapshot
    )
    select s.*, r.runtime
    from status s
       join run_times r on (s.sysname = r.sysname and s.snapshot = r.snapshot)
    order by s.snapshot desc
-}
-  ;
+};
 
 my $other_branches_query = q{
             select branch from (
