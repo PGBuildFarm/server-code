@@ -24,10 +24,10 @@ See accompanying License file for license details
      'thread-safety' => '/img/threads.gif',
      }
 -%]
-[%- BLOCK img ; IF flag == 'depend' or flag == 'gnu-ld' ; ; ELSIF flag_imgs.$flag %]<img src="[% flag_imgs.$flag %]" title="[% flag %]" alt="[% flag %]" height="16" width="16" class="inline" align="bottom" />  [% ELSE %][%#
+[%- BLOCK flag ; IF flag == 'depend' or flag == 'gnu-ld' ; ; ELSIF $flag %]<span class="[% $flag %]" title="[% flag %]" />  [% ELSE %][%#
 																									  flag ; ' '
 %][% END ; END -%]
-[%- BLOCK sysnotes ; IF row.sys_notes %]<img src="/img/notes.png" height="16" width="16" title="[% row.sys_notes_ts.replace(' .*','') | html %]: [% row.sys_notes | html %]" />
+[%- BLOCK sysnotes ; IF row.sys_notes %]<span class="notes" title="[% row.sys_notes_ts.replace(' .*','') | html %]: [% row.sys_notes | html %]"></span>
 [%- ELSE %]&nbsp;[% END ; END -%]
 [%- BLOCK cl %] class="[% IF bgfor.match('Git|port-check') %]cerr[% ELSE; SWITCH bgfor.replace('-.*','') -%]
   [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE [ 'pgsql' 'pgsql-Git-Dirty' 'Pre-run-port-check' ] %]cerr[% CASE %]fail[% END ; END %]"
@@ -50,7 +50,7 @@ See accompanying License file for license details
     </p>
 <table><tr><th class="head" rowspan="2">Legend</th>
 [% FOREACH flagset IN flag_imgs %]
-<td><img src="[% flagset.value %]" title="[% flagset.key %]" alt="[% flagset.key %]" height="16" width="16" class="inline"  align="center"/> =  [% flagset.key %]</td>
+<td class="legend"><span class="[% flagset.value %]" title="[% flagset.key %]"></span> =  [% flagset.key %]</td>
 [% IF loop.count == 7 %]</tr><tr>[% END %]
 [% END %]
 </tr></table>
@@ -82,7 +82,7 @@ See accompanying License file for license details
                [%- row.snapshot | uri %]">
                 [%- IF row.stage != 'OK' %]Details[% ELSE %]Config[% END -%]</a></td>
 
-    <td class="flags">[% FOREACH flag IN row.build_flags.split().sort() ; PROCESS img ; END %]</td>
+    <td class="flags">[% FOREACH flag IN row.build_flags.split().sort() ; PROCESS flag ; END %]</td>
 </tr>
 [% END %]
     </table>

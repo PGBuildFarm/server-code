@@ -133,3 +133,25 @@ td.branch ul, td.branch li {
 td.flags { white-space: nowrap;  font-size: x-small; }
 td.failflags {white-space: nowrap; font-size: x-small; }
 
+
+.notes {height: 16px; width: 16px; display: inline-block; background: url("/img/notes.png") no-repeat; }
+
+.flags span { height: 16px; width: 16px; display: inline-block;}
+.legend span { height: 16px; width: 16px; display: inline-block;}
+
+.cassert {background: url("/img/cassert.png") no-repeat; }
+.bug {background: url("/img/bug.png") no-repeat; }
+.gssapi {background: url("/img/gssapi.gif") no-repeat; }
+.krb5 {background: url("/img/krb5.png") no-repeat; }
+.llvm {background: url("/img/llvm.png") no-repeat; }
+.translateicon {background: url("/img/translateicon.gif") no-repeat; }
+.ssl_icon {background: url("/img/ssl_icon.gif") no-repeat; }
+.pam {background: url("/img/pam.png") no-repeat; }
+.camel {background: url("/img/camel.png") no-repeat; }
+.python {background: url("/img/python.png") no-repeat; }
+.tap {background: url("/img/tap.png") no-repeat; }
+.tcl {background: url("/img/tcl.png") no-repeat; }
+.threads {background: url("/img/threads.gif") no-repeat; }
+.vpath {background: url("/img/vpath.png") no-repeat; }
+.xml {background: url("/img/xml.png") no-repeat; }
+
