@@ -74,14 +74,28 @@ my $statement = qq{
       from build_status_recent_500
       where sysname = ?
          and branch = ?
-   )
-   select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
+   ),
+   status as
+   (
+      select (now() at time zone 'GMT')::timestamp(0) - snapshot as when_ago,
             sysname, snapshot, status, stage,
             coalesce(script_version,'') as script_version,
             git_head_ref
-   from x
-   order by snapshot desc
-   limit $hm
+      from x
+      order by snapshot desc
+      limit $hm
+   ),
+   run_times as
+   (
+      select l.sysname, l.snapshot, sum(stage_duration) as runtime
+      from build_status_log l
+           join status s on (l.sysname = s.sysname and l.snapshot = s.snapshot)
+      group by l.sysname, l,snapshot
+   )
+   select s.*, r.runtime
+   from status s
+      join run_times r on (s.sysname = r.sysname and s.snapshot = r.snapshot)
+   order by s.snapshot desc
 }
   ;
 
