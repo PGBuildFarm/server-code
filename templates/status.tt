@@ -7,28 +7,26 @@ See accompanying License file for license details
 -%]
 [%
  flag_imgs = {
-     perl = '/img/camel.png',
-     python = '/img/python.png',
-     debug = '/img/bug.png',
-     pam => '/img/pam.png',
-     cassert => '/img/cassert.png',
-     openssl => '/img/ssl_icon.gif',
-     nls => '/img/translateicon.gif',
-     krb5 => '/img/krb.gif',
-     gssapi => '/img/gssapi.gif',
-     tcl => '/img/tcl.png',
-     vpath => '/img/vpath.png',
-     xml => '/img/xml.png',
-	 llvm => '/img/llvm.png',
-	 'tap-tests' => '/img/tap.png',
-     'thread-safety' => '/img/threads.gif',
+     perl => 1,
+     python => 1,
+     debug => 1, 
+     pam => 1,
+     cassert => 1,
+     openssl => 1,
+     nls => 1,
+     krb5 => 1,
+     gssapi => 1,
+     tcl => 1,
+     vpath => 1,
+     xml => 1,
+	 llvm => 1,
+	 'tap-tests' => 1,
+     'thread-safety' => 1,
      }
 -%]
-[%- BLOCK img ; IF flag == 'depend' or flag == 'gnu-ld' ; ; ELSIF flag_imgs.$flag %]<img src="[% flag_imgs.$flag %]" title="[% flag %]" alt="[% flag %]" height="16" width="16" class="inline" align="bottom" />  [% ELSE %][%#
-																									  flag ; ' '
-%][% END ; END -%]
-[%- BLOCK sysnotes ; IF row.sys_notes %]<img src="/img/notes.png" height="16" width="16" title="[% row.sys_notes_ts.replace(' .*','') | html %]: [% row.sys_notes | html %]" />
-[%- ELSE %]&nbsp;[% END ; END -%]
+[%- BLOCK flag ; IF flag_imgs.${flag} == 1 %]<span class="[% flag %]" title="[% flag %]"></span>[% END ; END -%]
+[%- BLOCK sysnotes ; IF row.sys_notes %]<td class="notes"><span class="snotes" title="[% row.sys_notes_ts.replace(' .*','') | html %]: [% row.sys_notes | html %]"></span></td>
+[%- ELSE %]<td>&nbsp;</td>[% END ; END -%]
 [%- BLOCK cl %] class="[% IF bgfor.match('Git|port-check') %]cerr[% ELSE; SWITCH bgfor.replace('-.*','') -%]
   [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE [ 'pgsql' 'pgsql-Git-Dirty' 'Pre-run-port-check' ] %]cerr[% CASE %]fail[% END ; END %]"
 [%- END -%]
@@ -37,7 +35,6 @@ See accompanying License file for license details
 	bodyclass = 'none'
 	pagebutton = 'status'
 %]
-
 <!-- lastmodhead: [% lastmodhead %] -->
     <h1>PostgreSQL BuildFarm Status</h1>
     <p>
@@ -50,7 +47,7 @@ See accompanying License file for license details
     </p>
 <table><tr><th class="head" rowspan="2">Legend</th>
 [% FOREACH flagset IN flag_imgs %]
-<td><img src="[% flagset.value %]" title="[% flagset.key %]" alt="[% flagset.key %]" height="16" width="16" class="inline"  align="center"/> =  [% flagset.key %]</td>
+<td class="legend"><span class="[% flagset.key %]" title="[% flagset.key %]"></span> =  [% flagset.key %]</td>
 [% IF loop.count == 7 %]</tr><tr>[% END %]
 [% END %]
 </tr></table>
@@ -67,7 +64,7 @@ See accompanying License file for license details
     href="show_history.pl?nm=[% row.sysname %]&amp;br=[% row.branch %]"
     title="History"
     >[% row.sysname %]</a></td>
-    <td>[% PROCESS sysnotes %]</td>
+    [% PROCESS sysnotes %]
     <td><span class="opsys">[% row.operating_system %]
             [% row.os_version %]</span> <span class="compiler">
             [%- row.compiler %]
@@ -82,7 +79,7 @@ See accompanying License file for license details
                [%- row.snapshot | uri %]">
                 [%- IF row.stage != 'OK' %]Details[% ELSE %]Config[% END -%]</a></td>
 
-    <td class="flags">[% FOREACH flag IN row.build_flags.split().sort() ; PROCESS img ; END %]</td>
+    <td class="flags">[% FOREACH flag IN row.build_flags.split().sort() ; PROCESS flag ; END %]</td>
 </tr>
 [% END %]
     </table>
