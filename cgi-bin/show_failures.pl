@@ -45,6 +45,7 @@ do { s/[^a-zA-Z0-9_ :-]//g; }
   foreach @stages;
 my $qmdays   = $query->param('max_days');
 my $max_days = $qmdays ? $qmdays + 0 : 10;
+my $skipok = $query->param('skipok');
 
 my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
@@ -198,6 +199,7 @@ while (my $row = $sth->fetchrow_hashref)
 	next if (@members  && !grep { $_ eq $row->{sysname} } @members);
 	next if (@stages   && !grep { $_ eq $row->{stage} } @stages);
 	next if (@branches && !grep { $_ eq $row->{branch} } @branches);
+	next if $skipok && $row->{current_stage} eq 'OK';
 	$row->{build_flags} =~ s/^\{(.*)\}$/$1/ if $row->{build_flags};
 	$row->{build_flags} =~ s/,/ /g          if $row->{build_flags};
 

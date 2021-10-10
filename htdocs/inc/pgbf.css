@@ -138,6 +138,7 @@ td.failflags {white-space: nowrap; font-size: x-small; }
 .notes span { height: 16px; width: 16px; display: inline-block; }
 
 .flags span { height: 16px; width: 16px; display: inline-block;}
+.failflags span { height: 16px; width: 16px; display: inline-block;}
 .legend span { height: 16px; width: 16px; display: inline-block;}
 
 .cassert {background: url("/img/cassert.gif") no-repeat; }
