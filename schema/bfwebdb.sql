@@ -541,23 +541,6 @@ ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITIO
 ALTER TABLE build_status_log_parts.build_status_log_notnull_default OWNER TO pgbuildfarm;
 
 --
--- Name: build_status_log_notnull_p2021w10; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w10 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w10 FOR VALUES FROM ('2021-03-08 00:00:00') TO ('2021-03-15 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w10 OWNER TO pgbuildfarm;
-
---
 -- Name: build_status_log_notnull_p2021w11; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -1153,6 +1136,23 @@ ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITIO
 ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w45 OWNER TO pgbuildfarm;
 
 --
+-- Name: build_status_log_notnull_p2021w46; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w46 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w46 FOR VALUES FROM ('2021-11-15 00:00:00') TO ('2021-11-22 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w46 OWNER TO pgbuildfarm;
+
+--
 -- Name: build_status_log_null; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -1596,14 +1596,6 @@ ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_default
 
 
 --
--- Name: build_status_log_notnull_p2021w10 build_status_log_notnull_p2021w10_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w10
-    ADD CONSTRAINT build_status_log_notnull_p2021w10_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
 -- Name: build_status_log_notnull_p2021w11 build_status_log_notnull_p2021w11_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -1884,6 +1876,14 @@ ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w45
 
 
 --
+-- Name: build_status_log_notnull_p2021w46 build_status_log_notnull_p2021w46_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w46
+    ADD CONSTRAINT build_status_log_notnull_p2021w46_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
 -- Name: build_status_log_null build_status_log_null_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -2005,20 +2005,6 @@ CREATE INDEX build_status_log_notnull_snapshot_idx ON ONLY build_status_log_part
 --
 
 CREATE INDEX build_status_log_notnull_default_snapshot_idx ON build_status_log_parts.build_status_log_notnull_default USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w10_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w10_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w10 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w10_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w10_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w10 USING btree (snapshot);
 
 
 --
@@ -2512,6 +2498,20 @@ CREATE INDEX build_status_log_notnull_p2021w45_snapshot_idx ON build_status_log_
 
 
 --
+-- Name: build_status_log_notnull_p2021w46_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w46_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w46 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w46_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w46_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w46 USING btree (snapshot);
+
+
+--
 -- Name: build_status_log_null_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -2614,27 +2614,6 @@ ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH 
 --
 
 ALTER INDEX public.build_status_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w10_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w10_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w10_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w10_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w10_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w10_snapshot_idx;
 
 
 --
@@ -3373,6 +3352,27 @@ ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH 
 
 
 --
+-- Name: build_status_log_notnull_p2021w46_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w46_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w46_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w46_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2021w46_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w46_snapshot_idx;
+
+
+--
 -- Name: build_status_log_notnull_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -3439,13 +3439,6 @@ CREATE PUBLICATION pub_bfarchive WITH (publish = 'insert, update');
 
 
 ALTER PUBLICATION pub_bfarchive OWNER TO pgbuildfarm;
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w10; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w10;
-
 
 --
 -- Name: pub_bfarchive build_status_log_notnull_p2021w11; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
@@ -3693,6 +3686,13 @@ ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_stat
 
 
 --
+-- Name: pub_bfarchive build_status_log_notnull_p2021w46; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w46;
+
+
+--
 -- Name: pub_bfarchive build_status_raw; Type: PUBLICATION TABLE; Schema: public; Owner: pgbuildfarm
 --
 
@@ -3733,13 +3733,6 @@ GRANT ALL ON SCHEMA partman TO pgbuildfarm;
 --
 
 GRANT ALL ON FUNCTION partman.apply_cluster(p_parent_schema text, p_parent_tablename text, p_child_schema text, p_child_tablename text) TO pgbuildfarm;
-
-
---
--- Name: FUNCTION apply_constraints(p_parent_table text, p_child_table text, p_analyze boolean, p_job_id bigint, p_debug boolean); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.apply_constraints(p_parent_table text, p_child_table text, p_analyze boolean, p_job_id bigint, p_debug boolean) TO pgbuildfarm;
 
 
 --
@@ -3820,13 +3813,6 @@ GRANT ALL ON FUNCTION partman.check_partition_type(p_type text) TO pgbuildfarm;
 
 
 --
--- Name: FUNCTION check_subpart_sameconfig(p_parent_table text); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.check_subpart_sameconfig(p_parent_table text) TO pgbuildfarm;
-
-
---
 -- Name: FUNCTION check_subpartition_limits(p_parent_table text, p_type text, OUT sub_min text, OUT sub_max text); Type: ACL; Schema: partman; Owner: postgres
 --
 
@@ -3845,34 +3831,6 @@ GRANT ALL ON FUNCTION partman.create_function_id(p_parent_table text, p_job_id b
 --
 
 GRANT ALL ON FUNCTION partman.create_function_time(p_parent_table text, p_job_id bigint) TO pgbuildfarm;
-
-
---
--- Name: FUNCTION create_parent(p_parent_table text, p_control text, p_type text, p_interval text, p_constraint_cols text[], p_premake integer, p_automatic_maintenance text, p_start_partition text, p_inherit_fk boolean, p_epoch text, p_upsert text, p_publications text[], p_trigger_return_null boolean, p_template_table text, p_jobmon boolean, p_debug boolean); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.create_parent(p_parent_table text, p_control text, p_type text, p_interval text, p_constraint_cols text[], p_premake integer, p_automatic_maintenance text, p_start_partition text, p_inherit_fk boolean, p_epoch text, p_upsert text, p_publications text[], p_trigger_return_null boolean, p_template_table text, p_jobmon boolean, p_debug boolean) TO pgbuildfarm;
-
-
---
--- Name: FUNCTION create_partition_id(p_parent_table text, p_partition_ids bigint[], p_analyze boolean, p_debug boolean); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.create_partition_id(p_parent_table text, p_partition_ids bigint[], p_analyze boolean, p_debug boolean) TO pgbuildfarm;
-
-
---
--- Name: FUNCTION create_partition_time(p_parent_table text, p_partition_times timestamp with time zone[], p_analyze boolean, p_debug boolean); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.create_partition_time(p_parent_table text, p_partition_times timestamp with time zone[], p_analyze boolean, p_debug boolean) TO pgbuildfarm;
-
-
---
--- Name: FUNCTION create_sub_parent(p_top_parent text, p_control text, p_type text, p_interval text, p_native_check text, p_constraint_cols text[], p_premake integer, p_start_partition text, p_inherit_fk boolean, p_epoch text, p_upsert text, p_trigger_return_null boolean, p_jobmon boolean, p_debug boolean); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.create_sub_parent(p_top_parent text, p_control text, p_type text, p_interval text, p_native_check text, p_constraint_cols text[], p_premake integer, p_start_partition text, p_inherit_fk boolean, p_epoch text, p_upsert text, p_trigger_return_null boolean, p_jobmon boolean, p_debug boolean) TO pgbuildfarm;
 
 
 --
@@ -3918,27 +3876,6 @@ GRANT ALL ON FUNCTION partman.inherit_template_properties(p_parent_table text, p
 
 
 --
--- Name: FUNCTION partition_data_id(p_parent_table text, p_batch_count integer, p_batch_interval bigint, p_lock_wait numeric, p_order text, p_analyze boolean, p_source_table text); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.partition_data_id(p_parent_table text, p_batch_count integer, p_batch_interval bigint, p_lock_wait numeric, p_order text, p_analyze boolean, p_source_table text) TO pgbuildfarm;
-
-
---
--- Name: PROCEDURE partition_data_proc(p_parent_table text, p_interval text, p_batch integer, p_wait integer, p_source_table text, p_order text, p_lock_wait integer, p_lock_wait_tries integer, p_quiet boolean); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON PROCEDURE partman.partition_data_proc(p_parent_table text, p_interval text, p_batch integer, p_wait integer, p_source_table text, p_order text, p_lock_wait integer, p_lock_wait_tries integer, p_quiet boolean) TO pgbuildfarm;
-
-
---
--- Name: FUNCTION partition_data_time(p_parent_table text, p_batch_count integer, p_batch_interval interval, p_lock_wait numeric, p_order text, p_analyze boolean, p_source_table text); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.partition_data_time(p_parent_table text, p_batch_count integer, p_batch_interval interval, p_lock_wait numeric, p_order text, p_analyze boolean, p_source_table text) TO pgbuildfarm;
-
-
---
 -- Name: PROCEDURE reapply_constraints_proc(p_parent_table text, p_drop_constraints boolean, p_apply_constraints boolean, p_wait integer, p_dryrun boolean); Type: ACL; Schema: partman; Owner: postgres
 --
 
@@ -3950,20 +3887,6 @@ GRANT ALL ON PROCEDURE partman.reapply_constraints_proc(p_parent_table text, p_d
 --
 
 GRANT ALL ON FUNCTION partman.reapply_privileges(p_parent_table text) TO pgbuildfarm;
-
-
---
--- Name: FUNCTION run_maintenance(p_parent_table text, p_analyze boolean, p_jobmon boolean, p_debug boolean); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.run_maintenance(p_parent_table text, p_analyze boolean, p_jobmon boolean, p_debug boolean) TO pgbuildfarm;
-
-
---
--- Name: PROCEDURE run_maintenance_proc(p_wait integer, p_analyze boolean, p_jobmon boolean, p_debug boolean); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON PROCEDURE partman.run_maintenance_proc(p_wait integer, p_analyze boolean, p_jobmon boolean, p_debug boolean) TO pgbuildfarm;
 
 
 --
@@ -3992,20 +3915,6 @@ GRANT ALL ON FUNCTION partman.show_partitions(p_parent_table text, p_order text,
 --
 
 GRANT ALL ON FUNCTION partman.stop_sub_partition(p_parent_table text, p_jobmon boolean) TO pgbuildfarm;
-
-
---
--- Name: FUNCTION undo_partition(p_parent_table text, p_batch_count integer, p_batch_interval text, p_keep_table boolean, p_lock_wait numeric, p_target_table text, OUT partitions_undone integer, OUT rows_undone bigint); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.undo_partition(p_parent_table text, p_batch_count integer, p_batch_interval text, p_keep_table boolean, p_lock_wait numeric, p_target_table text, OUT partitions_undone integer, OUT rows_undone bigint) TO pgbuildfarm;
-
-
---
--- Name: PROCEDURE undo_partition_proc(p_parent_table text, p_interval text, p_batch integer, p_wait integer, p_target_table text, p_keep_table boolean, p_lock_wait integer, p_lock_wait_tries integer, p_quiet boolean); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON PROCEDURE partman.undo_partition_proc(p_parent_table text, p_interval text, p_batch integer, p_wait integer, p_target_table text, p_keep_table boolean, p_lock_wait integer, p_lock_wait_tries integer, p_quiet boolean) TO pgbuildfarm;
 
 
 --
@@ -4071,13 +3980,6 @@ GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull TO bfarchi
 --
 
 GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_default TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w10; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w10 TO bfarchive;
 
 
 --
@@ -4323,6 +4225,13 @@ GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w44 T
 --
 
 GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w45 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2021w46; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w46 TO bfarchive;
 
 
 --
