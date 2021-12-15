@@ -103,12 +103,18 @@ unless ($animal
 
 }
 
-my $brhandle;
-if ((!$ignore_branches_of_interest)
-	&& open($brhandle, "<", "../htdocs/branches_of_interest.txt"))
+if (!$ignore_branches_of_interest)
 {
+	my $brhandle;
+	open($brhandle, "<", "../htdocs/branches_of_interest.txt")
+	  || die "opening branches_of_interest.txt: $!";
 	my @branches_of_interest = <$brhandle>;
 	close($brhandle);
+	open($brhandle, "<", "../htdocs/old_branches_of_interest.txt")
+	  || die "opening old_branches_of_interest.txt: $!";
+	my @old_branches_of_interest = <$brhandle>;
+	close($brhandle);
+	push(@branches_of_interest, @old_branches_of_interest);
 	chomp(@branches_of_interest);
 	unless (grep { $_ eq $branch } @branches_of_interest)
 	{
