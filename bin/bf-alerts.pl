@@ -149,7 +149,7 @@ foreach my $sysbranch (@last_heard)
 	my $client_conf = thaw $sysbranch->{config};
 
 	my %client_alert_settings = %{ $client_conf->{alerts} || {} };
-	my $setting               = $client_alert_settings{ $sysbranch->{branch} };
+	my $setting = $client_alert_settings{ $sysbranch->{branch} };
 	unless ($setting && $setting->{alert_after} && $setting->{alert_every})
 	{
 		# if no valid setting, clear any alert and keep going
@@ -266,7 +266,7 @@ foreach my $clearme (@need_cleared)
 	# $sth->finish;
 
 	$msg->to($mailto);
-	$msg->set('Auto-Submitted', 'auto-generated');
+	$msg->set('Auto-Submitted',           'auto-generated');
 	$msg->set('X-Auto-Response-Suppress', 'all');
 
 	$msg->subject("PGBuildfarm member $animal Branch $branch Alert cleared");
@@ -280,9 +280,9 @@ foreach my $clearme (@need_cleared)
 foreach my $needme (@need_alerts)
 {
 	my ($sysbranch, $setting) = @$needme;
-	my ($animal,    $branch)  = ($sysbranch->{sysname}, $sysbranch->{branch});
+	my ($animal, $branch) = ($sysbranch->{sysname}, $sysbranch->{branch});
 	my $hours = sprintf("%.2f", ($now - $sysbranch->{snapshot}) / 3600);
-	my $text  = "$sysbranch->{sysname} has not reported "
+	my $text = "$sysbranch->{sysname} has not reported "
 	  . "on $sysbranch->{branch} for $hours hours.";
 	my $msg = Mail::Send->new;
 
@@ -297,7 +297,7 @@ foreach my $needme (@need_alerts)
 	print "sending alert to $mailto\n";
 
 	$msg->to($mailto);
-	$msg->set('Auto-Submitted', 'auto-generated');
+	$msg->set('Auto-Submitted',           'auto-generated');
 	$msg->set('X-Auto-Response-Suppress', 'all');
 
 	$msg->subject(

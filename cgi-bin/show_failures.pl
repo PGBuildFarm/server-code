@@ -45,7 +45,7 @@ do { s/[^a-zA-Z0-9_ :-]//g; }
   foreach @stages;
 my $qmdays   = $query->param('max_days');
 my $max_days = $qmdays ? $qmdays + 0 : 10;
-my $skipok = $query->param('skipok');
+my $skipok   = $query->param('skipok');
 
 my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
@@ -224,11 +224,11 @@ while (my $row = $sth->fetchrow_hashref)
 	$row->{build_flags} =~ s/asserts/cassert/;
 	$row->{build_flags} =~ s/\S+=\S+//g;
 
-	$fetch_personality->execute($row->{sysname},$row->{report_time});
+	$fetch_personality->execute($row->{sysname}, $row->{report_time});
 	my @personality = $fetch_personality->fetchrow_array();
 	if (@personality)
 	{
-		$row->{os_version} = $personality[0];
+		$row->{os_version}       = $personality[0];
 		$row->{compiler_version} = $personality[1];
 	}
 
@@ -239,7 +239,7 @@ $sth->finish;
 $db->disconnect;
 
 my $template_opts = { INCLUDE_PATH => $template_dir };
-my $template      = Template->new($template_opts);
+my $template = Template->new($template_opts);
 
 if ($lastmodhead)
 {

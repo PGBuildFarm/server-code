@@ -20,7 +20,7 @@ $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $template_opts = { INCLUDE_PATH => $template_dir };
-my $template      = Template->new($template_opts);
+my $template = Template->new($template_opts);
 
 my $cgi = CGI->new();
 print "Content-Type: text/html\n\n";

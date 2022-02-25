@@ -129,7 +129,7 @@ my $new_personality = q{
 };
 
 $sth = $db->prepare($new_personality);
-$rv  = $sth->execute($animal, $os_version, $compiler_version);
+$rv = $sth->execute($animal, $os_version, $compiler_version);
 
 unless ($rv)
 {

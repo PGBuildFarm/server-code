@@ -106,7 +106,7 @@ $db->disconnect;
 # $DBD::Pg::VERSION,"\n"; exit;
 
 my $template_opts = { INCLUDE_PATH => $template_dir };
-my $template      = Template->new($template_opts);
+my $template = Template->new($template_opts);
 
 print "Content-Type: text/html\n\n";
 

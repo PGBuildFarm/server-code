@@ -32,7 +32,9 @@ my $db = DBI->connect($dsn, $dbuser, $dbpass);
 
 die $DBI::errstr unless $db;
 
-my $sth = $db->prepare("SELECT count(*) FROM build_status WHERE sysname = ? and snapshot = ?", { pg_server_prepare => 1 });
+my $sth = $db->prepare(
+	"SELECT count(*) FROM build_status WHERE sysname = ? and snapshot = ?",
+	{ pg_server_prepare => 1 });
 
 sub wanted;
 
@@ -40,7 +42,15 @@ my @files;
 
 # Scan the buildlogs_dir, looking for only regular files (we do not
 # want to scan into any subdirectories).
-File::Find::find({ preprocess => sub { return grep { -f } @_ }, wanted => \&wanted }, $buildlogs_dir);
+File::Find::find(
+	{
+		preprocess => sub {
+			return grep { -f } @_;
+		},
+		wanted => \&wanted
+	},
+	$buildlogs_dir
+);
 
 $sth->finish();
 
@@ -74,13 +84,13 @@ sub wanted
 	# them up to use in the query.
 	my ($animal, $ts, $suffix) = split(/\./, $file, 3);
 
-	if (! $suffix)
+	if (!$suffix)
 	{
 		# this could be the file before it's renamed to .meta, so ignore it
 		return;
 	}
 
-	if (! ($animal && $ts && $suffix && ($suffix =~ /^(tgz|meta)$/)))
+	if (!($animal && $ts && $suffix && ($suffix =~ /^(tgz|meta)$/)))
 	{
 		warn "unrecognized file found: `$file', ignoring";
 		return;
@@ -94,7 +104,7 @@ sub wanted
 	}
 
 	# Check if the run has been imported yet or not.
-	my $rows = $db->selectrow_array($sth,undef,$animal,$ts);
+	my $rows = $db->selectrow_array($sth, undef, $animal, $ts);
 	if (!defined($rows))
 	{
 		warn "error querying database for `$file': $sth->errstr";
@@ -105,14 +115,14 @@ sub wanted
 	if ($rows == 1)
 	{
 		# We got a row back, so this import has been done,
-		push (@files, $name);
+		push(@files, $name);
 	}
 	else
 	{
 		# complain if the file has gotten to be old enough that
 		# it really *should* have been imported by now
 		my ($dev, $ino, $mode, $nlink, $uid, $gid);
-		(($dev, $ino, $mode, $nlink, $uid, $gid) = lstat($_))
+		     (($dev, $ino, $mode, $nlink, $uid, $gid) = lstat($_))
 		  && (int(-M _) > 7)
 		  && -f _
 		  && warn "$name hasn't been imported yet!";

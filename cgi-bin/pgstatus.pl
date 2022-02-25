@@ -116,6 +116,7 @@ if (!$ignore_branches_of_interest)
 	close($brhandle);
 	push(@branches_of_interest, @old_branches_of_interest);
 	chomp(@branches_of_interest);
+
 	unless (grep { $_ eq $branch } @branches_of_interest)
 	{
 		my $msgbranch = uri_escape($branch, "^A-Za-z0-9\-\._~/");
@@ -128,11 +129,11 @@ if (!$ignore_branches_of_interest)
 }
 
 my $content =
-	"branch=$branch&res=$res&stage=$stage&animal=$animal&"
+    "branch=$branch&res=$res&stage=$stage&animal=$animal&"
   . "ts=$ts&log=$log&conf=$conf";
 
 my $extra_content =
-	"changed_files=$changed_this_run&"
+    "changed_files=$changed_this_run&"
   . "changed_since_success=$changed_since_success&";
 
 
@@ -143,11 +144,13 @@ die $DBI::errstr unless $db;
 my ($raw_tables) = $db->selectrow_array(
 	q(select count(*)
       from pg_class
-      where relname = 'build_status_log_raw'));
+      where relname = 'build_status_log_raw')
+);
 
-my ($raw_suffix, $log_text_type) = $raw_tables ?
-  ('_raw', DBD::Pg::PG_BYTEA) :
-  ('' , DBD::Pg::PG_TEXT);
+my ($raw_suffix, $log_text_type) =
+  $raw_tables
+  ? ('_raw', DBD::Pg::PG_BYTEA)
+  : ('', DBD::Pg::PG_TEXT);
 
 my $gethost =
   "select secret from buildsystems where name = ? and status = 'approved'";
@@ -197,14 +200,14 @@ my $calc_sig2 = sha1_hex($extra_content, $content, $secret);
 if (substr($sig, 0, 5) eq ".256.")
 {
 	$calc_sig2 = sha256_hex($extra_content, $content, $secret);
-	$sig       = substr($sig, 5);
+	$sig = substr($sig, 5);
 }
-elsif (substr($sig,0,6) eq '.256h.')
+elsif (substr($sig, 0, 6) eq '.256h.')
 {
 	my $rest = "&frozen_sconf=$frozen_sconf";
 	$rest .= "&logtar=$log_archive" if $log_archive;
 	$calc_sig2 = hmac_sha256_hex($extra_content, $content, $rest, $secret);
-	$sig = substr($sig,6);
+	$sig = substr($sig, 6);
 }
 
 if ($calc_sig ne $sig && $calc_sig2 ne $sig)
@@ -415,7 +418,7 @@ if (@config_flags)
 	$config_flags = '{' . join(',', @config_flags) . '}';
 }
 
-my $scm    = $client_conf->{scm} || 'cvs';
+my $scm = $client_conf->{scm} || 'cvs';
 my $scmurl = $client_conf->{scm_url};
 
 # if it's a git failure, throttle it so we don't get failures too often
@@ -468,15 +471,15 @@ $sth->bind_param(2, $dbdate);
 $sth->bind_param(3, $res & 0x8fffffff);    # in case we get a 64 bit int status!
 $sth->bind_param(4, $stage);
 $log =~ s/\x00/\\0/g;
-$sth->bind_param(5,  $log, { pg_type => $log_text_type });
-$sth->bind_param(6,  $conf);
-$sth->bind_param(7,  $branch);
-$sth->bind_param(8,  $changed_this_run);
-$sth->bind_param(9,  $changed_since_success);
+$sth->bind_param(5, $log, { pg_type => $log_text_type });
+$sth->bind_param(6, $conf);
+$sth->bind_param(7, $branch);
+$sth->bind_param(8, $changed_this_run);
+$sth->bind_param(9, $changed_since_success);
 $sth->bind_param(10, $log_file_names);
 
 #$sth->bind_param(11,$log_archive,{ pg_type => DBD::Pg::PG_BYTEA });
-$sth->bind_param(11, undef, { pg_type => DBD::Pg::PG_BYTEA });
+$sth->bind_param(11, undef,         { pg_type => DBD::Pg::PG_BYTEA });
 $sth->bind_param(12, $config_flags);
 $sth->bind_param(13, $scm);
 $sth->bind_param(14, $scmurl);
@@ -618,12 +621,13 @@ if ($ENV{BF_DEBUG})
 	print $tx "server time: $server_time, client time: $client_time\n"
 	  if $client_time;
 	close($tx);
+
 	# rename the file using the dbdate so they can be matched up
 	# but turn the space into a T like iso 8601
 	my $ndbdate = $dbdate;
 	$ndbdate =~ s/ /T/g;
 	move "$buildlogs/$animal.$date", "$buildlogs/$animal.$ndbdate.meta";
-	move "$buildlogs/tmp.$$.tgz", "$buildlogs/$animal.$ndbdate.tgz"
+	move "$buildlogs/tmp.$$.tgz",    "$buildlogs/$animal.$ndbdate.tgz"
 	  if $log_archive;
 }
 
@@ -793,7 +797,7 @@ if (@$mailto or @$bcc_stat)
 
 	$msg->to(@$mailto)    if (@$mailto);
 	$msg->bcc(@$bcc_stat) if (@$bcc_stat);
-	$msg->set('Auto-Submitted', 'auto-generated');
+	$msg->set('Auto-Submitted',           'auto-generated');
 	$msg->set('X-Auto-Response-Suppress', 'all');
 	$msg->subject(
 		"PGBuildfarm member $animal Branch $branch $stat_type $stage");
@@ -848,9 +852,9 @@ if (@$mailto or @$bcc_chg)
 
 	$msg->subject(
 		"PGBuildfarm member $animal Branch $branch Status $stat_type");
-	$msg->set('Auto-Submitted', 'auto-generated');
+	$msg->set('Auto-Submitted',           'auto-generated');
 	$msg->set('X-Auto-Response-Suppress', 'all');
-	$msg->set('From', $from_addr);
+	$msg->set('From',                     $from_addr);
 	my $fh = $msg->open("sendmail", "-f $from_addr");
 	print $fh unindent(<<"EOMAIL");
 

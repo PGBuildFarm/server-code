@@ -72,7 +72,7 @@ if (defined $show_list)
 {
 
 	my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1 };
-	my $template      = Template->new($template_opts);
+	my $template = Template->new($template_opts);
 
 	print "Content-Type: text/html\n\n";
 
@@ -104,7 +104,7 @@ foreach my $build (@$builds)
 {
 	next if $branch && $build->{branch} ne $branch;
 	$sth->execute($build->{sysname}, $build->{snapshot}, $build->{branch});
-	my @row      = $sth->fetchrow;
+	my @row = $sth->fetchrow;
 	my @typedefs = split(/\s+/, $row[0]);
 	@words{@typedefs} = 1 x @typedefs;
 }

@@ -23,7 +23,7 @@ $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1 };
-my $template      = Template->new($template_opts);
+my $template = Template->new($template_opts);
 
 die "no dbname" unless $dbname;
 die "no dbuser" unless $dbuser;
@@ -131,7 +131,7 @@ if (   $system
 	$scm = $row->[7];
 	$scm ||= 'cvs';    # legacy scripts
 	$scmurl = $row->[8];
-	$scmurl = undef unless $scmurl && $scmurl =~ /^http/;  # slight sanity check
+	$scmurl = undef unless $scmurl && $scmurl =~ /^http/;    # slight sanity check
 	$scmurl = 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;h='
 	  if ($scmurl && $scmurl eq 'http://git.postgresql.org/git/postgresql.git');
 	$log_file_names =~ s/^\{(.*)\}$/$1/ if $log_file_names;

@@ -48,7 +48,7 @@ $status_url = 'https://buildfarm.postgresql.org';
 
 my $base_install_dir = '/path/to/install/website';
 
-$template_dir = "$base_install_dir/templates";
+$template_dir  = "$base_install_dir/templates";
 $buildlogs_dir = "$base_install_dir/buildlogs";
 
 $default_host = 'foohost.pgbuildfarm.org';

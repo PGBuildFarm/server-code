@@ -41,7 +41,7 @@ $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
 my $sort_clause = "";
-my $sortby      = $query->param('sortby') || 'nosort';
+my $sortby = $query->param('sortby') || 'nosort';
 if ($sortby eq 'name')
 {
 	$sort_clause = 'lower(sysname),';
@@ -154,7 +154,7 @@ $sth->finish;
 $db->disconnect;
 
 my $template_opts = { INCLUDE_PATH => $template_dir };
-my $template      = Template->new($template_opts);
+my $template = Template->new($template_opts);
 
 if ($lastmodhead)
 {

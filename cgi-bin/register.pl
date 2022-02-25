@@ -48,7 +48,8 @@ unless ($skip_captcha)
 	if (defined($response))
 	{
 		my $captcha = Captcha::reCAPTCHA::V2->new;
-		$ok = $captcha->verify($captcha_invis_privkey, $response,
+		$ok =
+		  $captcha->verify($captcha_invis_privkey, $response,
 			$ENV{REMOTE_ADDR});
 	}
 	else
@@ -72,8 +73,8 @@ unless ($os
 }
 
 # 8 random chars is enough for the dummy name
-my $dummyname = unpack("h*",urandom(4));
-my $secret    = unpack("h*",urandom(16));
+my $dummyname = unpack("h*", urandom(4));
+my $secret    = unpack("h*", urandom(16));
 
 my $db = DBI->connect($dsn, $dbuser, $dbpass);
 
@@ -119,8 +120,8 @@ $from_addr = $register_from if $register_from;
 $msg->set('From', $from_addr);
 
 $msg->to(@$notifyapp);
-$msg->set('Reply-To', @$notifyapp);
-$msg->set('Auto-Submitted', 'auto-generated');
+$msg->set('Reply-To',                 @$notifyapp);
+$msg->set('Auto-Submitted',           'auto-generated');
 $msg->set('X-Auto-Response-Suppress', 'all');
 $msg->subject('New Buildfarm Application');
 my $fh = $msg->open("sendmail", "-f $from_addr");
