@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 12.8 (Debian 12.8-1.pgdg100+1)
--- Dumped by pg_dump version 12.8 (Debian 12.8-1.pgdg100+1)
+-- Dumped from database version 12.10 (Debian 12.10-1.pgdg100+1)
+-- Dumped by pg_dump version 12.10 (Debian 12.10-1.pgdg100+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -541,329 +541,6 @@ ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITIO
 ALTER TABLE build_status_log_parts.build_status_log_notnull_default OWNER TO pgbuildfarm;
 
 --
--- Name: build_status_log_notnull_p2021w11; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w11 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w11 FOR VALUES FROM ('2021-03-15 00:00:00') TO ('2021-03-22 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w11 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w12; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w12 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w12 FOR VALUES FROM ('2021-03-22 00:00:00') TO ('2021-03-29 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w12 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w13; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w13 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w13 FOR VALUES FROM ('2021-03-29 00:00:00') TO ('2021-04-05 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w13 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w14; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w14 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w14 FOR VALUES FROM ('2021-04-05 00:00:00') TO ('2021-04-12 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w14 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w15; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w15 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w15 FOR VALUES FROM ('2021-04-12 00:00:00') TO ('2021-04-19 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w15 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w16; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w16 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w16 FOR VALUES FROM ('2021-04-19 00:00:00') TO ('2021-04-26 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w16 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w17; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w17 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w17 FOR VALUES FROM ('2021-04-26 00:00:00') TO ('2021-05-03 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w17 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w18; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w18 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w18 FOR VALUES FROM ('2021-05-03 00:00:00') TO ('2021-05-10 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w18 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w19; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w19 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w19 FOR VALUES FROM ('2021-05-10 00:00:00') TO ('2021-05-17 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w19 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w20; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w20 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w20 FOR VALUES FROM ('2021-05-17 00:00:00') TO ('2021-05-24 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w20 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w21; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w21 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w21 FOR VALUES FROM ('2021-05-24 00:00:00') TO ('2021-05-31 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w21 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w22; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w22 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w22 FOR VALUES FROM ('2021-05-31 00:00:00') TO ('2021-06-07 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w22 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w23; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w23 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w23 FOR VALUES FROM ('2021-06-07 00:00:00') TO ('2021-06-14 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w23 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w24; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w24 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w24 FOR VALUES FROM ('2021-06-14 00:00:00') TO ('2021-06-21 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w24 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w25; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w25 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w25 FOR VALUES FROM ('2021-06-21 00:00:00') TO ('2021-06-28 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w25 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w26; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w26 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w26 FOR VALUES FROM ('2021-06-28 00:00:00') TO ('2021-07-05 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w26 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w27; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w27 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w27 FOR VALUES FROM ('2021-07-05 00:00:00') TO ('2021-07-12 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w27 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w28; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w28 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w28 FOR VALUES FROM ('2021-07-12 00:00:00') TO ('2021-07-19 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w28 OWNER TO pgbuildfarm;
-
---
--- Name: build_status_log_notnull_p2021w29; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w29 (
-    sysname text NOT NULL,
-    snapshot timestamp without time zone NOT NULL,
-    branch text NOT NULL,
-    log_stage text NOT NULL,
-    log_text bytea,
-    stage_duration interval
-);
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w29 FOR VALUES FROM ('2021-07-19 00:00:00') TO ('2021-07-26 00:00:00');
-
-
-ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w29 OWNER TO pgbuildfarm;
-
---
 -- Name: build_status_log_notnull_p2021w30; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -1151,6 +828,346 @@ ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITIO
 
 
 ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w46 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2021w47; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w47 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w47 FOR VALUES FROM ('2021-11-22 00:00:00') TO ('2021-11-29 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w47 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2021w48; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w48 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w48 FOR VALUES FROM ('2021-11-29 00:00:00') TO ('2021-12-06 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w48 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2021w49; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w49 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w49 FOR VALUES FROM ('2021-12-06 00:00:00') TO ('2021-12-13 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w49 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2021w50; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w50 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w50 FOR VALUES FROM ('2021-12-13 00:00:00') TO ('2021-12-20 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w50 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2021w51; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w51 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w51 FOR VALUES FROM ('2021-12-20 00:00:00') TO ('2021-12-27 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w51 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2021w52; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2021w52 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w52 FOR VALUES FROM ('2021-12-27 00:00:00') TO ('2022-01-03 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2021w52 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w01; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w01 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w01 FOR VALUES FROM ('2022-01-03 00:00:00') TO ('2022-01-10 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w01 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w02; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w02 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w02 FOR VALUES FROM ('2022-01-10 00:00:00') TO ('2022-01-17 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w02 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w03; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w03 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w03 FOR VALUES FROM ('2022-01-17 00:00:00') TO ('2022-01-24 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w03 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w04; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w04 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w04 FOR VALUES FROM ('2022-01-24 00:00:00') TO ('2022-01-31 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w04 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w05; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w05 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w05 FOR VALUES FROM ('2022-01-31 00:00:00') TO ('2022-02-07 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w05 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w06; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w06 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w06 FOR VALUES FROM ('2022-02-07 00:00:00') TO ('2022-02-14 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w06 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w07; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w07 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w07 FOR VALUES FROM ('2022-02-14 00:00:00') TO ('2022-02-21 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w07 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w08; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w08 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w08 FOR VALUES FROM ('2022-02-21 00:00:00') TO ('2022-02-28 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w08 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w09; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w09 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w09 FOR VALUES FROM ('2022-02-28 00:00:00') TO ('2022-03-07 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w09 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w10; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w10 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w10 FOR VALUES FROM ('2022-03-07 00:00:00') TO ('2022-03-14 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w10 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w11; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w11 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w11 FOR VALUES FROM ('2022-03-14 00:00:00') TO ('2022-03-21 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w11 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w12; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w12 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w12 FOR VALUES FROM ('2022-03-21 00:00:00') TO ('2022-03-28 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w12 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w13; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w13 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w13 FOR VALUES FROM ('2022-03-28 00:00:00') TO ('2022-04-04 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w13 OWNER TO pgbuildfarm;
+
+--
+-- Name: build_status_log_notnull_p2022w14; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE TABLE build_status_log_parts.build_status_log_notnull_p2022w14 (
+    sysname text NOT NULL,
+    snapshot timestamp without time zone NOT NULL,
+    branch text NOT NULL,
+    log_stage text NOT NULL,
+    log_text bytea,
+    stage_duration interval
+);
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w14 FOR VALUES FROM ('2022-04-04 00:00:00') TO ('2022-04-11 00:00:00');
+
+
+ALTER TABLE build_status_log_parts.build_status_log_notnull_p2022w14 OWNER TO pgbuildfarm;
 
 --
 -- Name: build_status_log_null; Type: TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
@@ -1596,158 +1613,6 @@ ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_default
 
 
 --
--- Name: build_status_log_notnull_p2021w11 build_status_log_notnull_p2021w11_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w11
-    ADD CONSTRAINT build_status_log_notnull_p2021w11_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w12 build_status_log_notnull_p2021w12_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w12
-    ADD CONSTRAINT build_status_log_notnull_p2021w12_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w13 build_status_log_notnull_p2021w13_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w13
-    ADD CONSTRAINT build_status_log_notnull_p2021w13_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w14 build_status_log_notnull_p2021w14_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w14
-    ADD CONSTRAINT build_status_log_notnull_p2021w14_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w15 build_status_log_notnull_p2021w15_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w15
-    ADD CONSTRAINT build_status_log_notnull_p2021w15_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w16 build_status_log_notnull_p2021w16_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w16
-    ADD CONSTRAINT build_status_log_notnull_p2021w16_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w17 build_status_log_notnull_p2021w17_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w17
-    ADD CONSTRAINT build_status_log_notnull_p2021w17_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w18 build_status_log_notnull_p2021w18_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w18
-    ADD CONSTRAINT build_status_log_notnull_p2021w18_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w19 build_status_log_notnull_p2021w19_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w19
-    ADD CONSTRAINT build_status_log_notnull_p2021w19_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w20 build_status_log_notnull_p2021w20_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w20
-    ADD CONSTRAINT build_status_log_notnull_p2021w20_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w21 build_status_log_notnull_p2021w21_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w21
-    ADD CONSTRAINT build_status_log_notnull_p2021w21_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w22 build_status_log_notnull_p2021w22_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w22
-    ADD CONSTRAINT build_status_log_notnull_p2021w22_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w23 build_status_log_notnull_p2021w23_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w23
-    ADD CONSTRAINT build_status_log_notnull_p2021w23_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w24 build_status_log_notnull_p2021w24_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w24
-    ADD CONSTRAINT build_status_log_notnull_p2021w24_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w25 build_status_log_notnull_p2021w25_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w25
-    ADD CONSTRAINT build_status_log_notnull_p2021w25_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w26 build_status_log_notnull_p2021w26_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w26
-    ADD CONSTRAINT build_status_log_notnull_p2021w26_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w27 build_status_log_notnull_p2021w27_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w27
-    ADD CONSTRAINT build_status_log_notnull_p2021w27_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w28 build_status_log_notnull_p2021w28_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w28
-    ADD CONSTRAINT build_status_log_notnull_p2021w28_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w29 build_status_log_notnull_p2021w29_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w29
-    ADD CONSTRAINT build_status_log_notnull_p2021w29_pkey PRIMARY KEY (sysname, snapshot, log_stage);
-
-
---
 -- Name: build_status_log_notnull_p2021w30 build_status_log_notnull_p2021w30_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -1884,6 +1749,166 @@ ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w46
 
 
 --
+-- Name: build_status_log_notnull_p2021w47 build_status_log_notnull_p2021w47_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w47
+    ADD CONSTRAINT build_status_log_notnull_p2021w47_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w48 build_status_log_notnull_p2021w48_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w48
+    ADD CONSTRAINT build_status_log_notnull_p2021w48_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w49 build_status_log_notnull_p2021w49_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w49
+    ADD CONSTRAINT build_status_log_notnull_p2021w49_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w50 build_status_log_notnull_p2021w50_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w50
+    ADD CONSTRAINT build_status_log_notnull_p2021w50_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w51 build_status_log_notnull_p2021w51_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w51
+    ADD CONSTRAINT build_status_log_notnull_p2021w51_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w52 build_status_log_notnull_p2021w52_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w52
+    ADD CONSTRAINT build_status_log_notnull_p2021w52_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w01 build_status_log_notnull_p2022w01_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w01
+    ADD CONSTRAINT build_status_log_notnull_p2022w01_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w02 build_status_log_notnull_p2022w02_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w02
+    ADD CONSTRAINT build_status_log_notnull_p2022w02_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w03 build_status_log_notnull_p2022w03_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w03
+    ADD CONSTRAINT build_status_log_notnull_p2022w03_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w04 build_status_log_notnull_p2022w04_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w04
+    ADD CONSTRAINT build_status_log_notnull_p2022w04_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w05 build_status_log_notnull_p2022w05_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w05
+    ADD CONSTRAINT build_status_log_notnull_p2022w05_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w06 build_status_log_notnull_p2022w06_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w06
+    ADD CONSTRAINT build_status_log_notnull_p2022w06_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w07 build_status_log_notnull_p2022w07_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w07
+    ADD CONSTRAINT build_status_log_notnull_p2022w07_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w08 build_status_log_notnull_p2022w08_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w08
+    ADD CONSTRAINT build_status_log_notnull_p2022w08_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w09 build_status_log_notnull_p2022w09_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w09
+    ADD CONSTRAINT build_status_log_notnull_p2022w09_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w10 build_status_log_notnull_p2022w10_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w10
+    ADD CONSTRAINT build_status_log_notnull_p2022w10_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w11 build_status_log_notnull_p2022w11_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w11
+    ADD CONSTRAINT build_status_log_notnull_p2022w11_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w12 build_status_log_notnull_p2022w12_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w12
+    ADD CONSTRAINT build_status_log_notnull_p2022w12_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w13 build_status_log_notnull_p2022w13_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w13
+    ADD CONSTRAINT build_status_log_notnull_p2022w13_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w14 build_status_log_notnull_p2022w14_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w14
+    ADD CONSTRAINT build_status_log_notnull_p2022w14_pkey PRIMARY KEY (sysname, snapshot, log_stage);
+
+
+--
 -- Name: build_status_log_null build_status_log_null_pkey; Type: CONSTRAINT; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -2005,272 +2030,6 @@ CREATE INDEX build_status_log_notnull_snapshot_idx ON ONLY build_status_log_part
 --
 
 CREATE INDEX build_status_log_notnull_default_snapshot_idx ON build_status_log_parts.build_status_log_notnull_default USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w11_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w11_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w11 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w11_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w11_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w11 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w12_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w12_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w12 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w12_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w12_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w12 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w13_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w13_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w13 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w13_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w13_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w13 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w14_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w14_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w14 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w14_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w14_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w14 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w15_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w15_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w15 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w15_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w15_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w15 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w16_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w16_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w16 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w16_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w16_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w16 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w17_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w17_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w17 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w17_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w17_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w17 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w18_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w18_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w18 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w18_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w18_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w18 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w19_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w19_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w19 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w19_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w19_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w19 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w20_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w20_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w20 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w20_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w20_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w20 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w21_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w21_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w21 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w21_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w21_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w21 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w22_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w22_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w22 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w22_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w22_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w22 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w23_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w23_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w23 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w23_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w23_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w23 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w24_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w24_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w24 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w24_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w24_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w24 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w25_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w25_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w25 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w25_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w25_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w25 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w26_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w26_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w26 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w26_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w26_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w26 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w27_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w27_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w27 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w27_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w27_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w27 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w28_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w28_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w28 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w28_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w28_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w28 USING btree (snapshot);
-
-
---
--- Name: build_status_log_notnull_p2021w29_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w29_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w29 USING btree (log_stage);
-
-
---
--- Name: build_status_log_notnull_p2021w29_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-CREATE INDEX build_status_log_notnull_p2021w29_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w29 USING btree (snapshot);
 
 
 --
@@ -2512,6 +2271,286 @@ CREATE INDEX build_status_log_notnull_p2021w46_snapshot_idx ON build_status_log_
 
 
 --
+-- Name: build_status_log_notnull_p2021w47_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w47_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w47 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w47_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w47_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w47 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2021w48_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w48_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w48 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w48_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w48_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w48 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2021w49_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w49_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w49 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w49_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w49_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w49 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2021w50_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w50_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w50 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w50_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w50_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w50 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2021w51_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w51_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w51 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w51_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w51_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w51 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2021w52_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w52_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2021w52 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2021w52_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2021w52_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2021w52 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w01_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w01_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w01 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w01_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w01_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w01 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w02_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w02_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w02 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w02_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w02_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w02 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w03_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w03_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w03 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w03_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w03_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w03 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w04_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w04_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w04 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w04_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w04_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w04 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w05_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w05_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w05 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w05_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w05_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w05 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w06_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w06_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w06 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w06_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w06_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w06 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w07_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w07_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w07 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w07_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w07_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w07 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w08_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w08_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w08 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w08_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w08_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w08 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w09_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w09_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w09 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w09_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w09_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w09 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w10_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w10_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w10 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w10_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w10_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w10 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w11_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w11_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w11 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w11_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w11_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w11 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w12_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w12_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w12 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w12_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w12_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w12 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w13_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w13_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w13 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w13_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w13_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w13 USING btree (snapshot);
+
+
+--
+-- Name: build_status_log_notnull_p2022w14_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w14_log_stage_idx ON build_status_log_parts.build_status_log_notnull_p2022w14 USING btree (log_stage);
+
+
+--
+-- Name: build_status_log_notnull_p2022w14_snapshot_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+CREATE INDEX build_status_log_notnull_p2022w14_snapshot_idx ON build_status_log_parts.build_status_log_notnull_p2022w14 USING btree (snapshot);
+
+
+--
 -- Name: build_status_log_null_log_stage_idx; Type: INDEX; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -2614,405 +2653,6 @@ ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH 
 --
 
 ALTER INDEX public.build_status_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w11_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w11_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w11_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w11_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w11_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w11_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w12_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w12_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w12_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w12_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w12_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w12_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w13_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w13_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w13_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w13_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w13_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w13_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w14_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w14_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w14_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w14_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w14_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w14_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w15_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w15_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w15_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w15_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w15_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w15_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w16_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w16_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w16_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w16_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w16_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w16_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w17_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w17_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w17_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w17_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w17_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w17_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w18_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w18_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w18_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w18_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w18_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w18_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w19_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w19_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w19_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w19_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w19_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w19_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w20_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w20_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w20_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w20_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w20_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w20_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w21_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w21_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w21_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w21_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w21_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w21_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w22_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w22_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w22_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w22_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w22_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w22_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w23_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w23_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w23_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w23_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w23_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w23_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w24_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w24_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w24_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w24_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w24_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w24_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w25_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w25_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w25_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w25_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w25_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w25_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w26_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w26_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w26_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w26_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w26_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w26_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w27_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w27_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w27_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w27_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w27_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w27_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w28_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w28_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w28_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w28_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w28_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w28_snapshot_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w29_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w29_log_stage_idx;
-
-
---
--- Name: build_status_log_notnull_p2021w29_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w29_pkey;
-
-
---
--- Name: build_status_log_notnull_p2021w29_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w29_snapshot_idx;
 
 
 --
@@ -3373,6 +3013,426 @@ ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH 
 
 
 --
+-- Name: build_status_log_notnull_p2021w47_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w47_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w47_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w47_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2021w47_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w47_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w48_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w48_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w48_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w48_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2021w48_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w48_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w49_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w49_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w49_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w49_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2021w49_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w49_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w50_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w50_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w50_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w50_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2021w50_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w50_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w51_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w51_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w51_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w51_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2021w51_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w51_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w52_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w52_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2021w52_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w52_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2021w52_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2021w52_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w01_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w01_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w01_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w01_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w01_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w01_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w02_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w02_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w02_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w02_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w02_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w02_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w03_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w03_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w03_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w03_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w03_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w03_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w04_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w04_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w04_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w04_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w04_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w04_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w05_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w05_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w05_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w05_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w05_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w05_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w06_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w06_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w06_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w06_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w06_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w06_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w07_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w07_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w07_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w07_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w07_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w07_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w08_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w08_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w08_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w08_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w08_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w08_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w09_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w09_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w09_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w09_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w09_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w09_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w10_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w10_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w10_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w10_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w10_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w10_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w11_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w11_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w11_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w11_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w11_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w11_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w12_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w12_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w12_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w12_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w12_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w12_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w13_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w13_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w13_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w13_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w13_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w13_snapshot_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w14_log_stage_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_log_stage_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w14_log_stage_idx;
+
+
+--
+-- Name: build_status_log_notnull_p2022w14_pkey; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_pkey ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w14_pkey;
+
+
+--
+-- Name: build_status_log_notnull_p2022w14_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER INDEX build_status_log_parts.build_status_log_notnull_snapshot_idx ATTACH PARTITION build_status_log_parts.build_status_log_notnull_p2022w14_snapshot_idx;
+
+
+--
 -- Name: build_status_log_notnull_snapshot_idx; Type: INDEX ATTACH; Schema: build_status_log_parts; Owner: pgbuildfarm
 --
 
@@ -3439,139 +3499,6 @@ CREATE PUBLICATION pub_bfarchive WITH (publish = 'insert, update');
 
 
 ALTER PUBLICATION pub_bfarchive OWNER TO pgbuildfarm;
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w11; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w11;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w12; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w12;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w13; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w13;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w14; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w14;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w15; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w15;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w16; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w16;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w17; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w17;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w18; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w18;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w19; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w19;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w20; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w20;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w21; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w21;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w22; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w22;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w23; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w23;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w24; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w24;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w25; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w25;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w26; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w26;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w27; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w27;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w28; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w28;
-
-
---
--- Name: pub_bfarchive build_status_log_notnull_p2021w29; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w29;
-
 
 --
 -- Name: pub_bfarchive build_status_log_notnull_p2021w30; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
@@ -3690,6 +3617,146 @@ ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_stat
 --
 
 ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w46;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2021w47; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w47;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2021w48; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w48;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2021w49; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w49;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2021w50; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w50;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2021w51; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w51;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2021w52; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2021w52;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w01; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w01;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w02; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w02;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w03; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w03;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w04; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w04;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w05; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w05;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w06; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w06;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w07; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w07;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w08; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w08;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w09; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w09;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w10; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w10;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w11; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w11;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w12; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w12;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w13; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w13;
+
+
+--
+-- Name: pub_bfarchive build_status_log_notnull_p2022w14; Type: PUBLICATION TABLE; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+ALTER PUBLICATION pub_bfarchive ADD TABLE ONLY build_status_log_parts.build_status_log_notnull_p2022w14;
 
 
 --
@@ -3862,13 +3929,6 @@ GRANT ALL ON FUNCTION partman.drop_partition_id(p_parent_table text, p_retention
 
 
 --
--- Name: FUNCTION drop_partition_time(p_parent_table text, p_retention interval, p_keep_table boolean, p_keep_index boolean, p_retention_schema text); Type: ACL; Schema: partman; Owner: postgres
---
-
-GRANT ALL ON FUNCTION partman.drop_partition_time(p_parent_table text, p_retention interval, p_keep_table boolean, p_keep_index boolean, p_retention_schema text) TO pgbuildfarm;
-
-
---
 -- Name: FUNCTION inherit_template_properties(p_parent_table text, p_child_schema text, p_child_tablename text); Type: ACL; Schema: partman; Owner: postgres
 --
 
@@ -3980,139 +4040,6 @@ GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull TO bfarchi
 --
 
 GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_default TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w11; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w11 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w12; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w12 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w13; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w13 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w14; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w14 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w15; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w15 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w16; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w16 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w17; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w17 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w18; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w18 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w19; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w19 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w20; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w20 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w21; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w21 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w22; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w22 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w23; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w23 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w24; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w24 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w25; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w25 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w26; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w26 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w27; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w27 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w28; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w28 TO bfarchive;
-
-
---
--- Name: TABLE build_status_log_notnull_p2021w29; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
---
-
-GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w29 TO bfarchive;
 
 
 --
@@ -4232,6 +4159,146 @@ GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w45 T
 --
 
 GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w46 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2021w47; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w47 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2021w48; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w48 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2021w49; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w49 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2021w50; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w50 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2021w51; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w51 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2021w52; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2021w52 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w01; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w01 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w02; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w02 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w03; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w03 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w04; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w04 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w05; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w05 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w06; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w06 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w07; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w07 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w08; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w08 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w09; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w09 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w10; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w10 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w11; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w11 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w12; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w12 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w13; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w13 TO bfarchive;
+
+
+--
+-- Name: TABLE build_status_log_notnull_p2022w14; Type: ACL; Schema: build_status_log_parts; Owner: pgbuildfarm
+--
+
+GRANT SELECT ON TABLE build_status_log_parts.build_status_log_notnull_p2022w14 TO bfarchive;
 
 
 --
@@ -4409,7 +4476,6 @@ GRANT SELECT ON TABLE public.script_versions2 TO reader;
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: pgbuildfarm
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE pgbuildfarm IN SCHEMA public REVOKE ALL ON TABLES  FROM pgbuildfarm;
 ALTER DEFAULT PRIVILEGES FOR ROLE pgbuildfarm IN SCHEMA public GRANT SELECT ON TABLES  TO reader;
 
 
