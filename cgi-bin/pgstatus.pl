@@ -159,6 +159,7 @@ $sth->execute($animal);
 my ($secret) = $sth->fetchrow_array();
 $sth->finish;
 
+my $client_ts = $ts + 0;
 my $tsdiff = time - $ts;
 
 my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) =
@@ -323,7 +324,6 @@ if ($log_archive)
 	mkdir $dirname;
 	@log_file_names = `tar -z -C $dirname -xvf $archname 2>/dev/null`;
 	do { s/\s+//g; }
-
 	  foreach @log_file_names;
 	my @qnames = grep { $_ ne 'githead.log' } @log_file_names;
 	do { $_ = qq("$_"); }
@@ -447,13 +447,18 @@ if ($stage =~ /git/i)
 	}
 }
 
+# run time is the mtime of the last log file minus the run start time
+# from the client's POV
+my $last_log = "$dirname/" . $log_file_names[-1];
+my $run_secs = (stat $last_log)[9] - $client_ts;
+
 my $logst = <<"EOSQL";
     insert into build_status$raw_suffix
       (sysname, snapshot,status, stage, log,conf_sum, branch,
        changed_this_run, changed_since_success,
        log_archive_filenames , log_archive, build_flags, scm, scmurl,
-       git_head_ref,frozen_conf)
-    values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+       git_head_ref,frozen_conf,run_secs)
+    values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 EOSQL
 
 # this transaction lets us set log_error_verbosity to terse
@@ -485,6 +490,7 @@ $sth->bind_param(13, $scm);
 $sth->bind_param(14, $scmurl);
 $sth->bind_param(15, $githeadref);
 $sth->bind_param(16, $frozen_sconf, { pg_type => DBD::Pg::PG_BYTEA });
+$sth->bind_param(17, $run_secs);
 
 $sqlres = $sth->execute;
 
@@ -503,9 +509,9 @@ if ($sqlres)
 
 	$sth = $db->prepare($logst2);
 
-	$/ = undef;
+	local $/ = undef;
 
-	my $stage_start = $ts;
+	my $stage_start = $client_ts;
 
 	foreach my $log_file (@log_file_names)
 	{
@@ -538,7 +544,6 @@ if ($sqlres)
 
 if (!$sqlres)
 {
-
 	print "Status: 462 database failure\nContent-Type: text/plain\n\n";
 	print "Your report generated a database failure:\n", $db->errstr, "\n";
 	$db->rollback;
