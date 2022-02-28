@@ -16,3 +16,6 @@ critic:
 
 show:
 	@echo $(ALLPERLFILES)
+
+copyright:
+	./make_copyright.sh
