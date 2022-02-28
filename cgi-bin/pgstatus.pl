@@ -449,8 +449,12 @@ if ($stage =~ /git/i)
 
 # run time is the mtime of the last log file minus the run start time
 # from the client's POV
-my $last_log = "$dirname/" . $log_file_names[-1];
-my $run_secs = (stat $last_log)[9] - $client_ts;
+my $run_secs;
+if (@log_file_names)
+{
+	my $last_log = "$dirname/" . $log_file_names[-1];
+	$run_secs = (stat $last_log)[9] - $client_ts;
+}
 
 my $logst = <<"EOSQL";
     insert into build_status$raw_suffix
