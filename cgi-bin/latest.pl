@@ -2,6 +2,15 @@
 
 =comment
 
+=comment
+
+Copyright (c) 2003-2022, Andrew Dunstan
+
+See accompanying License file for license details
+
+=cut
+
+
 print "Content-Type: text/plain\n\n";
 
 print "Conf: $ENV{BFConfDir}\n";

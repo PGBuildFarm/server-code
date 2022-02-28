@@ -1,6 +1,15 @@
 #!/usr/bin/perl
 
 use strict;
+
+=comment
+
+Copyright (c) 2003-2022, Andrew Dunstan
+
+See accompanying License file for license details
+
+=cut
+
 use warnings;
 
 print "Content-Type: text/plain\n\n";
