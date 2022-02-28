@@ -63,7 +63,8 @@ if (   $system
 	my $statement = q{
 
   		select log,conf_sum,stage, changed_this_run, changed_since_success,
-                branch,	log_archive_filenames, scm, scmurl, git_head_ref
+                branch,	log_archive_filenames, scm, scmurl, git_head_ref,
+                run_secs * interval '1 second' as run_time
   		from build_status
   		where sysname = ? and snapshot = ?
 
@@ -101,6 +102,7 @@ if (   $system
 	my $row = $sth->fetchrow_arrayref;
 	$branch       = $row->[5];
 	$git_head_ref = $row->[9];
+	$run_time = $row->[10];
 	$sth->finish;
 	my $last_build_row;
 
@@ -176,15 +178,17 @@ if (   $system
         };
 	$stage_times =
 	  $db->selectall_hashref($stage_times_query, 'log_stage', undef,
-		$system, $logdate);
-	$stage_times_query = q{
+							 $system, $logdate);
+	unless ($run_time)
+	{
+		my $run_time_query = q{
            select sum(stage_duration)
            from build_status_log
            where sysname = ? and snapshot = ?
         };
-	($run_time) =
-	  $db->selectrow_array($stage_times_query, undef, $system, $logdate);
-
+		($run_time) =
+		  $db->selectrow_array($run_time_query, undef, $system, $logdate);
+	}
 	$other_branches =
 	  $db->selectcol_arrayref($other_branches_query, undef, $system, $branch);
 	$db->disconnect;
