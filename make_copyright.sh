@@ -9,5 +9,5 @@ DT=`date +%Y`
 
 for f in `make -s show` templates/*.tt
 do
-	sed -i "s/2003-20.., Andrew Dunstan/2003-$DT, Andrew Dunstan/" $f
+	sed -i "/Copyright/ s/2003-20.., Andrew Dunstan/2003-$DT, Andrew Dunstan/" $f
 done
