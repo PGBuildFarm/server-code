@@ -104,7 +104,7 @@ if ($os_version || $compiler_version)
 {
 	my $get_latest = q{
 		select coalesce(b.os_version, a.os_version) as os_version,
-			   coalesce(b.compiler_version, a.compiler_version
+			   coalesce(b.compiler_version, a.compiler_version)
                  as compiler_version
 		from buildsystems as a left join
 			 (  select distinct on (name) name, compiler_version, os_version
