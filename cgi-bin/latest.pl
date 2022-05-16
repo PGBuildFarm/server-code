@@ -2,28 +2,9 @@
 
 =comment
 
-=comment
-
 Copyright (c) 2003-2022, Andrew Dunstan
 
 See accompanying License file for license details
-
-=cut
-
-
-print "Content-Type: text/plain\n\n";
-
-print "Conf: $ENV{BFConfDir}\n";
-
-print `pwd`;
-
-print `id`;
-
-foreach my $key (sort keys %ENV)
-{
-  my $val = $ENV{$key};
-  print "$key=$val\n";
-}
 
 =cut
 
