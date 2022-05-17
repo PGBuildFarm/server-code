@@ -97,7 +97,7 @@ my $rv = $clear_sth->execute($animal);
 unless ($rv)
 {
 	print "Status: 470 clearing alert\nContent-Type: text/plain\n\n";
-	print "error: $db->errstr\n";
+	print "error: ",$db->errstr,"\n";
 	$db->disconnect;
 	exit;
 }
