@@ -24,14 +24,19 @@ my $query = CGI->new;
 my $sig = $query->path_info;
 $sig =~ s!^/!!;
 
-my $animal           = $query->param('animal');
-my $ts               = $query->param('ts');
+my $animal = $query->param('animal');
+my $ts     = $query->param('ts');
+my $op     = $query->param('op') || "";
 
 # clean inputs
 $ts =~ tr /0-9//cd;
 $animal =~ tr /a-zA-Z0-9_ -//cd;
+$op =~ tr /a-z//cd;
 
 my $content = "animal=$animal&ts=$ts";
+$content = "$content&op=$op" if $op;
+
+$op ||= "disable";
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
@@ -84,27 +89,71 @@ if ($calc_sig ne $sig)
 	exit;
 }
 
-my $clear_sth = $db->prepare(
-	q[
+if ($op eq 'disable')
+{
+
+	my $clear_sth = $db->prepare(
+		q[
 
   DELETE FROM alerts
   WHERE sysname = ?
 		      ]
-);
+	);
 
 
-my $rv = $clear_sth->execute($animal);
-unless ($rv)
-{
-	print "Status: 470 clearing alert\nContent-Type: text/plain\n\n";
-	print "error: ",$db->errstr,"\n";
-	$db->disconnect;
-	exit;
+	my $rv = $clear_sth->execute($animal);
+	unless ($rv)
+	{
+		print "Status: 470 clearing alerts\nContent-Type: text/plain\n\n";
+		print "error: ", $db->errstr, "\n";
+		$db->disconnect;
+		exit;
+	}
+
+	my $disable_sth = $db->prepare(
+		q[
+       update buildsystems set no_alerts = true where name = ?
+    ]
+	);
+	$rv = $disable_sth->execute($animal);
+	unless ($rv)
+	{
+		print "Status: 470 disabling alerts\nContent-Type: text/plain\n\n";
+		print "error: ", $db->errstr, "\n";
+		$db->disconnect;
+		exit;
+	}
+
+	print "Content-Type: text/plain\n\n";
+	print "alerts cleared for $animal\n";
 }
+elsif ($op eq 'enable')
+{
+	my $enable_sth = $db->prepare(
+		q[
+       update buildsystems set no_alerts = false where name = ?
+    ]
+	);
+	my $rv = $enable_sth->execute($animal);
+	unless ($rv)
+	{
+		print "Status: 470 enabling alerts\nContent-Type: text/plain\n\n";
+		print "error: ", $db->errstr, "\n";
+		$db->disconnect;
+		exit;
+	}
 
+	print "Content-Type: text/plain\n\n";
+	print "alerts enabled for $animal\n";
+
+}
+else
+{
+	print "Status: 470 invalid op\nContent-Type: text/plain\n\n";
+	print "invalid op: $op\n";
+
+}
 
 $db->disconnect;
 
-print "Content-Type: text/plain\n\n";
-print "alerts cleared for $animal\n";
 
