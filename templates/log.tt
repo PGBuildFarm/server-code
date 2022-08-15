@@ -24,6 +24,7 @@ See accompanying License file for license details
 	title = mytitle
 	bodyclass = 'none'
 	pagebutton = 'none'
+	need_collapse = 1
 %]
 [%- BLOCK gitlog ;
 	commitref = clog.replace('^commit ([0-9A-Fa-f]+)(.|\n)*','$1');
@@ -165,4 +166,25 @@ not recorded
 <pre>
 [% log | html %]
 </pre>
+[%- IF log_pieces.size > 0 ; log_count = 0 %]
+<div class="accordion" id="stageLogFiles">
+[% FOREACH piecename IN log_piece_names ; piece_log = log_pieces.shift ; log_count = log_count + 1%]
+ <div class="card">
+    <div class="card-header" id="heading[% log_count %]">
+      <h4 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse[% log_count %]" aria-expanded="false" aria-controls="collapse[% log_count %]"> [% piecename %]</button>
+      </h4>
+    </div>
+
+    <div id="collapse[% log_count %]" class="collapse" aria-labelledby="heading[% log_count %]" data-parent="#stageLogFiles">
+      <div class="card-body">
+<pre>
+[% piece_log | html %]
+</pre>
+      </div>
+    </div>
+  </div>
+[% END %]
+</div>
+[% END -%]
 [% END %]

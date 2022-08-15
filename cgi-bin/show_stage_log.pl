@@ -16,7 +16,7 @@ use Template;
 use CGI;
 use File::Temp qw(tempfile);
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport @log_file_names);
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
@@ -41,6 +41,8 @@ my $stage = $query->param('stg');
 $stage =~ s/[^a-zA-Z0-9._ -]//g if $stage;
 my $brnch = $query->param('branch') || 'HEAD';
 $brnch =~ s{[^a-zA-Z0-9._/ -]}{}g;
+my $raw = $query->param('raw') || '0';
+$raw =~ s{[^a-zA-Z0-9._/ -]}{}g;
 
 use vars qw($tgz);
 
@@ -92,21 +94,69 @@ if (   $system
 
 	$branch ||= "unknown";
 
-	print
-	  "Content-Type: text/plain\nContent-disposition: inline; filename=$stage.log\n\n";
-
-	if ($stage ne 'typedefs')
+	if ($raw || $stage eq 'typedefs')
 	{
-		print "Snapshot: $logdate\n\n";
-		$logtext ||= "no log text found";
+
+		print
+		  "Content-Type: text/plain\nContent-disposition: inline; filename=$stage.log\n\n";
+
+		if ($stage ne 'typedefs')
+		{
+			print "Snapshot: $logdate\n\n";
+			$logtext ||= "no log text found";
+		}
+
+		$logtext =~
+		  s/([\x00-\x08\x0B\x0C\x0E-\x1F\x80-\xff])/sprintf("\\x%.02x",ord($1))/ge
+		  if $logtext;
+		print $logtext if $logtext;
+
 	}
+	else
+	{
+		my $log = $logtext;
+		my $template_opts = { INCLUDE_PATH => $template_dir};
+		my $template = Template->new($template_opts);
 
+		my $log_marker = "==~_~===-=-===~_~==";
 
-	$logtext =~
-	  s/([\x00-\x08\x0B\x0C\x0E-\x1F\x80-\xff])/sprintf("\\x%.02x",ord($1))/ge
-	  if $logtext;
-	print $logtext if $logtext;
+		my @log_pieces;
+		my @log_piece_names;
+		my @pieces = split (/$log_marker (.*?) $log_marker\r?\n/, $log);
+		if ($log =~ /^$log_marker/)
+		{
+			$log = "";
+		}
+		else
+		{
+			$log = shift(@pieces);
+			# skip useless preliminary make output
+			$log =~ s/.*?\n(echo "\+\+\+)/$1/s;
+		}
+		while (@pieces)
+		{
+			push(@log_piece_names, shift(@pieces));
+			push(@log_pieces, shift(@pieces));
+		}
+		for (@log_piece_names)
+		{
+			s!.*?/(upgrade\.$system)!$1!;
+		}
 
+		print "Content-Type: text/html\n\n";
+
+		$template->process(
+						   'log_stage.tt',
+						 {
+						  system                     => $system,
+						  branch                     => $branch,
+						  stage                      => $stage,
+						  urldt                      => $logdate,
+						  log                        => $log,
+						  log_pieces => \@log_pieces,
+						  log_piece_names => \@log_piece_names,
+						  });
+	}
 }
 
 else

@@ -1,0 +1,46 @@
+[%#
+
+Copyright (c) 2003-2022, Andrew Dunstan
+
+See accompanying License file for license details
+
+See https://getbootstrap.com/docs/4.3/components/collapse/ for collapse component
+
+-%]
+[% mytitle = BLOCK %]PostgreSQL BuildFarm | Log for system "[% system %]" stage [% stage %] on snapshot taken [% urldt;  END -%]
+[% WRAPPER 'page.tt'
+	title = mytitle
+	bodyclass = 'none'
+	pagebutton = 'none'
+	need_collapse = 1
+%]
+<h1>Log for system [% system %], Stage [% stage %]</h1>
+<h1>Branch [% branch %], Snapshot taken [% urldt %]</h1>
+[%- IF log_pieces.size > 0 %]
+<h2><a href='show_stage_log.pl?nm=[% system %]&amp;dt=[% urldt | uri %]&amp;stg=[% stage %]&amp;raw=1'>link to raw log</a></h2>
+[% END -%]
+<pre>
+[% log | html %]
+</pre>
+[%- IF log_pieces.size > 0 ; log_count = 0 %]
+<div class="accordion" id="stageLogFiles">
+[% FOREACH piecename IN log_piece_names ; piece_log = log_pieces.shift ; log_count = log_count + 1%]
+ <div class="card">
+    <div class="card-header" id="heading[% log_count %]">
+      <h4 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse[% log_count %]" aria-expanded="false" aria-controls="collapse[% log_count %]"> [% piecename %]</button>
+      </h4>
+    </div>
+
+    <div id="collapse[% log_count %]" class="collapse" aria-labelledby="heading[% log_count %]" data-parent="#stageLogFiles">
+      <div class="card-body">
+<pre>
+[% piece_log | html %]
+</pre>
+      </div>
+    </div>
+  </div>
+[% END %]
+</div>
+[% END -%]
+[% END %]

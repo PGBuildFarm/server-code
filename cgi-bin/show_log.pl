@@ -201,6 +201,31 @@ if (   $system
 
 }
 
+my $log_marker = "==~_~===-=-===~_~==";
+
+my @log_pieces;
+my @log_piece_names;
+my @pieces = split (/$log_marker (.*?) $log_marker\r?\n/, $log);
+if ($log =~ /^$log_marker/)
+{
+	$log = "";
+}
+else
+{
+	$log = shift(@pieces);
+	# skip useless preliminary make output
+	$log =~ s/.*?\n(echo "\+\+\+)/$1/s;
+}
+while (@pieces)
+{
+	push(@log_piece_names, shift(@pieces));
+	push(@log_pieces, shift(@pieces));
+}
+for (@log_piece_names)
+{
+	s!.*?/(upgrade\.$system)!$1!;
+}
+
 $conf =~ s/\@/ [ a t ] /g;
 
 print "Content-Type: text/html\n\n";
@@ -218,7 +243,9 @@ $template->process(
 		urldt                      => $logdate,
 		log_file_names             => \@log_file_names,
 		conf                       => $conf,
-		log                        => $log,
+	 log                        => $log,
+	 log_pieces => \@log_pieces,
+	 log_piece_names => \@log_piece_names,
 		changed_this_run           => $changed_this_run,
 		changed_since_success      => $changed_since_success,
 		changed_this_run_logs      => $changed_this_run_logs,
