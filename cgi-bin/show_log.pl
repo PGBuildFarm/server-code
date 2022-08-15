@@ -214,7 +214,7 @@ else
 {
 	$log = shift(@pieces);
 	# skip useless preliminary make output
-	$log =~ s/.*?\n(echo "\+\+\+)/$1/s;
+	$log =~ s/.*?\n([A-Za-z]{3} \d\d \d\d:\d\d:\d\d )?(echo "\+\+\+)/$2/s;
 }
 while (@pieces)
 {
