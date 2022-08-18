@@ -19,12 +19,13 @@ See accompanying License file for license details
 [%
         cvsurl = 'https://anoncvs.postgresql.org/cvsweb.cgi';
         giturl = 'https://git.postgresql.org/gitweb?p=postgresql.git;a=commitdiff;h=';
+        need_collapse = log_pieces.size > 0 ;
 -%]
 [% WRAPPER 'page.tt' 
 	title = mytitle
 	bodyclass = 'none'
 	pagebutton = 'none'
-	need_collapse = 1
+	need_collapse = need_collapse
 %]
 [%- BLOCK gitlog ;
 	commitref = clog.replace('^commit ([0-9A-Fa-f]+)(.|\n)*','$1');

@@ -13,17 +13,21 @@ See accompanying License file for license details
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>[% title %]</title>
     <link rel="icon" type="image/png" href="/elephant-icon.png" />
+  [% IF need_collapse %]
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style type="text/css"><!--
+        body, h1, h2, a { all: revert }
+    --></style>
+
+  [% END %]
     <link rel="stylesheet" rev="stylesheet" href="/inc/pgbf.css" charset="utf-8" />
     <style type="text/css"><!--
 	li#[% pagebutton %] a { color:rgb(17,45,137); background: url(/inc/b/r.png) no-repeat 100% -20px; } 
 	li#[% pagebutton %] { background: url(/inc/b/l.png) no-repeat 0% -20px; }
     --></style>
   <link rel="alternate" type="application/rss+xml" title="Subscribe to Status Changes" href="https://buildfarm.postgresql.org/rss/bf-rss.xml" />
-  [% IF need_collapse %]
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  [% END %]
   </head>
   <body class="[% bodyclass %]">
     <div id="wrapper">
