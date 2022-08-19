@@ -177,7 +177,7 @@ not recorded
       </h4>
     </div>
 
-    <div id="collapse[% log_count %]" class="collapse" aria-labelledby="heading[% log_count %]" data-parent="#stageLogFiles">
+    <div id="collapse[% log_count %]" class="collapse" aria-labelledby="heading[% log_count %]">
       <div class="card-body">
 <pre>
 [% piece_log | html %]
