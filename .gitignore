@@ -5,4 +5,5 @@ pglogs
 weblogs
 
 htdocs/downloads
+htdocs/*branches_of_interest.json
 /private
