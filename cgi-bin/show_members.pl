@@ -48,7 +48,7 @@ my $statement = q{
 
   select name, operating_system, os_version, compiler, compiler_version,
     owner_email, sys_notes_ts::date AS sys_notes_date, sys_notes,
-    architecture as arch, ARRAY(
+    architecture as arch, status, status_ts::date as status_date, ARRAY(
 				select branch || ':' ||
 				       extract(days from now() - l.snapshot)
 				from latest_snapshot l
@@ -62,7 +62,7 @@ my $statement = q{
 				order by effective_date
 				) as personalities
   from buildsystems s
-  where status = 'approved'
+  where status not in ('pending','declined')
 };
 
 $statement .= "order by $sort_by";

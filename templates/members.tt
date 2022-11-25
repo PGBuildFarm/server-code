@@ -34,7 +34,7 @@ See accompanying License file for license details
 %]    <tr [%- IF alt %]class="alt"[% END -%]>
     [% alt = ! alt %]
     <td><input type="checkbox" name="member" value="[% row.name %]" /></td>
-    <td>[% row.name %]<br />[% row.owner_email %]
+    <td>[% row.name %]<br />[% row.owner_email %]<br />[% row.status %] w.e.f. [% row.status_date %]
 [% IF row.sys_notes %]
     <br />
       Notes: ([% row.sys_notes_date %]) [% row.sys_notes %]
