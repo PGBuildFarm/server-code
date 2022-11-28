@@ -11,6 +11,7 @@ See accompanying License file for license details
 	pagebutton = 'members'
 %]
 <h1>PostgreSQL BuildFarm Members</h1>
+    <h3>List of members that have reported in the last year</h3>
     <p>Click branch links to see build history. Click the heading links to resort the list. Select members by checkbox and hit the button at the bottom to create a status custom filter.</p>
     <form name="filter" method="GET" action="/cgi-bin/show_status.pl">
     <table cellspacing="0">
