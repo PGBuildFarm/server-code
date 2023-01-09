@@ -47,7 +47,7 @@ my $clear_old = $db->do(
 
     DELETE FROM alerts
     WHERE sysname IN
-      (SELECT name FROM buildsystems WHERE no_alerts)
+      (SELECT name FROM buildsystems WHERE no_alerts or status <> 'approved')
 			   ]
 );
 
@@ -74,6 +74,7 @@ my $sth = $db->prepare(
 	 frozen_conf as config
     FROM build_status s join buildsystems b on (s.sysname = b.name)
     WHERE NOT b.no_alerts and
+       b.status = 'approved' and
        snapshot > current_timestamp - interval '30 days'
        and (array_length($1::text[],1) = 0 or branch = any ($1))
     ORDER BY sysname, branch, snapshot desc
