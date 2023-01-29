@@ -82,7 +82,7 @@ Systems is "Fedora" and the version is "29".</p>
 </tr>
 <tr>
   <th>Comments</th>
-  <td><textarea name="comments" rows="4" columns="50"></textarea></td>
+  <td><textarea name="comments" rows="4" cols="50"></textarea></td>
 </tr>
 <tr>
   <th colspan="2">
