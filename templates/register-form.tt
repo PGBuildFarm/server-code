@@ -81,6 +81,10 @@ Systems is "Fedora" and the version is "29".</p>
   <td><input type="text" name="email" value="" /></td>
 </tr>
 <tr>
+  <th>Comments</th>
+  <td><textarea name="comments" rows="4" columns="50"></textarea></td>
+</tr>
+<tr>
   <th colspan="2">
 [% IF NOT skip_captcha %]<button class="g-recaptcha" data-sitekey="[% captcha_publickey %]" data-callback='onSubmit'>Submit</button>
 [% ELSE %]<input type="submit" value = "Submit" />

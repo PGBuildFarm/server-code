@@ -38,8 +38,10 @@ my $query         = CGI->new;
 
 my $params = $query->Vars;
 
-my ($os, $osv, $comp, $compv, $arch, $email, $owner, $response) =
-  @{$params}{qw(os osv comp compv arch email owner g-recaptcha-response)};
+my ($os, $osv, $comp, $compv, $arch, $email, $owner,
+	$response, $comments) =
+  @{$params}{qw(os osv comp compv arch email owner
+				g-recaptcha-response comments)};
 
 my $ok = 1;
 
@@ -129,6 +131,7 @@ print $fh "\n\nName: $dummyname\n",
   "OS: $os: $osv\n",
   "Arch: $arch\n",
   "Comp: $comp: $compv\n",
-  "Owner: $owner <$email>\n";
+  "Owner: $owner <$email>\n",
+  "Comments: $comments\n";
 $fh->close;
 
