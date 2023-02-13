@@ -214,7 +214,14 @@ else
 {
 	$log = shift(@pieces);
 	# skip useless preliminary make output
-	$log =~ s/.*?\n([A-Za-z]{3} \d\d \d\d:\d\d:\d\d )?(echo "\+\+\+)/$2/s;
+	if ($log =~ /.*?\n(([A-Za-z]{3} \d\d \d\d:\d\d:\d\d )?(echo "\+\+\+))/s)
+	{
+		my $pos = $-[1];
+		my $good = substr($log,$pos);
+		my $head = substr($log,0,$pos);
+		$head =~ s/.*ake.*?Nothing to be done for.*?\n//s;
+		$log = $head . $good;
+	}
 }
 while (@pieces)
 {
