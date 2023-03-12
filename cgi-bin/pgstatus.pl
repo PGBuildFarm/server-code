@@ -407,6 +407,7 @@ elsif (ref $client_conf->{meson_opts})
 	  @ { $client_conf->{meson_opts} };
 	# strip out -D and value
 	do { s/^-D//; s/=.*//; } foreach @config_flags;
+	push @config_flags('meson');
 }
 elsif (ref $client_conf->{config_opts} eq 'HASH')
 {
