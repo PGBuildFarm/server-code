@@ -394,9 +394,19 @@ if (0 && $min_web_script_version)
 }
 
 my @config_flags;
-if (not exists $client_conf->{config_opts})
+if (not exists $client_conf->{config_opts} and not exists $client_conf->{meson_opts})
 {
 	@config_flags = ();
+}
+elsif (ref $client_conf->{meson_opts})
+{
+	# must be an array. Should only exist if $using_meson
+
+	# remove disabled/false entries
+	@config_flags = grep { ! m/=(?:disabled|false)$/ }
+	  @ { $client_conf->{meson_opts} };
+	# strip out -D and value
+	do { s/^-D//; s/=.*//; } foreach @config_flags;
 }
 elsif (ref $client_conf->{config_opts} eq 'HASH')
 {

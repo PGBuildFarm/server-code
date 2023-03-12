@@ -149,10 +149,10 @@ td.failflags {white-space: nowrap; font-size: x-small; }
 .nls {background: url("/img/translateicon.gif") no-repeat; }
 .openssl {background: url("/img/ssl_icon.gif") no-repeat; }
 .pam {background: url("/img/pam.png") no-repeat; }
-.perl {background: url("/img/camel.png") no-repeat; }
-.python {background: url("/img/python.png") no-repeat; }
+.perl,.plperl {background: url("/img/camel.png") no-repeat; }
+.python,.plpython {background: url("/img/python.png") no-repeat; }
 .tap-tests {background: url("/img/tap.png") no-repeat; }
-.tcl {background: url("/img/tcl.png") no-repeat; }
+.tcl,.pltcl {background: url("/img/tcl.png") no-repeat; }
 .thread-safety {background: url("/img/threads.gif") no-repeat; }
 .vpath {background: url("/img/vpath.png") no-repeat; }
 .xml {background: url("/img/xml.png") no-repeat; }

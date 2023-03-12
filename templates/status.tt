@@ -7,8 +7,8 @@ See accompanying License file for license details
 -%]
 [%
  flag_imgs = {
-     perl => 1,
-     python => 1,
+     perl => 1, plperl => 1,
+     python => 1, plpython => 1;
      debug => 1, 
      pam => 1,
      cassert => 1,
@@ -16,7 +16,7 @@ See accompanying License file for license details
      nls => 1,
      krb5 => 1,
      gssapi => 1,
-     tcl => 1,
+     tcl => 1, pltcl => 1,
      vpath => 1,
      xml => 1,
 	 llvm => 1,
@@ -46,7 +46,7 @@ See accompanying License file for license details
        on the relevant branch.
     </p>
 <table><tr><th class="head" rowspan="2">Legend</th>
-[% FOREACH flagset IN flag_imgs %]
+[% FOREACH flagset IN flag_imgs ; NEXT IF flagset.match('^pl') %]
 <td class="legend"><span class="[% flagset.key %]" title="[% flagset.key %]"></span> =  [% flagset.key %]</td>
 [% IF loop.count == 7 %]</tr><tr>[% END %]
 [% END %]
