@@ -398,7 +398,7 @@ if (not exists $client_conf->{config_opts} and not exists $client_conf->{meson_o
 {
 	@config_flags = ();
 }
-elsif ($conf->{using_meson} && ref $client_conf->{meson_opts})
+elsif ($client_conf->{using_meson} && ref $client_conf->{meson_opts})
 {
 	# must be an array. Should only exist if $using_meson
 
