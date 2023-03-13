@@ -47,9 +47,9 @@ See accompanying License file for license details
        on the relevant branch.
     </p>
 <table><tr><th class="head" rowspan="2">Legend</th>
-[% FOREACH flagset IN flag_imgs ; NEXT IF flagset.match('^pl') %]
+[% FOREACH flagset IN flag_imgs ; NEXT IF flagset.key.match('^pl') %]
 <td class="legend"><span class="[% flagset.key %]" title="[% flagset.key %]"></span> =  [% flagset.key %]</td>
-[% IF loop.count == 7 %]</tr><tr>[% END %]
+[% IF loop.count == 8 %]</tr><tr>[% END %]
 [% END %]
 </tr></table>
 <br />
