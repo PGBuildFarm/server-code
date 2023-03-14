@@ -5,27 +5,7 @@ Copyright (c) 2003-2022, Andrew Dunstan
 See accompanying License file for license details
 
 -%]
-[%
- flag_imgs = {
-     perl => 1, plperl => 1,
-     python => 1, plpython => 1,
-     debug => 1, 
-     pam => 1,
-     cassert => 1,
-     openssl => 1,
-     nls => 1,
-     krb5 => 1,
-     gssapi => 1,
-     tcl => 1, pltcl => 1,
-     vpath => 1,
-     xml => 1,
-	 llvm => 1,
-	 'tap-tests' => 1,
-     'thread-safety' => 1,
-	 meson => 1,
-     }
--%]
-[%- BLOCK flag ; IF flag_imgs.${flag} == 1 %]<span class="[% flag %]" title="[% flag %]"></span>[% END ; END -%]
+[%- PROCESS flags.tt -%]
 [%- BLOCK sysnotes ; IF row.sys_notes %]<td class="notes"><span class="snotes" title="[% row.sys_notes_ts.replace(' .*','') | html %]: [% row.sys_notes | html %]"></span></td>
 [%- ELSE %]<td>&nbsp;</td>[% END ; END -%]
 [%- BLOCK cl %] class="[% IF bgfor.match('Git|port-check') %]cerr[% ELSE; SWITCH bgfor.replace('-.*','') -%]
@@ -46,12 +26,7 @@ See accompanying License file for license details
        Use the farm member link for history of that member 
        on the relevant branch.
     </p>
-<table><tr><th class="head" rowspan="2">Legend</th>
-[% FOREACH flagset IN flag_imgs ; NEXT IF flagset.key.match('^pl') %]
-<td class="legend"><span class="[% flagset.key %]" title="[% flagset.key %]"></span> =  [% flagset.key %]</td>
-[% IF loop.count == 8 %]</tr><tr>[% END %]
-[% END %]
-</tr></table>
+[% PROCESS legend %]
 <br />
     <table cellspacing="0">
 [% brch = "" %]

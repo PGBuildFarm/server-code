@@ -5,32 +5,14 @@ Copyright (c) 2003-2022, Andrew Dunstan
 See accompanying License file for license details
 
 -%]
+[%- PROCESS flags.tt -%]
 [%
- flag_imgs = {
-     perl => 1,
-     python => 1,
-     debug => 1, 
-     pam => 1,
-     cassert => 1,
-     openssl => 1,
-     nls => 1,
-     krb5 => 1,
-     gssapi => 1,
-     tcl => 1,
-     vpath => 1,
-     xml => 1,
-	 llvm => 1,
-	 'tap-tests' => 1,
-     'thread-safety' => 1,
-     };
-
   filter = '';
   IF max_days ; filter = 'max_days=' _ max_days ; END ;
   FOREACH qmemb IN qmembers ; IF filter ; filter = "$filter&" ; END ; filter = filter _ 'member=' _ qmemb ; END ;
   FOREACH qstage IN qstages ; IF filter ; filter = "$filter&" ; END ; filter = filter _ 'stage=' _ qstage ; END ;
   FOREACH qbranch IN qbranches ; IF filter ; filter = "$filter&" ; END ; filter = filter _ 'branch=' _ qbranch ; END ;
 -%]
-[%- BLOCK flag ; IF flag_imgs.${flag} == 1 %]<span class="[% flag %]" title="[% flag %]"></span>[% END ; END -%]
 [%- BLOCK sysnotes ; IF row.sys_notes %]<td class="notes"><span class="snotes" title="[% row.sys_notes_ts.replace(' .*','') | html %]: [% row.sys_notes | html %]"></span></td>
 [%- ELSE %]<td>&nbsp;</td>[% END ; END -%]
 [%- BLOCK cl %] class="[% IF bgfor.match('Git|port-check') %]cerr[% ELSE; SWITCH bgfor.replace('-.*','') -%]
@@ -91,13 +73,8 @@ See accompanying License file for license details
 <input type="submit" name="filter" value="Submit" />
 </td></tr></table>
 </form>
-<table><tr><th class="head" rowspan="2">Legend</th>
-[% FOREACH flagset IN flag_imgs %]
-<td class="legend"><span class="[% flagset.key %]" title="[% flagset.key %]"></span> =  [% flagset.key %]</td>
-[% IF loop.count == 7 %]</tr><tr>[% END %]
-[% END %]
-</tr></table>
-    <table cellspacing="0">
+[% PROCESS legend %]
+<table cellspacing="0">
 [% brch = "" %]
 [% IF sortby == 'namenobranch' %]
 <tr><th colspan="2">Alias</th><th>Branch</th><th>System</th><th>Status</th><th>Flags</th></tr>
