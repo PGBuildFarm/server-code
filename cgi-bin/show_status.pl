@@ -110,7 +110,7 @@ my $statement = qq[
                   end
   order by branch = 'HEAD' desc,
         branch COLLATE "C" desc, $sort_clause
-       snapshot desc
+       report_time desc
 ]
   ;
 
