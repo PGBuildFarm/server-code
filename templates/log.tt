@@ -55,7 +55,7 @@ See accompanying License file for license details
         <td>[% info_row.owner_email %]</td>
     </tr>
   </table>
-[% IF other_branches %]
+[% IF other_branches.size %]
     <br />
     <table>
       <tr>
