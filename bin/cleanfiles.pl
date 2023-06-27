@@ -84,8 +84,20 @@ sub wanted
 
 	# ignore mail file, it should be cleaned up independently.
 	# also ignore tmp.nnn files. They will be renamed.
-	if ($file eq 'mail' || $file =~ /^tmp\.\d+/)
+	if ($file eq 'mail' || $file =~ /^tmp\.\d+$/)
 	{
+		return;
+	}
+
+	if ($file =~ /^tmp\.\d+\.tgz$/)
+	{
+		# could be a tgz in flight, but if it's old we exited before
+		# the rename logic, So check for age.
+		my ($dev, $ino, $mode, $nlink, $uid, $gid);
+		     (($dev, $ino, $mode, $nlink, $uid, $gid) = lstat($_))
+		  && (int(-M _) > 7)
+		  && -f _
+		  && push(@files, $name);
 		return;
 	}
 
@@ -95,7 +107,17 @@ sub wanted
 
 	if (!$suffix)
 	{
-		# this could be the file before it's renamed to .meta, so ignore it
+		# this could be the file before it's renamed to .meta, or left
+		# over from an error exit. Ignore unless it's old enough
+		if ($ts =~ /^\d\d\d\d-\d\d-\d\d_\d\d:\d\d:\d\d$/)
+		{
+			my ($dev, $ino, $mode, $nlink, $uid, $gid);
+			(($dev, $ino, $mode, $nlink, $uid, $gid) = lstat($_))
+			  && (int(-M _) > 7)
+			  && -f _
+			  && push(@files, $name);
+		}
+
 		return;
 	}
 
