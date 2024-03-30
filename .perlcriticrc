@@ -1,3 +1,6 @@
+# print the policy name as well as the normal output
+verbose = %f: %m at line %l, column %c.  %e.  ([%p] Severity: %s)\n
+
 
 # sev 5
 # tl;dr - return undef returns (undef) instead of () in list context

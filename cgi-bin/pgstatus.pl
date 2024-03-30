@@ -407,6 +407,23 @@ elsif ($client_conf->{using_meson} && ref $client_conf->{meson_opts})
 	  @ { $client_conf->{meson_opts} };
 	# strip out -D and value
 	do { s/^-D//; s/=.*//; } foreach @config_flags;
+	# there are multiple ways of specifying debug, and the default
+	# is -Dbuildtye=debugoptimized
+	if (! grep { /-Ddebug/ } @{ $client_conf->{meson_opts} })
+	{
+		# only do this if they have not specified an explicit debug flag
+		#
+		# Set the flag if they have specified a debug buildtype, or if
+		# they haven't specified a buildtype at all
+
+		## no critic (BuiltinFunctions::RequireBlockGrep)
+		if (grep(/-Dbuildtype=debug/,  @{ $client_conf->{meson_opts} }) ||
+			! grep(/-Dbuildtype/,  @{ $client_conf->{meson_opts} }))
+		{
+			push @config_flags, 'debug';
+		}
+	}
+
 	push (@config_flags,'meson');
 }
 elsif (ref $client_conf->{config_opts} eq 'HASH')
