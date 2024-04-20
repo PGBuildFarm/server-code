@@ -132,24 +132,28 @@ if ($os_version || $compiler_version)
 	$os_version       ||= $old_os;
 	$compiler_version ||= $old_comp;
 
-	my $new_personality = q{
-
-    insert into personality (name, os_version, compiler_version)
-	values (?,?,?)
-
-    };
-
-	$sth = $db->prepare($new_personality);
-	$rv = $sth->execute($animal, $os_version, $compiler_version);
-
-	$sth->finish;
-
-	unless ($rv)
+	# makes request idempotent
+	if ($os_version ne $old_os || $compiler_version ne $old_comp)
 	{
-		print "Status: 470 new data insert\nContent-Type: text/plain\n\n";
-		print "error: $db->errstr\n";
-		$db->disconnect;
-		exit;
+		my $new_personality = q{
+
+		insert into personality (name, os_version, compiler_version)
+		values (?,?,?)
+
+		};
+
+		$sth = $db->prepare($new_personality);
+		$rv = $sth->execute($animal, $os_version, $compiler_version);
+
+		$sth->finish;
+
+		unless ($rv)
+		{
+			print "Status: 470 new data insert\nContent-Type: text/plain\n\n";
+			print "error: $db->errstr\n";
+			$db->disconnect;
+			exit;
+		}
 	}
 }
 
