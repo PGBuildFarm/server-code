@@ -144,7 +144,6 @@ td.failflags {white-space: nowrap; font-size: x-small; }
 .cassert {background: url("/img/cassert.gif") no-repeat; }
 .debug {background: url("/img/bug.png") no-repeat; }
 .gssapi {background: url("/img/gssapi.gif") no-repeat; }
-.krb5 {background: url("/img/kerberos.png") no-repeat; }
 .llvm {background: url("/img/llvm.png") no-repeat; }
 .nls {background: url("/img/translateicon.gif") no-repeat; }
 .openssl {background: url("/img/ssl_icon.gif") no-repeat; }

@@ -14,7 +14,6 @@ See accompanying License file for license details
      cassert => 1,
      openssl => 1,
      nls => 1,
-     krb5 => 1,
      gssapi => 1,
      tcl => 1, pltcl => 1,
      vpath => 1,
