@@ -275,6 +275,13 @@ unless ($ts + 86400 > time
 	exit;
 }
 
+my $last_branch_time;
+{
+    my $brch = $branch eq 'HEAD' ? 'master' : $branch;
+    $last_branch_time =
+      `GIT_DIR=$local_git_clone git log -1 --pretty=format:\%ct  $brch`;
+}
+
 =comment
 
 # CLOBBER_CACHE_RECURSIVELY can takes forever to run, so omit the snapshot
@@ -286,10 +293,6 @@ if ($client_conf->{config_env}->{CPPFLAGS} !~ /CLOBBER_CACHE_RECURSIVELY/ &&
 	$log =~/Last file mtime in snapshot: (.*)/)
 {
     my $snaptime = parsedate($1);
-    my $brch = $branch eq 'HEAD' ? 'master' : $branch;
-    my $last_branch_time = time - (30 * 86400);
-    $last_branch_time =
-      `TZ=UTC GIT_DIR=$local_git_clone git log -1 --pretty=format:\%ct  $brch`;
     if ($snaptime < ($last_branch_time - 86400))
     {
 	print "Status: 493 snapshot too old: $1\nContent-Type: text/plain\n\n";
@@ -337,6 +340,15 @@ if ($log_archive)
 		$githeadref = <$githead>;
 		chomp $githeadref;
 		close $githead;
+		# mark it with an asterisk if the commit is more than 2 days older
+		# than the current tip of the branch.
+		my $git_cmd = 'git show -s --pretty=%ct';
+		my $ctime = `GIT_DIR=$local_git_clone $git_cmd $githeadref`;
+		chomp $ctime;
+		if ($last_branch_time - $ctime > (2 * 24 * 60 * 60))
+		{
+			$githeadref = "* $githeadref";
+		}
 	}
 
 	# unlink $archname;
