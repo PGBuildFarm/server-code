@@ -37,7 +37,7 @@ else
 	@branches = grep { $_ ne "" } $query->multi_param('branch');
 	@stages   = grep { $_ ne "" } $query->multi_param('stage');
 }
-do { s{[^a-zA-Z0-9_/ -]}{}g; }
+do { s{[^a-zA-Z0-9_/ -]}{}g; s/^master$/HEAD/; }
   foreach @branches;
 do { s/[^a-zA-Z0-9_ -]//g; }
   foreach @members;
@@ -251,6 +251,9 @@ else
 }
 
 print "Content-Type: text/html\n$lastmodhead\n";
+
+s/^HEAD$/master/ foreach @branches;
+s/^HEAD$/master/ foreach @$all_branches;
 
 
 $template->process(

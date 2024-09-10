@@ -66,7 +66,11 @@ my $sql = q{
 };
 my $builds = $dbh->selectall_arrayref($sql, { Slice => {} });
 my %branches;
-foreach my $build (@$builds) { $branches{ $build->{branch} } = 1; }
+foreach my $build (@$builds)
+{
+	$build->{branch} =~ s/^HEAD$/master/;
+	$branches{ $build->{branch} } = 1;
+}
 
 if (defined $show_list)
 {
@@ -77,13 +81,13 @@ if (defined $show_list)
 	print "Content-Type: text/html\n\n";
 
 	my $sorter =
-	  sub { $a eq 'HEAD' ? -100 : ($b eq 'HEAD' ? 100 : $b cmp $a); };
+	  sub { $a eq 'master' ? -100 : ($b eq 'master' ? 100 : $b cmp $a); };
 
 	$template->process(
 		"typedefs.tt",
 		{
 			builds   => $builds,
-			branches => [ sort $sorter keys %branches ],
+			branches => [ sort $sorter keys %branches ];
 		}
 	);
 	exit;
@@ -103,7 +107,9 @@ my $sth = $dbh->prepare($sql);
 foreach my $build (@$builds)
 {
 	next if $branch && $build->{branch} ne $branch;
-	$sth->execute($build->{sysname}, $build->{snapshot}, $build->{branch});
+	my $brch = $build->{branch};
+	$brch =~ s/^master$/HEAD/;
+	$sth->execute($build->{sysname}, $build->{snapshot}, $brch});
 	my @row = $sth->fetchrow;
 	my @typedefs = split(/\s+/, $row[0]);
 	@words{@typedefs} = 1 x @typedefs;

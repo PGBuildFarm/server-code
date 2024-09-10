@@ -39,6 +39,7 @@ my $member = $query->param('nm');
 $member =~ s/[^a-zA-Z0-9_ -]//g if $member;
 my $branch = $query->param('br');
 $branch =~ s{[^a-zA-Z0-9_/ -]}{}g if $branch;
+$branch =~ s/^master$/HEAD/ if $branch;
 my $hm = $query->param('hm');
 if ($hm)
 {
@@ -125,6 +126,9 @@ while (my $row = $sth->fetchrow_hashref)
 $sth->finish;
 
 $db->disconnect;
+
+$branch =~ s/^HEAD$/master/;
+s/^HEAD$/master/ foreach @other_branches;
 
 my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1 };
 my $template = Template->new($template_opts);
