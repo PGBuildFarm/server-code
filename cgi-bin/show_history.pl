@@ -128,7 +128,7 @@ $sth->finish;
 $db->disconnect;
 
 $branch =~ s/^HEAD$/master/;
-s/^HEAD$/master/ foreach @other_branches;
+s/^HEAD$/master/ foreach @$other_branches;
 
 my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1 };
 my $template = Template->new($template_opts);
