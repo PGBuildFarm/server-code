@@ -34,6 +34,7 @@ print $head, "\n";
 
 foreach my $datum (@$data)
 {
+        $datum->{build_flags} = join(',',@{$datum->{build_flags}}) if ref $datum->{build_flags};
 	my $line = join(' | ', @{$datum}{@fields});
 	print $line, "\n";
 }

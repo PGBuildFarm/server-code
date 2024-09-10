@@ -687,6 +687,8 @@ $url ||= $query->url(-base => 1);
 my $urldbdate = $dbdate;
 $urldbdate =~ s/ /+/;
 
+$branch =~ s/^HEAD$/master/;
+
 if (!$skip_rss && $stage ne $prev_stat && "$stage$prev_stat" !~ /Git/)
 {
 	my ($rsec, $rmin, $rhour, $rmday, $rmon, $ryear, $rwday, $ryday, $risdst) =
