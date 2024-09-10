@@ -49,8 +49,8 @@ my $statement = q{
   select name, operating_system, os_version, compiler, compiler_version,
     owner_email, sys_notes_ts::date AS sys_notes_date, sys_notes,
     architecture as arch, status, status_ts::date as status_date, ARRAY(
-				select branch || ':' ||
-				       extract(days from now() - l.snapshot)
+				select case when branch = 'HEAD' then 'master' else branch end
+                       || ':' || extract(days from now() - l.snapshot)
 				from latest_snapshot l
 				where l.sysname = s.name
 				order by branch <> 'HEAD', branch COLLATE "C" desc
