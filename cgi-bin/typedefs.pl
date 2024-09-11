@@ -106,9 +106,9 @@ my $sth = $dbh->prepare($sql);
 
 foreach my $build (@$builds)
 {
-	next if $branch && $build->{branch} ne $branch;
 	my $brch = $build->{branch};
 	$brch =~ s/^master$/HEAD/;
+	next if $branch && $brch ne $branch;
 	$sth->execute($build->{sysname}, $build->{snapshot}, $brch);
 	my @row = $sth->fetchrow;
 	my @typedefs = split(/\s+/, $row[0]);
