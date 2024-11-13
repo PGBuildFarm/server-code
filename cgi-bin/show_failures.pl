@@ -37,7 +37,7 @@ else
 	@branches = grep { $_ ne "" } $query->multi_param('branch');
 	@stages   = grep { $_ ne "" } $query->multi_param('stage');
 }
-do { s{[^a-zA-Z0-9_/ -]}{}g; }
+do { s{[^a-zA-Z0-9_/ -]}{}g; s/^master$/HEAD/; }
   foreach @branches;
 do { s/[^a-zA-Z0-9_ -]//g; }
   foreach @members;
@@ -218,6 +218,7 @@ while (my $row = $sth->fetchrow_hashref)
 		  unless ($row->{build_flags}
 			&& $row->{build_flags} =~ /--(en|dis)able-thread-safety/);
 	}
+	$row->{branch} =~ s/^HEAD$/master/;
 	$row->{build_flags} =~ s/--((enable|with)-)?//g;
 	$row->{build_flags} =~ s/libxml/xml/;
 	$row->{build_flags} =~ s/tap_tests/tap-tests/;
@@ -251,6 +252,9 @@ else
 }
 
 print "Content-Type: text/html\n$lastmodhead\n";
+
+s/^HEAD$/master/ foreach @branches;
+s/^HEAD$/master/ foreach @$all_branches;
 
 
 $template->process(

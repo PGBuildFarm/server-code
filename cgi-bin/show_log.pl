@@ -235,6 +235,9 @@ for (@log_piece_names)
 
 $conf =~ s/\@/ [ a t ] /g;
 
+$branch =~ s/^HEAD$/master/;
+s/^HEAD$/master/ foreach @$other_branches;
+
 print "Content-Type: text/html\n\n";
 
 $template->process(

@@ -41,6 +41,7 @@ my $stage = $query->param('stg');
 $stage =~ s/[^a-zA-Z0-9._ -]//g if $stage;
 my $brnch = $query->param('branch') || 'HEAD';
 $brnch =~ s{[^a-zA-Z0-9._/ -]}{}g;
+$brnch =~ s/^master$/HEAD/;
 my $raw = $query->param('raw') || '0';
 $raw =~ s{[^a-zA-Z0-9._/ -]}{}g;
 
@@ -149,6 +150,8 @@ if (   $system
 		{
 			s!.*?/(upgrade\.$system)!$1!;
 		}
+
+		$branch =~ s/^HEAD$/master/;
 
 		print "Content-Type: text/html\n\n";
 
