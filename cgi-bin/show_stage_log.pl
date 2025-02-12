@@ -94,6 +94,7 @@ if (   $system
 	$db->disconnect;
 
 	$branch ||= "unknown";
+	$logtext //= "";
 
 	if ($raw || $stage eq 'typedefs')
 	{
