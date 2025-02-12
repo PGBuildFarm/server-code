@@ -19,7 +19,7 @@ use DBD::Pg;
 
 use File::Find ();
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport_bin
   $default_host $buildlogs_dir);
 
 # for the convenience of &wanted calls, including -eval statements:
@@ -35,7 +35,7 @@ die "no dbuser" unless $dbuser;
 
 my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
-$dsn .= ";port=$dbport" if $dbport;
+$dsn .= ";port=$dbport_bin" if $dbport_bin;
 
 my $db = DBI->connect($dsn, $dbuser, $dbpass);
 

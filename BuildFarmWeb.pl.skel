@@ -14,7 +14,7 @@ use strict;
 use warnings;
 
 use vars qw(
-  $dbhost $dbname $dbuser $dbpass $dbport
+  $dbhost $dbname $dbuser $dbpass $dbport $dbport_bin
   $notifyapp
   $all_stat $fail_stat $change_stat $green_stat
   $captcha_invis_pubkey $captcha_invis_privkey
@@ -58,6 +58,7 @@ $dbname = "mydb";
 $dbuser = "myuser";
 $dbpass = "mypas";
 $dbport = undef;      # undef = default
+$dbport_bin = undef;
 
 # addresses to email about new applications
 $notifyapp = [qw( someone@somewhere.com )];

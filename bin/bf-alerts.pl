@@ -19,7 +19,7 @@ use Data::Dumper;
 use Mail::Send;
 use Storable qw(thaw);
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport_bin
   $all_stat $fail_stat $change_stat $green_stat
   $default_host $alerts_from $template_dir $ignore_branches_of_interest
 );
@@ -36,7 +36,7 @@ $dbpass = "";
 
 my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
-$dsn .= ";port=$dbport" if $dbport;
+$dsn .= ";port=$dbport_bin" if $dbport_bin;
 
 my $db = DBI->connect($dsn, $dbuser, $dbpass);
 

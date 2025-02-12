@@ -15,7 +15,7 @@ use DBI;
 use DBD::Pg;
 use Mail::Send;
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport_bin
   $default_host $reminders_from $notifyapp);
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
@@ -30,7 +30,7 @@ $dbpass = "";
 
 my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
-$dsn .= ";port=$dbport" if $dbport;
+$dsn .= ";port=$dbport_bin" if $dbport_bin;
 
 my $db = DBI->connect($dsn, $dbuser, $dbpass);
 
