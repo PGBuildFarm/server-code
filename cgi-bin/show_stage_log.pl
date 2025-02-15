@@ -131,7 +131,7 @@ if (   $system
 		}
 		else
 		{
-			$log = shift(@pieces);
+			$log = shift(@pieces) // "";
 			# skip useless preliminary make output
 			if ($log =~ /.*?\n(([A-Za-z]{3} \d\d \d\d:\d\d:\d\d )?(echo "\+\+\+))/s)
 			{
