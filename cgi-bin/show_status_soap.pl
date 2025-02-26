@@ -11,11 +11,16 @@ See accompanying License file for license details
 use strict;
 use warnings;
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
+use lib "$ENV{BFCONFDIR}/perl5";
+use BFUtils;
+
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport $email_only);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
+
+check_email_only();
 
 use SOAP::Transport::HTTP;
 

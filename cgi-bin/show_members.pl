@@ -11,17 +11,21 @@ See accompanying License file for license details
 use strict;
 use warnings;
 
+use lib "$ENV{BFCONFDIR}/perl5";
+use BFUtils;
+
 use CGI;
 use DBI;
 use Template;
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir $sort_by);
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir $sort_by
+		  $email_only);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
-#require "BuildFarmWeb.pl";
+check_email_only();
 
 my $query   = CGI->new;
 my %sort_ok = (

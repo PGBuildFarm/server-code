@@ -3,7 +3,7 @@
 
 # See accompanying License file for license details
 
-ALLPERLFILES = $(shell find ./bin  ./cgi-bin \( -name '*.pl' -o -name '*.pm' \) -print | sed 's!\./!!') BuildFarmWeb.pl.skel
+ALLPERLFILES = $(shell find ./bin  ./cgi-bin ./perl5 \( -name '*.pl' -o -name '*.pm' \) -print | sed 's!\./!!') BuildFarmWeb.pl.skel
 
 syncheck:
 	export BFCONFDIR=.;	for f in $(ALLPERLFILES) ; do perl -cw $${f}; done;

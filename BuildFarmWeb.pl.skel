@@ -29,6 +29,7 @@ use vars qw(
   $skip_captcha
   $ignore_branches_of_interest
   $envtestenabled
+  $email_only
 );
 
 # if on enable envtest.pl to produce output, should normally be off
@@ -90,5 +91,7 @@ $captcha_invis_privkey = 'bar';
 $local_git_clone = '/path/to/bare/git/repo';
 
 $ignore_branches_of_interest = undef;    # or some true value to ignore it
+
+$email_only = undef;
 
 1;

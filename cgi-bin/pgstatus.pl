@@ -21,7 +21,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
   $skip_mail
   $skip_rss
   $ignore_branches_of_interest
-
+  $email_only
 );
 
 # force this before we do anything - even load modules
@@ -832,6 +832,20 @@ $from_addr =~ tr /\r\n//d;
 
 $from_addr = $status_from if $status_from;
 
+my $log_ref = "For more information, see $url/cgi-bin/show_history.pl?nm=$animal&br=$branch";
+if ($email_only)
+{
+	if ($stage ne 'OK')
+	{
+		$log_ref = "Log:\n" .  substr($log, 0, 1_000_000);
+		$log_ref .= "\n(truncated)\n" if (length($log) > 1_000_000);
+	}
+	else
+	{
+		$log_ref = "";
+	}
+}
+
 if (@$mailto or @$bcc_stat)
 {
 	my $msg = Mail::Send->new;
@@ -867,7 +881,7 @@ if (@$mailto or @$bcc_stat)
 	Arch: $arch
 	Comp: $compiler
 
-	For more information, see $url/cgi-bin/show_history.pl?nm=$animal&br=$branch
+	$log_ref
 
 EOMAIL
 
@@ -920,7 +934,7 @@ if (@$mailto or @$bcc_chg)
 	Arch: $arch
 	Comp: $compiler
 
-	For more information, see $url/cgi-bin/show_history.pl?nm=$animal&br=$branch
+	$log_ref
 
 EOMAIL
 

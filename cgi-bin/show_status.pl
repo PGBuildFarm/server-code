@@ -11,16 +11,21 @@ See accompanying License file for license details
 use strict;
 use warnings;
 
+use lib "$ENV{BFCONFDIR}/perl5";
+use BFUtils;
+
 use DBI;
 use Template;
 use CGI;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir
-  $ignore_branches_of_interest);
+  $ignore_branches_of_interest $email_only);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
+
+check_email_only();
 
 my $query = CGI->new;
 my @members;

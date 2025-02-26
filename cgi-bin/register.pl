@@ -19,14 +19,17 @@ use Crypt::URandom qw(urandom);
 
 use lib "$ENV{BFCONFDIR}/perl5";
 use Captcha::reCAPTCHA::V2;
+use BFUtils;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp
   $captcha_invis_privkey $template_dir $default_host
-  $register_from $skip_mail $skip_captcha);
+  $register_from $skip_mail $skip_captcha $email_only);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
+
+check_email_only;
 
 my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;

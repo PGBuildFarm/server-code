@@ -11,18 +11,21 @@ See accompanying License file for license details
 use strict;
 use warnings;
 
+use lib "$ENV{BFCONFDIR}/perl5";
+use BFUtils;
+
 use DBI;
 use Template;
 use CGI;
 use File::Temp qw(tempfile);
 
-use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir);
+use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir $email_only);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
-#require "BuildFarmWeb.pl";
+check_email_only();
 
 die "no dbname" unless $dbname;
 die "no dbuser" unless $dbuser;
