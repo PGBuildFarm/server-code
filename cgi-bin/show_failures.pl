@@ -226,6 +226,7 @@ while (my $row = $sth->fetchrow_hashref)
 	$row->{branch} =~ s/^HEAD$/master/;
 	$row->{build_flags} =~ s/--((enable|with)-)?//g;
 	$row->{build_flags} =~ s/libxml/xml/;
+	$row->{build_flags} =~ s/libcurl/curl/;
 	$row->{build_flags} =~ s/tap_tests/tap-tests/;
 	$row->{build_flags} =~ s/asserts/cassert/;
 	$row->{build_flags} =~ s/\S+=\S+//g;

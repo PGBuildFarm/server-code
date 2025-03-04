@@ -22,6 +22,7 @@ See accompanying License file for license details
 	 'tap-tests' => 1,
      'thread-safety' => 1,
 	 meson => 1,
+	 curl => 1,
      }
 -%]
 [%- BLOCK flag ; IF flag_imgs.${flag} == 1 %]<span class="[% flag %]" title="[% flag %]"></span>[% END ; END -%]
