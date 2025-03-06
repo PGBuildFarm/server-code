@@ -25,6 +25,9 @@ set client_encoding = 'UTF8';
 
 EOF
 
+# upgrade can perturb partman column order, so use it explicitly
+partcols=`psql -X -A -t -c "select string_agg(attname,',' order by attnum) from pg_attribute where attrelid = 'partman.part_config'::regclass and attnum > 0 and not attisdropped" pgbfprod`
+
 cat > load-sample-data.sql <<EOF
 
 begin;
@@ -40,7 +43,7 @@ alter table build_status_raw disable trigger user;
 \copy latest_snapshot from latest_snapshot.data
 \copy nrecent_failures from nrecent_failures.data
 \copy personality from personality.data
-\copy partman.part_config from partman_part_config.data
+\copy partman.part_config ( $partcols ) from partman_part_config.data
 alter table build_status_raw enable trigger user;
 commit;
 
