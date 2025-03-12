@@ -228,7 +228,9 @@ while (my $row = $sth->fetchrow_hashref)
 	$row->{build_flags} =~ s/libxml/xml/;
 	$row->{build_flags} =~ s/libcurl/curl/;
 	$row->{build_flags} =~ s/tap_tests/tap-tests/;
+	$row->{build_flags} =~ s/injection_points/injection-points/;
 	$row->{build_flags} =~ s/asserts/cassert/;
+	$row->{build_flags} =~ s/\bssl\b/openssl/;
 	$row->{build_flags} =~ s/\S+=\S+//g;
 
 	$fetch_personality->execute($row->{sysname}, $row->{report_time});

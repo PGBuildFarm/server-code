@@ -23,6 +23,7 @@ See accompanying License file for license details
      'thread-safety' => 1,
 	 meson => 1,
 	 curl => 1,
+	 'injection-points' => 1,
      }
 -%]
 [%- BLOCK flag ; IF flag_imgs.${flag} == 1 %]<span class="[% flag %]" title="[% flag %]"></span>[% END ; END -%]

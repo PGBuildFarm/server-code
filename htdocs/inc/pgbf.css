@@ -157,4 +157,4 @@ td.failflags {white-space: nowrap; font-size: x-small; }
 .xml {background: url("/img/xml.png") no-repeat; }
 .meson {background: url("/img/meson.png") no-repeat; }
 .curl {background: url("/img/curl.png") no-repeat; }
-
+.injection-points {background: url("/img/injection.png") no-repeat; }
