@@ -135,6 +135,7 @@ print $fh "\n\nName: $dummyname\n",
   "Arch: $arch\n",
   "Comp: $comp: $compv\n",
   "Owner: $owner <$email>\n",
+  "Request Addr: $ENV{REMOTE_ADDR}\n",
   "Comments: $comments\n";
 $fh->close;
 
