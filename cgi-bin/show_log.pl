@@ -129,7 +129,7 @@ if (   $system
 		$last_success_git_ref = $last_success_row->{git_head_ref}
 		  if $last_success_row;
 	}
-	$log                   = $row->[0];
+	$log                   = $row->[0] || "";
 	$conf                  = $row->[1] || "not recorded";
 	$stage                 = $row->[2] || "unknown";
 	$changed_this_run      = $row->[3];
@@ -215,7 +215,7 @@ if ($log =~ /^$log_marker/)
 {
 	$log = "";
 }
-else
+elsif (@pieces)
 {
 	$log = shift(@pieces);
 	# skip useless preliminary make output
