@@ -358,7 +358,7 @@ if ($min_script_version)
 {
 	$client_conf->{script_version} ||= '0.0';
 	my $cli_ver = $client_conf->{script_version};
-	$cli_ver =~ s/^REL_//;
+	$cli_ver =~ s/^REL_//; $cli_ver =~ s/_/./g;
 	my ($minmajor, $minminor) = split(/\./, $min_script_version);
 	my ($smajor,   $sminor)   = split(/\./, $cli_ver);
 
@@ -383,7 +383,7 @@ if (0 && $min_web_script_version)
 {
 	$client_conf->{web_script_version} ||= '0.0';
 	my $cli_ver = $client_conf->{web_script_version};
-	$cli_ver =~ s/^REL_//;
+	$cli_ver =~ s/^REL_//; $cli_ver =~ s/_/./g;
 	my ($minmajor, $minminor) = split(/\./, $min_web_script_version);
 	my ($smajor,   $sminor)   = split(/\./, $cli_ver);
 
