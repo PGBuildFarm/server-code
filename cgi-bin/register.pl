@@ -29,7 +29,7 @@ $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
-check_email_only;
+check_email_only();
 
 my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
