@@ -64,7 +64,7 @@ unless ($skip_captcha)
 }
 
 # registration spam filter
-$ok = undef if ($owner !~ /\s/ && $owner =~ '[A-Z].*[A-Z]')
+$ok = undef if ($owner !~ /\s/ && $owner =~ /[A-Z].*[A-Z]/);
 
 unless ($os
 	&& $osv

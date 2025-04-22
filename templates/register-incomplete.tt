@@ -10,7 +10,8 @@ See accompanying License file for license details
     bodyclass = 'application'
     pagebutton = 'none'
 %]
+<h1>Incomplete data</h1>
 <p>You need to complete all the form items. 
-<a href="/cgi-bin/register-form.pl">Please click here to try again.</a>
+Please try again.
 </p>
 [% END %]
