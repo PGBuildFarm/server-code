@@ -96,6 +96,8 @@ my $set_notes = q{
                    end
     where name = $1
           and status = 'approved'
+	      -- makes request idempotent
+          and sys_notes is distinct from nullif($2,'')
 
 };
 
