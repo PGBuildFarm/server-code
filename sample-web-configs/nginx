@@ -1,0 +1,48 @@
+# buildfarm.postgresql.org
+
+server {
+        listen 127.0.0.1:81;
+
+        server_name buildfarm.postgresql.org;
+
+        access_log /var/log/nginx/buildfarm.postgresql.org-access.log combined if=$not_monitoring;
+        error_log /var/log/nginx/buildfarm.postgresql.org-error.log;
+
+        # Second log, for bf admin processing (separate for now)
+        access_log /home/pgbuildfarm/website/weblogs/buildfarm.postgresql.org-access.log combined if=$not_monitoring;
+	error_log /home/pgbuildfarm/website/weblogs/buildfarm.postgresql.org-error.log;
+
+        root /home/pgbuildfarm/website/htdocs;
+        index index.html;
+
+        set_real_ip_from 127.0.0.1;
+        real_ip_header X-Forwarded-For;
+
+        absolute_redirect off;
+
+        rewrite ^/latest(/.*)?$ /cgi-bin/latest.pl$1;
+
+        location /cgi-bin/ {
+                root /dev/null;
+
+                # buildfarm posts can be very large!
+                client_max_body_size 50M;
+
+                fastcgi_pass unix:/var/run/fcgiwrap.socket;
+                include fastcgi_params;
+                fastcgi_split_path_info ^/cgi-bin/(.+\.pl)(.*)$;
+                fastcgi_param SCRIPT_FILENAME /home/pgbuildfarm/website/cgi-bin/$fastcgi_script_name;
+                fastcgi_param PATH_INFO $fastcgi_path_info;
+                fastcgi_param BFCONFDIR /home/pgbuildfarm/website;
+                fastcgi_param BFConfDir /home/pgbuildfarm/website;
+                fastcgi_param BF_DEBUG on;
+        }
+
+        location /downloads/ {
+                 autoindex on;
+        }
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+}
