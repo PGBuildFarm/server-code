@@ -36,6 +36,7 @@ See accompanying License file for license details
         <div class="nav">
           <ul>
     	    <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
+    	    <li id="summary"><a href="/cgi-bin/show_summary.pl" title="Current Summary">Summary</a></li>
     	    <li id="status"><a href="/cgi-bin/show_status.pl" title="Current results">Status</a></li>
     	    <li id="failures"><a href="/cgi-bin/show_failures.pl" title="Recent Failures">Failures</a></li>
     	    <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested">Members</a></li>

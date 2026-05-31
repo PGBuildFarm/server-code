@@ -1,0 +1,37 @@
+[%#
+
+Copyright (c) 2003-2022, Andrew Dunstan
+
+See accompanying License file for license details
+
+-%]
+[%
+        giturl = 'https://git.postgresql.org/gitweb?p=postgresql.git;a=commitdiff;h=';
+-%]
+[% WRAPPER 'page.tt'
+	title = 'PostgreSQL BuildFarm Status Summary'
+	bodyclass = 'none'
+	pagebutton = 'summary'
+%]
+<h1>PostgreSQL BuildFarm Status Summary</h1>
+
+<table cellspacing="0">
+    <tr>
+    <th>Branch</th>
+    <th>Builds</th>
+    <th>Commit</th>
+    <th>Commit Date (UTC)</th>
+    <th>Commit Subject</th>
+    </tr>
+
+[% FOREACH row IN summrows %]
+    <tr>
+	   <td><a href="/cgi-bin/show_status.pl#[% row.branch %]">[% row.branch %]</a></td>
+	   <td class="[% IF row.successes == row.builds %]pass[% ELSE %]fail[% END %]">[% row.successes %] / [% row.builds %]</td>
+	   <td><a href="[% giturl; row.git_commit_ref %]">[% row.git_commit_ref %]</a></td>
+	   <td>[% row.git_commit_ts %]</td>
+	   <td>[% row.git_commit_header %]</td>
+	</tr>
+[% END %]
+</table>
+[%END %]
