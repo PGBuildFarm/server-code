@@ -205,33 +205,9 @@ while (my $row = $sth->fetchrow_hashref)
 	next if (@stages   && !grep { $_ eq $row->{stage} } @stages);
 	next if (@branches && !grep { $_ eq $row->{branch} } @branches);
 	next if $skipok && $row->{current_stage} eq 'OK';
-	$row->{build_flags} =~ s/^\{(.*)\}$/$1/ if $row->{build_flags};
-	$row->{build_flags} =~ s/,/ /g          if $row->{build_flags};
-
-	# enable-integer-datetimes is now the default
-	if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_3_STABLE')
-	{
-		$row->{build_flags} .= " --enable-integer-datetimes "
-		  unless ($row->{build_flags}
-			&& $row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
-	}
-
-	# enable-thread-safety is now the default
-	if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_5_STABLE')
-	{
-		$row->{build_flags} .= " --enable-thread-safety "
-		  unless ($row->{build_flags}
-			&& $row->{build_flags} =~ /--(en|dis)able-thread-safety/);
-	}
+	$row->{build_flags} =
+	  normalize_build_flags($row->{branch}, $row->{build_flags});
 	$row->{branch} =~ s/^HEAD$/master/;
-	$row->{build_flags} =~ s/--((enable|with)-)?//g;
-	$row->{build_flags} =~ s/libxml/xml/;
-	$row->{build_flags} =~ s/libcurl/curl/;
-	$row->{build_flags} =~ s/tap_tests/tap-tests/;
-	$row->{build_flags} =~ s/injection_points/injection-points/;
-	$row->{build_flags} =~ s/asserts/cassert/;
-	$row->{build_flags} =~ s/\bssl\b/openssl/;
-	$row->{build_flags} =~ s/\S+=\S+//g;
 
 	$fetch_personality->execute($row->{sysname}, $row->{report_time});
 	my @personality = $fetch_personality->fetchrow_array();
@@ -248,7 +224,7 @@ $sth->finish;
 $db->disconnect;
 
 my $template_opts = { INCLUDE_PATH => $template_dir };
-my $template = Template->new($template_opts);
+my $template      = Template->new($template_opts);
 
 if ($lastmodhead)
 {

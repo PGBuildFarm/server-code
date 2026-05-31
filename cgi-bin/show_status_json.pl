@@ -47,7 +47,7 @@ $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
 my $sort_clause = "";
-my $sortby = $query->param('sortby') || 'nosort';
+my $sortby      = $query->param('sortby') || 'nosort';
 if ($sortby eq 'name')
 {
 	$sort_clause = 'lower(sysname),';
@@ -134,37 +134,13 @@ while (my $row = $sth->fetchrow_hashref)
 	  if (@branches_of_interest
 		&& !(grep { $_ eq $row->{branch} } @branches_of_interest));
 
-	$row->{build_flags} =~ s/^\{(.*)\}$/$1/ if $row->{build_flags};
-	$row->{build_flags} =~ s/,/ /g          if $row->{build_flags};
-
-	# enable-integer-datetimes is now the default
-	if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_3_STABLE')
-	{
-		$row->{build_flags} .= " --enable-integer-datetimes "
-		  unless ($row->{build_flags}
-			&& $row->{build_flags} =~ /--(en|dis)able-integer-datetimes/);
-	}
-
-	# enable-thread-safety is now the default
-	if ($row->{branch} eq 'HEAD' || $row->{branch} gt 'REL8_5_STABLE')
-	{
-		$row->{build_flags} .= " --enable-thread-safety "
-		  unless ($row->{build_flags} =~ /--(en|dis)able-thread-safety/);
-	}
+	$row->{build_flags} =
+	  normalize_build_flags($row->{branch}, $row->{build_flags});
 	$row->{branch} =~ s/^HEAD$/master/;
-	$row->{build_flags} =~ s/--((enable|with)-)?//g;
-	$row->{build_flags} =~ s/libxml/xml/;
-	$row->{build_flags} =~ s/libcurl/curl/;
-	$row->{build_flags} =~ s/tap_tests/tap-tests/;
-	$row->{build_flags} =~ s/injection_points/injection-points/;
-	$row->{build_flags} =~ s/asserts/cassert/;
-	$row->{build_flags} =~ s/\bssl\b/openssl/;
-	$row->{build_flags} =~ s/\S+=\S+//g;
-        $row->{build_flags} =~ s/^\s+//;
-        $row->{build_flags} =~ s/\s+$//;
-        $row->{build_flags} = [ split(/\s+/, $row->{build_flags}) ] ;
-        $row->{log_archive_filenames} =~ s/[{}]//g; 
-        $row->{log_archive_filenames} = [ split(/,/, $row->{log_archive_filenames}) ];
+	$row->{build_flags} = [ split(/\s+/, $row->{build_flags}) ];
+	$row->{log_archive_filenames} =~ s/[{}]//g;
+	$row->{log_archive_filenames} =
+	  [ split(/,/, $row->{log_archive_filenames}) ];
 	push(@$statrows, $row);
 }
 $sth->finish;
@@ -173,6 +149,5 @@ $db->disconnect;
 
 my $json = JSON::PP->new->utf8->pretty->allow_nonref;
 $json->canonical(1);
-print "Content-Type: application/json\n\n",
-  $json->encode($statrows);
-  
+print "Content-Type: application/json\n\n", $json->encode($statrows);
+
