@@ -65,7 +65,7 @@ my $query = CGI->new;
 if ($query->request_method ne 'POST')
 {
 	print
-	  "Status: 496 wrong request method\nContent-Type: text/plain\n\n",
+	  "Status: 405 Method Not Allowed\nContent-Type: text/plain\n\n",
 	  "wrong request method\n";
 	exit;
 }
