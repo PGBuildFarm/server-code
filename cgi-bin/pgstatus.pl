@@ -60,9 +60,9 @@ $dsn .= ";port=$dbport" if $dbport;
 
 my $query = CGI->new;
 
-# don't let people play games with GET requests - this should be called via POST
+# don't let people play games with GET (or other) requests - this should be called via POST
 # the URL should only contain the signature
-if ($query->request_method eq 'GET')
+if ($query->request_method ne 'POST')
 {
 	print
 	  "Status: 496 wrong request method\nContent-Type: text/plain\n\n",
