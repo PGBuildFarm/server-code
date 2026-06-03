@@ -50,6 +50,8 @@ use BFUtils;
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
+setup_die_handler();
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 my $buildlogs = "$ENV{BFConfDir}/buildlogs";
 my $lv        = livery();
@@ -667,7 +669,7 @@ if ($stage ne 'OK')
 
 $db->disconnect;
 
-print "Content-Type: text/plain\n\n";
+print_http_header("Content-Type: text/plain\n\n");
 print "request was on:\n";
 print "res=$res&stage=$stage&animal=$animal&ts=$ts";
 

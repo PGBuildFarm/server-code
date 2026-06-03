@@ -27,6 +27,8 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
+setup_die_handler();
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 check_email_only();

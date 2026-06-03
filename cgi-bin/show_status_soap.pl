@@ -18,6 +18,8 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport $email_only);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
+setup_die_handler();
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 check_email_only();
@@ -45,7 +47,7 @@ sub get_status
 	$dsn .= ";port=$::dbport" if $::dbport;
 
 	my $db = DBI->connect($dsn, $::dbuser, $::dbpass)
-	  or die("$dsn,$::dbuser,$::dbpass,$!");
+	  or die "database connection failed: $DBI::errstr";
 
 	# there is possibly some redundancy in this query, but it makes
 	# a lot of the processing simpler.

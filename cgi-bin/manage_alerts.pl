@@ -17,6 +17,9 @@ use MIME::Base64;
 use DBI;
 use DBD::Pg;
 
+use lib "$ENV{BFCONFDIR}/perl5";
+use BFUtils;
+
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
 
 my $query = CGI->new;
@@ -39,6 +42,8 @@ $content = "$content&op=$op" if $op;
 $op ||= "disable";
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+
+setup_die_handler();
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 

@@ -21,6 +21,8 @@ use CGI;
 use vars qw( $template_dir $captcha_invis_pubkey $skip_captcha $email_only);
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
+setup_die_handler();
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 check_email_only();

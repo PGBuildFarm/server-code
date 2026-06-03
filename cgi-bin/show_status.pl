@@ -23,6 +23,8 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
+setup_die_handler();
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 check_email_only();
@@ -63,7 +65,7 @@ elsif ($sortby eq 'compiler')
 my $owner = $query->param('owner');
 
 my $db = DBI->connect($dsn, $dbuser, $dbpass, { pg_expand_array => 0 })
-  or die("$dsn,$dbuser,$dbpass,$!");
+  or die "database connection failed: $DBI::errstr";
 
 my $ifmodsince =
   $query->http('If-Modified-Since') || 'Thu, 01 Jan 1970 00:00:00 GMT';

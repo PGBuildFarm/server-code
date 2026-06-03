@@ -22,6 +22,8 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport $template_dir $email_only);
 
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
+setup_die_handler();
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 check_email_only();
@@ -69,7 +71,7 @@ elsif ($sortby eq 'namenobranch')
 }
 
 my $db = DBI->connect($dsn, $dbuser, $dbpass, { pg_expand_array => 0 })
-  or die("$dsn,$dbuser,$dbpass,$!");
+  or die "database connection failed: $DBI::errstr";
 
 # If the dashboard hasn't been updated then the failures can't have been either
 # so we use the same test for both. That saves keeping a separate update date
