@@ -17,7 +17,6 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
   $min_script_version $min_web_script_version
   $default_host $local_git_clone
   $status_from
-  $status_url
   $skip_mail
   $skip_rss
   $ignore_branches_of_interest
@@ -46,10 +45,14 @@ use DateTime::Format::W3CDTF;
 use File::Copy;
 use Fcntl qw(:flock);
 
+use lib "$ENV{BFCONFDIR}/perl5";
+use BFUtils;
+
 $ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 my $buildlogs = "$ENV{BFConfDir}/buildlogs";
+my $lv        = livery();
 
 die "no dbname" unless $dbname;
 die "no dbuser" unless $dbuser;
@@ -680,7 +683,7 @@ if ($ENV{BF_DEBUG})
 	  if $log_archive;
 }
 
-my $url = $status_url;
+my $url = $lv->{status_host};
 $url ||= $query->url(-base => 1);
 
 # replace space with a plus for use in URLs
@@ -712,14 +715,14 @@ if (!$skip_rss && $stage ne $prev_stat && "$stage$prev_stat" !~ /Git/)
 		# bootstrap RSS
 		$rss = XML::RSS->new(version => '1.0');
 		$rss->channel(
-			title => "PostgreSQL Build farm",
-			link  => "http://buildfarm.postgresql.org/cgi-bin/show_status.pl",
-			description => "Status changes for PostgreSQL Build Farm animals",
+			title => "$lv->{rss_title}",
+			link  => "$lv->{status_host}/cgi-bin/show_status.pl",
+			description => "Status changes for $lv->{rss_title} animals",
 		);
 		$rss->image(
-			title => "PostgreSQL Build Farm",
-			url => "http://buildfarm.postgresql.org/inc/pbbuildfarm-banner.png",
-			link => "http://buildfarm.postgresql.org/cgi-bin/show_status.pl"
+			title => "$lv->{rss_title}",
+			url => "$lv->{status_host}$lv->{banner}",
+			link => "$lv->{status_host}/cgi-bin/show_status.pl"
 		);
 	}
 	$rss->add_item(
@@ -827,7 +830,7 @@ my $host = `hostname`;
 chomp($host);
 $host = $default_host unless ($host =~ m/[.]/ || !defined($default_host));
 
-my $from_addr = "PG Build Farm <$me\@$host>";
+my $from_addr = "$lv->{mail_from} <$me\@$host>";
 $from_addr =~ tr /\r\n//d;
 
 $from_addr = $status_from if $status_from;
@@ -865,12 +868,12 @@ if (@$mailto or @$bcc_stat)
 	$msg->set('Auto-Submitted',           'auto-generated');
 	$msg->set('X-Auto-Response-Suppress', 'all');
 	$msg->subject(
-		"PGBuildfarm member $animal Branch $branch $stat_type $stage");
+		"$lv->{mail_tag} member $animal Branch $branch $stat_type $stage");
 	$msg->set('From', $from_addr);
 	my $fh = $msg->open("sendmail", "-f $from_addr");
 	print $fh unindent(<<"EOMAIL");
 
-	The PGBuildfarm member $animal had the following event on branch $branch:
+	The $lv->{mail_tag} member $animal had the following event on branch $branch:
 
 	$stat_type: $stage
 
@@ -916,14 +919,14 @@ if (@$mailto or @$bcc_chg)
 	$stat_type .= " failure" if $stage ne 'OK';
 
 	$msg->subject(
-		"PGBuildfarm member $animal Branch $branch Status $stat_type");
+		"$lv->{mail_tag} member $animal Branch $branch Status $stat_type");
 	$msg->set('Auto-Submitted',           'auto-generated');
 	$msg->set('X-Auto-Response-Suppress', 'all');
 	$msg->set('From',                     $from_addr);
 	my $fh = $msg->open("sendmail", "-f $from_addr");
 	print $fh unindent(<<"EOMAIL");
 
-	The PGBuildfarm member $animal had the following event on branch $branch:
+	The $lv->{mail_tag} member $animal had the following event on branch $branch:
 
 	Status $stat_type
 

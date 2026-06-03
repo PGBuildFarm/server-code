@@ -6,7 +6,7 @@ See accompanying License file for license details
 
 -%]
 [% WRAPPER 'page.tt' 
-    title = 'PostgreSQL BuildFarm Typedefs URLs'
+    title = livery.brand _ ' Typedefs URLs'
     bodyclass = 'none'
     pagebutton = 'typedefs'
 %]

@@ -109,7 +109,8 @@ $db->disconnect;
 # print "Content-Type: text/plain\n\n",Dumper($statrows),"VERSION: ",
 # $DBD::Pg::VERSION,"\n"; exit;
 
-my $template_opts = { INCLUDE_PATH => $template_dir };
+my $template_opts =
+  { INCLUDE_PATH => $template_dir, VARIABLES => { livery => livery() } };
 my $template = Template->new($template_opts);
 
 print "Content-Type: text/html\n\n";

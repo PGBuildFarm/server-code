@@ -15,10 +15,15 @@ use DBI;
 use DBD::Pg;
 use Mail::Send;
 
+use lib "$ENV{BFCONFDIR}/perl5";
+use BFUtils;
+
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport_bin
   $default_host $reminders_from $notifyapp);
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
+
+my $lv = livery();
 
 die "no dbname" unless $dbname;
 die "no dbuser" unless $dbuser;
@@ -48,7 +53,7 @@ my $host = `hostname`;
 chomp($host);
 $host = $default_host unless ($host =~ m/[.]/ || !defined($default_host));
 
-my $from_addr = "PG Build Farm <$me\@$host>";
+my $from_addr = "$lv->{mail_from} <$me\@$host>";
 $from_addr =~ tr /\r\n//d;
 
 $from_addr = $reminders_from if $reminders_from;
@@ -59,10 +64,10 @@ $msg->to(@$notifyapp);
 $msg->set('Reply-To',                 @$notifyapp);
 $msg->set('Auto-Submitted',           'auto-generated');
 $msg->set('X-Auto-Response-Suppress', 'all');
-$msg->subject("PGBuildfarm pending applications reminder");
+$msg->subject("$lv->{mail_tag} pending applications reminder");
 my $fh = $msg->open("sendmail", "-f $from_addr");
 
-print $fh "\nOutstanding buildfarm application(s) still pending: \n\n";
+print $fh "\nOutstanding $lv->{noun} application(s) still pending: \n\n";
 foreach my $row (@$rows)
 {
 	printf $fh

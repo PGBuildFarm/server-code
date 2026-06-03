@@ -2,8 +2,24 @@ body {
     background: #fff;
 	margin: 0;
 	font-family: helvetica, trebuchet, "Lucida Grande", sans-serif;
-    font-size:small 
+    font-size:small
     }
+
+/* Livery (theme) palettes, selected by the body class set in page.tt.
+   The brand colour, alternate-row tint and nav-tab images all derive
+   from these custom properties, so a livery only needs to set them here. */
+body.livery-build {
+    --brand: rgb(17,45,137);
+    --alt: #eef;
+    --tab-l: url(/inc/b/build/l.png);
+    --tab-r: url(/inc/b/build/r.png);
+}
+body.livery-security {
+    --brand: rgb(137,17,17);
+    --alt: #fee;
+    --tab-l: url(/inc/b/security/l.png);
+    --tab-r: url(/inc/b/security/r.png);
+}
 
 img { display:block; }
 img.inline { display:inline; }
@@ -19,8 +35,8 @@ a:hover img { border: none; }
 
 #banner img { margin:6px 0; }
 
-li#thismenu a { color:rgb(17,45,137); background: url(/inc/b/r.png) no-repeat 100% -20px; } 
-li#thismenu { background: url(/inc/b/l.png) no-repeat 0% -20px; }
+li#thismenu a { color:var(--brand); background: var(--tab-r) no-repeat 100% -20px; } 
+li#thismenu { background: var(--tab-l) no-repeat 0% -20px; }
 
 
 .nav {
@@ -40,12 +56,12 @@ li#thismenu { background: url(/inc/b/l.png) no-repeat 0% -20px; }
    float:left;
    margin:0 .5em 0 0;
    padding:0 0 0 4px;
-   background: url(/inc/b/l.png) no-repeat left top;
+   background: var(--tab-l) no-repeat left top;
 }
 
 .nav li a { 
     display:block;
-    background:url(/inc/b/r.png) no-repeat right top;
+    background:var(--tab-r) no-repeat right top;
     padding:0 11px 0 7px;
     color:#fff;
     text-decoration:none;
@@ -53,12 +69,12 @@ li#thismenu { background: url(/inc/b/l.png) no-repeat 0% -20px; }
 }
 
 .nav li a:hover {
-    background: url(/inc/b/r.png) no-repeat 100% -20px;
-    color:rgb(17,45,137); 
+    background: var(--tab-r) no-repeat 100% -20px;
+    color:var(--brand); 
     border: 0;
 }
 
-.nav li:hover { background: url(/inc/b/l.png) no-repeat 0% -20px; } 
+.nav li:hover { background: var(--tab-l) no-repeat 0% -20px; } 
 
 .main {
     clear:both;
@@ -67,12 +83,12 @@ li#thismenu { background: url(/inc/b/l.png) no-repeat 0% -20px; }
 
 .main a {
 	text-decoration: none;
-	color: rgb(17,45,137);
+	color: var(--brand);
 	font-weight: bold;
 	background: inherit;
 }
 
-a:hover, a:active { border-bottom: 1px dotted rgb(17,45,137); }
+a:hover, a:active { border-bottom: 1px dotted var(--brand); }
 p { padding: .3em 0; }
 
 table {
@@ -98,7 +114,7 @@ th {
 	font-size: x-small;
 }
 
-tr.alt td { background: #eef; }
+tr.alt td { background: var(--alt); }
 
 th.head {
 	background: #666;

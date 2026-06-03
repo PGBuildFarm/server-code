@@ -9,7 +9,7 @@ See accompanying License file for license details
 	baseurl = cgi.url( '-base' => 1)
 -%]
 [% WRAPPER 'page.tt' 
-	title = 'PostgreSQL BuildFarm Application'
+	title = livery.brand _ ' Application'
 	bodyclass = 'application'
 	pagebutton = 'register'
 %]
@@ -22,9 +22,9 @@ See accompanying License file for license details
 	 </script>
 [% END %]
 
-<h1>Application to join PostgreSQL BuildFarm</h1>
+<h1>Application to join [% livery.brand %]</h1>
 
-<p>Here is a short description of what is required to join the buildfarm successfully. Please read it carefully
+<p>Here is a short description of what is required to join the [% livery.noun %] successfully. Please read it carefully
 before submitting this form.</p>
 
 <ul>
@@ -42,7 +42,7 @@ before submitting this form.</p>
 <li> Register your machine using the form below</li>
 <li> When you receive credentials, put them in the config file, and schedule regular builds (without those flags)
      for the branches you want to support - which should be at least HEAD and the most recent stable branch.</li>
-<li> Note that it is possible (and quite common) to run more than one buildfarm member on a single machine.</li>
+<li> Note that it is possible (and quite common) to run more than one [% livery.noun %] member on a single machine.</li>
 </ul>
 <hr />
 

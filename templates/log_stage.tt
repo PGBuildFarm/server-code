@@ -7,7 +7,7 @@ See accompanying License file for license details
 See https://getbootstrap.com/docs/4.3/components/collapse/ for collapse component
 
 -%]
-[% mytitle = BLOCK %]PostgreSQL BuildFarm | Log for system "[% system %]" stage [% stage %] on snapshot taken [% urldt;  END -%]
+[% mytitle = BLOCK %][% livery.brand %] | Log for system "[% system %]" stage [% stage %] on snapshot taken [% urldt;  END -%]
 [% WRAPPER 'page.tt'
 	title = mytitle
 	bodyclass = 'none'

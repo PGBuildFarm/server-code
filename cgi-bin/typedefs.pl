@@ -80,7 +80,8 @@ foreach my $build (@$builds)
 if (defined $show_list)
 {
 
-	my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1 };
+	my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1,
+		VARIABLES => { livery => livery() } };
 	my $template = Template->new($template_opts);
 
 	print "Content-Type: text/html\n\n";

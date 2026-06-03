@@ -6,7 +6,7 @@ See accompanying License file for license details
 
 -%]
 [% WRAPPER 'page.tt' 
-    title = 'PostgreSQL BuildFarm Application'
+    title = livery.brand _ ' Application'
     bodyclass = 'application'
     pagebutton = 'none'
 %]

@@ -2,23 +2,26 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
+    <!-- Copyright (c) 2003-2022, Andrew Dunstan  -->
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>PostgreSQL BuildFarm</title>
     <link rel="icon" type="image/png" href="/elephant-icon.png" />
+  
     <link rel="stylesheet" rev="stylesheet" href="/inc/pgbf.css" charset="utf-8" />
     <style type="text/css"><!--
-	li#home a { color:rgb(17,45,137); background: url(/inc/b/r.png) no-repeat 100% -20px; } 
-	li#home { background: url(/inc/b/l.png) no-repeat 0% -20px; }
+	li#home a { color:var(--brand); background: var(--tab-r) no-repeat 100% -20px; }
+	li#home { background: var(--tab-l) no-repeat 0% -20px; }
     --></style>
-<link rel="alternate" type="application/rss+xml" title="Subscribe to What's New" href="https://buildfarm.postgresql.org/rss/bf-rss.xml" />
+  <link rel="alternate" type="application/rss+xml" title="Subscribe to Status Changes" href="https://buildfarm.postgresql.org/rss/bf-rss.xml" />
   </head>
-  <body class="none">
+  <body class="none livery-build">
     <div id="wrapper">
       <div id="banner">
         <a href="/index.html"><img src="/inc/pgbuildfarm-banner.png" alt="PostgreSQL BuildFarm" width="800" height="73" /></a>
         <div class="nav">
           <ul>
     	    <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
+    	    <li id="summary"><a href="/cgi-bin/show_summary.pl" title="Current Summary">Summary</a></li>
     	    <li id="status"><a href="/cgi-bin/show_status.pl" title="Current results">Status</a></li>
     	    <li id="failures"><a href="/cgi-bin/show_failures.pl" title="Recent Failures">Failures</a></li>
     	    <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested">Members</a></li>
@@ -48,7 +51,7 @@ the <a href="/cgi-bin/register-form.pl" title="Register">Registration Page</a>.
 We are particularly interested in unusual platforms or combinations of
 architecture, operating system and compiler.
 </p>
-<p>To see what is involved in running a buildfarm member, please 
+<p>To see what is involved in running a build farm member, please 
 read <a href="https://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">https://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a>.
 The client code can be found at <a href="https://github.com/PGBuildFarm/client-code/releases">Github</a>.
 </p>
@@ -58,6 +61,7 @@ The client code can be found at <a href="https://github.com/PGBuildFarm/client-c
       </div><!-- main -->
       <hr />
     </div><!-- wrapper -->
+  
   </body>
 </html>
 

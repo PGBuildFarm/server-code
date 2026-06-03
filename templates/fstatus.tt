@@ -19,12 +19,12 @@ See accompanying License file for license details
   [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE [ 'pgsql' 'pgsql-Git-Dirty' 'Pre-run-port-check' ] %]cerr[% CASE %]fail[% END ; END %]"
 [%- END -%]
 [% WRAPPER 'page.tt' 
-	title = 'PostgreSQL BuildFarm Recent Failures'
+	title = livery.brand _ ' Recent Failures'
 	bodyclass = 'none'
 	pagebutton = 'failures'
 %]
 <!-- lastmodhead: [% lastmodhead %] size: [% statrows.size %] -->
-    <h1>PostgreSQL BuildFarm Recent Failures</h1>
+    <h1>[% livery.brand %] Recent Failures</h1>
     <p>
       Shown here are build failures that occurred in the last [% max_days %] days.
     </p>

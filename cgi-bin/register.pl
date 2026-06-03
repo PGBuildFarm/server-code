@@ -35,7 +35,8 @@ my $dsn = "dbi:Pg:dbname=$dbname";
 $dsn .= ";host=$dbhost" if $dbhost;
 $dsn .= ";port=$dbport" if $dbport;
 
-my $template_opts = { INCLUDE_PATH => $template_dir };
+my $template_opts =
+  { INCLUDE_PATH => $template_dir, VARIABLES => { livery => livery() } };
 my $template      = Template->new($template_opts);
 my $query         = CGI->new;
 

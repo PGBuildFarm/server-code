@@ -12,12 +12,12 @@ See accompanying License file for license details
   [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE [ 'pgsql' 'pgsql-Git-Dirty' 'Pre-run-port-check' ] %]cerr[% CASE %]fail[% END ; END %]"
 [%- END -%]
 [% WRAPPER 'page.tt' 
-	title = 'PostgreSQL BuildFarm Status'
+	title = livery.brand _ ' Status'
 	bodyclass = 'none'
 	pagebutton = 'status'
 %]
 <!-- lastmodhead: [% lastmodhead %] -->
-    <h1>PostgreSQL BuildFarm Status</h1>
+    <h1>[% livery.brand %] Status</h1>
     <p>
       Shown here is the latest status of each farm member 
       for each branch it has reported on in the last 30 days.

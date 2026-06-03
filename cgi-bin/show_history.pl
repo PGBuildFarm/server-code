@@ -133,7 +133,8 @@ $db->disconnect;
 $branch =~ s/^HEAD$/master/;
 s/^HEAD$/master/ foreach @$other_branches;
 
-my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1 };
+my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1,
+	VARIABLES => { livery => livery() } };
 my $template = Template->new($template_opts);
 
 print "Content-Type: text/html\n\n";

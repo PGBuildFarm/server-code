@@ -25,7 +25,8 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 check_email_only();
 
-my $template_opts = { INCLUDE_PATH => $template_dir };
+my $template_opts =
+  { INCLUDE_PATH => $template_dir, VARIABLES => { livery => livery() } };
 my $template = Template->new($template_opts);
 
 my $cgi = CGI->new();

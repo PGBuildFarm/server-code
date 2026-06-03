@@ -27,7 +27,8 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 check_email_only();
 
-my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1 };
+my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1,
+	VARIABLES => { livery => livery() } };
 my $template = Template->new($template_opts);
 
 die "no dbname" unless $dbname;

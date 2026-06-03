@@ -120,7 +120,8 @@ if (   $system
 	else
 	{
 		my $log = $logtext;
-		my $template_opts = { INCLUDE_PATH => $template_dir};
+		my $template_opts =
+		  { INCLUDE_PATH => $template_dir, VARIABLES => { livery => livery() } };
 		my $template = Template->new($template_opts);
 
 		my $log_marker = "==~_~===-=-===~_~==";

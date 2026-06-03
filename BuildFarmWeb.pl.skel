@@ -23,19 +23,19 @@ use vars qw(
   $default_host
   $local_git_clone
   $status_from $register_from $reminders_from $alerts_from
-  $status_url
   $skip_mail
   $skip_rss
   $skip_captcha
   $ignore_branches_of_interest
   $envtestenabled
   $email_only
+  $livery %liveries
 );
 
 # if on enable envtest.pl to produce output, should normally be off
 $envtestenabled = 0;
 
-# if skip_mail is true then $status_url and $default_host don't matter
+# if skip_mail is true then $default_host doesn't matter
 # same for all the email addresses
 $skip_mail = 0;
 
@@ -45,7 +45,34 @@ $skip_captcha = 0;
 # keep RSS by default
 $skip_rss = 0;
 
-$status_url = 'https://buildfarm.postgresql.org';
+# Site liveries: each bundles the visual identity, brand name and public
+# host. $livery below names the active one; change that single value to
+# re-skin the whole site (web pages, notification emails and the RSS feed).
+# status_host is the public base URL used for generated links and the feed.
+%liveries = (
+	build => {
+		brand       => 'PostgreSQL BuildFarm',
+		noun        => 'build farm',
+		class       => 'livery-build',
+		banner      => '/inc/pgbuildfarm-banner.png',
+		status_host => 'https://buildfarm.postgresql.org',
+		mail_tag    => 'PGBuildfarm',
+		mail_from   => 'PG Build Farm',
+		rss_title   => 'PostgreSQL Build Farm',
+	},
+	security => {
+		brand       => 'PostgreSQL SecurityFarm',
+		noun        => 'security farm',
+		class       => 'livery-security',
+		banner      => '/inc/pgsecurityfarm-banner.png',
+		status_host => 'https://sec-buildfarm.postgresql.org',
+		mail_tag    => 'PGSecurityfarm',
+		mail_from   => 'PG Security Farm',
+		rss_title   => 'PostgreSQL Security Farm',
+	},
+);
+
+$livery = 'build';
 
 my $base_install_dir = '/path/to/install/website';
 

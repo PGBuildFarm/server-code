@@ -7,19 +7,19 @@ See accompanying License file for license details
 -%]
 [%#
 
-	Use this template to generate the index page, with something like:
-
-		tpage index.tt > ../htdocs/index.html
+	The static index.html is generated from this template, with the active
+	livery supplied, by bin/make-static-pages.pl. Run it after switching the
+	livery or editing this template.
 
 -%]
 [% WRAPPER 'page.tt' 
-	title = 'PostgreSQL BuildFarm'
+	title = livery.brand
 	bodyclass = 'none'
 	pagebutton = 'home'
 %]
 <!-- html generated from index.tt -->
 <p>
-The PostgreSQL build farm is a distributed system for automatically testing
+The PostgreSQL [% livery.noun %] is a distributed system for automatically testing
 changes in the source code for PostgreSQL as they occur, on a wide variety
 of platforms. This server is the central repository for the results of those
 tests.
@@ -29,15 +29,15 @@ To see the current status of tests on various branches, check the
 <a href="/cgi-bin/show_status.pl" title="Status Page">Status Page</a>.
 </p>
 <p>
-If you are interested in running a member of the build farm, then please visit
+If you are interested in running a member of the [% livery.noun %], then please visit
 the <a href="/cgi-bin/register-form.pl" title="Register">Registration Page</a>.
 We are particularly interested in unusual platforms or combinations of
 architecture, operating system and compiler.
 </p>
-<p>To see what is involved in running a buildfarm member, please 
+<p>To see what is involved in running a [% livery.noun %] member, please 
 read <a href="https://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto">https://wiki.postgresql.org/wiki/PostgreSQL_Buildfarm_Howto</a>.
 The client code can be found at <a href="https://github.com/PGBuildFarm/client-code/releases">Github</a>.
 </p>
-<p>The build farm software should run on all platforms that can support PostgreSQL.
+<p>The [% livery.noun %] software should run on all platforms that can support PostgreSQL.
 </p>
 [% END %]

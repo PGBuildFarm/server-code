@@ -19,12 +19,17 @@ use Data::Dumper;
 use Mail::Send;
 use Storable qw(thaw);
 
+use lib "$ENV{BFCONFDIR}/perl5";
+use BFUtils;
+
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport_bin
   $all_stat $fail_stat $change_stat $green_stat
   $default_host $alerts_from $template_dir $ignore_branches_of_interest
 );
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
+
+my $lv = livery();
 
 die "no dbname" unless $dbname;
 die "no dbuser" unless $dbuser;
@@ -233,7 +238,7 @@ my $host = `hostname`;
 chomp($host);
 $host = $default_host unless ($host =~ m/[.]/ || !defined($default_host));
 
-my $from_addr = "PG Build Farm <$me\@$host>";
+my $from_addr = "$lv->{mail_from} <$me\@$host>";
 $from_addr =~ tr /\r\n//d;
 
 $from_addr = $alerts_from if $alerts_from;
@@ -270,7 +275,7 @@ foreach my $clearme (@need_cleared)
 	$msg->set('Auto-Submitted',           'auto-generated');
 	$msg->set('X-Auto-Response-Suppress', 'all');
 
-	$msg->subject("PGBuildfarm member $animal Branch $branch Alert cleared");
+	$msg->subject("$lv->{mail_tag} member $animal Branch $branch Alert cleared");
 	my $fh = $msg->open("sendmail", "-f $from_addr");
 	print $fh "\n\n$text\n";
 	$fh->close;
@@ -302,7 +307,7 @@ foreach my $needme (@need_alerts)
 	$msg->set('X-Auto-Response-Suppress', 'all');
 
 	$msg->subject(
-		"PGBuildfarm member $animal Branch $branch " . "Alert notification");
+		"$lv->{mail_tag} member $animal Branch $branch " . "Alert notification");
 	my $fh = $msg->open("sendmail", "-f $from_addr");
 	print $fh "\n\n$text\n";
 	$fh->close;

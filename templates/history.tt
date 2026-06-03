@@ -9,11 +9,11 @@ See accompanying License file for license details
   [%- CASE 'OK' %]pass[% CASE 'ContribCheck' %]warn[% CASE [ 'Check' 'InstallCheck' ] %]warnx[% CASE %]fail[% END %]"
 [%- END -%]
 [% WRAPPER 'page.tt' 
-	title = 'PostgreSQL BuildFarm History'
+	title = livery.brand _ ' History'
 	bodyclass = 'history'
 	pagebutton = 'none'
 %]
-<h1>PostgreSQL BuildFarm Status History</h1>
+<h1>[% livery.brand %] Status History</h1>
   <table cellspacing="0">
     <tr><th class="head" colspan="3">System Detail</th></tr>
     <tr class="member"><th>Farm member</th><td>[% member %]</td></tr>

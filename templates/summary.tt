@@ -9,11 +9,11 @@ See accompanying License file for license details
         giturl = 'https://git.postgresql.org/gitweb?p=postgresql.git;a=commitdiff;h=';
 -%]
 [% WRAPPER 'page.tt'
-	title = 'PostgreSQL BuildFarm Status Summary'
+	title = livery.brand _ ' Status Summary'
 	bodyclass = 'none'
 	pagebutton = 'summary'
 %]
-<h1>PostgreSQL BuildFarm Status Summary</h1>
+<h1>[% livery.brand %] Status Summary</h1>
 
 <table cellspacing="0">
     <tr>

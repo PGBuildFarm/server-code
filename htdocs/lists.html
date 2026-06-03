@@ -2,22 +2,26 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
+    <!-- Copyright (c) 2003-2022, Andrew Dunstan  -->
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>PostgreSQL BuildFarm</title>
     <link rel="icon" type="image/png" href="/elephant-icon.png" />
+  
     <link rel="stylesheet" rev="stylesheet" href="/inc/pgbf.css" charset="utf-8" />
     <style type="text/css"><!--
-	li#lists a { color:rgb(17,45,137); background: url(/inc/b/r.png) no-repeat 100% -20px; } 
-	li#lists { background: url(/inc/b/l.png) no-repeat 0% -20px; }
+	li#lists a { color:var(--brand); background: var(--tab-r) no-repeat 100% -20px; }
+	li#lists { background: var(--tab-l) no-repeat 0% -20px; }
     --></style>
+  <link rel="alternate" type="application/rss+xml" title="Subscribe to Status Changes" href="https://buildfarm.postgresql.org/rss/bf-rss.xml" />
   </head>
-  <body class="none">
+  <body class="none livery-build">
     <div id="wrapper">
       <div id="banner">
         <a href="/index.html"><img src="/inc/pgbuildfarm-banner.png" alt="PostgreSQL BuildFarm" width="800" height="73" /></a>
         <div class="nav">
           <ul>
     	    <li id="home"><a href="/index.html" title="PostgreSQL BuildFarm Home">Home</a></li>
+    	    <li id="summary"><a href="/cgi-bin/show_summary.pl" title="Current Summary">Summary</a></li>
     	    <li id="status"><a href="/cgi-bin/show_status.pl" title="Current results">Status</a></li>
     	    <li id="failures"><a href="/cgi-bin/show_failures.pl" title="Recent Failures">Failures</a></li>
     	    <li id="members"><a href="/cgi-bin/show_members.pl" title="Platforms tested">Members</a></li>
@@ -31,10 +35,10 @@
       <div class="main">
         
 <!-- html generated from lists.tt -->
-<p>All buildfarm mailing lists are maintained at the
+<p>All build farm mailing lists are maintained at the
 <a href="https://lists.postgresql.org">PostgreSQL Mailing Lists</a> site,</p>
 
-<p>All buildfarm owners, and anybody else who is interested, should be
+<p>All build farm owners, and anybody else who is interested, should be
 subscribed to the <b><code>buildfarm-members</code></b> mailing list. This is a very low
 volume list, but it's the place to discuss problems, and also where new releases
 get announced.</p>
@@ -44,15 +48,15 @@ get announced.</p>
 <ul>
 
 <li><b><code>buildfarm-status-failures</code></b>, which gets an email any time
-a buildfarm animal reports a failed run.</li>
+a build farm animal reports a failed run.</li>
 
 <li><b><code>buildfarm-status-green-chgs</code></b>, which gets an email
-any time the status of a buildfarm animal changes to or from green
+any time the status of a build farm animal changes to or from green
 (i.e. success). This is the status list most people find useful.</li>
 
 </ul>
 
-<p>Buildfarm owners who just want email notifications of status of their own
+<p>Build farm owners who just want email notifications of status of their own
 animals don't need to subscribe to the status lists. This can be configured
 in the <b><code>mail_events</code></b> section of the animal's config file.</p>
 
@@ -60,6 +64,7 @@ in the <b><code>mail_events</code></b> section of the animal's config file.</p>
       </div><!-- main -->
       <hr />
     </div><!-- wrapper -->
+  
   </body>
 </html>
 

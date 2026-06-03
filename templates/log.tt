@@ -15,7 +15,7 @@ See accompanying License file for license details
 	$stash->set( logcells => $logcells);
 	$stash->set( logrows => $logrows ); 
 [% END -%]
-[% mytitle = BLOCK %]PostgreSQL BuildFarm | [% IF stage != 'OK' %]Log for system "[% system %]" failure on snapshot taken [% urldt ; ELSE %]Configuration summary for system "[% system %]" snapshot taken [% urldt ; END ; END -%]
+[% mytitle = BLOCK %][% livery.brand %] | [% IF stage != 'OK' %]Log for system "[% system %]" failure on snapshot taken [% urldt ; ELSE %]Configuration summary for system "[% system %]" snapshot taken [% urldt ; END ; END -%]
 [%
         cvsurl = 'https://anoncvs.postgresql.org/cvsweb.cgi';
         giturl = 'https://git.postgresql.org/gitweb?p=postgresql.git;a=commitdiff;h=';
@@ -34,7 +34,7 @@ See accompanying License file for license details
 
 %]<a href="[% giturl ; commitref %]">[% commitref %]</a>[% logtail | html %]
 [% END -%]
-<h1>PostgreSQL Build Farm Log</h1>
+<h1>[% livery.brand %] Log</h1>
 <h2>Details for system "[% system %]"[% IF stage != 'OK' %] failure at stage [% stage ; ELSE %], status 'OK'[% END %], snapshot taken [% urldt %]</h2>
 <table cellspacing="0">
     <tr>
