@@ -6,4 +6,6 @@ weblogs
 
 htdocs/downloads
 htdocs/*branches_of_interest.json
+htdocs/index.tml
+htdocs/lists/html
 /private
