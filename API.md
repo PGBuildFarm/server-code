@@ -342,8 +342,9 @@ GET /cgi-bin/bfapi.pl/commit/9a1b2c3d?branch=HEAD
 }
 ```
 
-> Note: `git_head_ref` is not indexed, so this query is a table scan bounded
-> by `limit`. Supply as many digits of the hash as you can.
+> Note: `git_head_ref` has a `text_pattern_ops` index, so the prefix match
+> is an index range scan. Longer prefixes narrow the scan, but even short
+> (>= 5 digit) prefixes are cheap.
 
 ---
 

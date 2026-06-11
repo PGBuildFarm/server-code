@@ -690,7 +690,8 @@ sub do_commit
 	$limit = ($limit && $limit =~ /^\d+$/) ? $limit + 0 : 200;
 	$limit = 1000 if $limit > 1000;
 
-	# NB: git_head_ref is not indexed, so this is a scan bounded by the limit.
+	# git_head_ref has a text_pattern_ops index, so the prefix LIKE is an
+	# index range scan (the parameter is folded into the custom plan).
 	my $statement = q{
 		select
 			extract(epoch from (timezone('GMT', now())::timestamp(0)
