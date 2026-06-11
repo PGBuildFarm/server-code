@@ -151,7 +151,7 @@ sub send_error
 
 # Input sanitizers mirror the character classes used by the existing
 # show_*.pl scripts. Each returns undef for an empty/undefined value so the
-# SQL "(? is null or col = ?)" idiom turns the filter off.
+# SQL "(? ::text is null or col = ?)" idiom turns the filter off.
 sub clean_member
 {
 	my ($val) = @_;
@@ -263,9 +263,9 @@ sub do_status
 			join buildsystems s on s.name = b.sysname
 			join build_status_raw l
 				on l.sysname = b.sysname and l.snapshot = b.snapshot
-		where (? is null or b.branch = ?)
-			and (? is null or b.sysname = ?)
-			and (? is null or s.owner_email = ?)
+		where (? ::text is null or b.branch = ?)
+			and (? ::text is null or b.sysname = ?)
+			and (? ::text is null or s.owner_email = ?)
 		order by b.branch = 'HEAD' desc, b.branch COLLATE "C" desc,
 			$sortby b.report_time desc
 	};
@@ -310,7 +310,7 @@ sub do_history
 			select *
 			from build_status_recent_500
 			where sysname = ?
-				and (? is null or branch = ?)
+				and (? ::text is null or branch = ?)
 		)
 		select
 			extract(epoch from ((now() at time zone 'GMT')::timestamp(0)
@@ -472,7 +472,7 @@ sub do_members
 			) as personalities
 		from buildsystems s
 		where status not in ('pending', 'declined')
-			and (? is null or name = ?)
+			and (? ::text is null or name = ?)
 		order by $sort_by
 	};
 
@@ -699,8 +699,8 @@ sub do_commit
 			git_head_ref, report_time, run_secs
 		from build_status_raw
 		where git_head_ref like ? || '%'
-			and (? is null or branch = ?)
-			and (? is null or sysname = ?)
+			and (? ::text is null or branch = ?)
+			and (? ::text is null or sysname = ?)
 		order by snapshot desc
 		limit ?
 	};
