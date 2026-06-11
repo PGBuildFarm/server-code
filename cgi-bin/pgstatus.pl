@@ -251,7 +251,16 @@ if (defined $client_now)
 	$ts += $skew;
 }
 
-# re-freeze after adding the skew setting
+# purge any password embedded in the scmrepo URL's userinfo, keeping the
+# username but replacing the ":password" portion with ":[secret]". Do this
+# in both the textual config dump ($conf) and the structured config that
+# gets frozen into the frozen_conf column.
+$conf =~ s{(://[^:/@'"]+):[^@/'"]*\@}{$1:[secret]\@}g
+  if defined $conf;
+$client_conf->{scmrepo} =~ s{(://[^:/@]+):[^@/]*\@}{$1:[secret]\@}
+  if defined $client_conf->{scmrepo};
+
+# re-freeze after adding the skew setting and purging the scmrepo password
 $frozen_sconf = nfreeze($client_conf);
 
 unless ($ts < time + 120)
