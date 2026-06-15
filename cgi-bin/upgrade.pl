@@ -18,7 +18,12 @@ use DBI;
 use DBD::Pg;
 use Data::Dumper;
 
-use lib "$ENV{BFCONFDIR}/perl5";
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+use lib "$ENV{BFConfDir}/perl5";
 use BFUtils;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
@@ -46,8 +51,6 @@ $content .= "&new_os=$os_version"             if $os_version;
 $content .= "&new_compiler=$compiler_version" if $compiler_version;
 $content .= "&new_owner=$owner_name"          if $owner_name;
 $content .= "&new_email=$owner_email"         if $owner_email;
-
-$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 setup_die_handler();
 

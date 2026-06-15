@@ -13,6 +13,12 @@ our ($template_dir, $local_git_clone);
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport_bin);
 
 
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 die "no dbname" unless $dbname;

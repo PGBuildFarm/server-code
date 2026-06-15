@@ -6,7 +6,7 @@
 ALLPERLFILES = $(shell find ./bin  ./cgi-bin ./perl5 \( -name '*.pl' -o -name '*.pm' \) -print | sed 's!\./!!') BuildFarmWeb.pl.skel
 
 syncheck:
-	export BFCONFDIR=.;	for f in $(ALLPERLFILES) ; do perl -cw $${f}; done;
+	export BFConfDir=.;	for f in $(ALLPERLFILES) ; do perl -cw $${f}; done;
 
 tidy:
 	perltidy $(ALLPERLFILES)

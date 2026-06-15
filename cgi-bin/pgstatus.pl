@@ -45,10 +45,13 @@ use DateTime::Format::W3CDTF;
 use File::Copy;
 use Fcntl qw(:flock);
 
-use lib "$ENV{BFCONFDIR}/perl5";
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+use lib "$ENV{BFConfDir}/perl5";
 use BFUtils;
-
-$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 setup_die_handler();
 

@@ -11,12 +11,15 @@ See accompanying License file for license details
 use strict;
 use warnings;
 
-use lib "$ENV{BFCONFDIR}/perl5";
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+use lib "$ENV{BFConfDir}/perl5";
 use BFUtils;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $email_only);
-
-$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 setup_die_handler();
 

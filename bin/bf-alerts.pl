@@ -19,7 +19,12 @@ use Data::Dumper;
 use Mail::Send;
 use Storable qw(thaw);
 
-use lib "$ENV{BFCONFDIR}/perl5";
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+use lib "$ENV{BFConfDir}/perl5";
 use BFUtils;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport_bin

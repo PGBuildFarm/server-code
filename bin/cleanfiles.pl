@@ -28,6 +28,12 @@ use vars qw/*name *dir *prune/;
 *dir   = *File::Find::dir;
 *prune = *File::Find::prune;
 
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 die "no dbname" unless $dbname;

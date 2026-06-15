@@ -18,7 +18,12 @@ use DBI;
 use DBD::Pg;
 use Data::Dumper;
 
-use lib "$ENV{BFCONFDIR}/perl5";
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+use lib "$ENV{BFConfDir}/perl5";
 use BFUtils;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
@@ -32,8 +37,6 @@ my $animal   = $query->param('animal');
 my $sysnotes = $query->param('sysnotes');
 
 my $content = "animal=$animal&sysnotes=$sysnotes";
-
-$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 setup_die_handler();
 

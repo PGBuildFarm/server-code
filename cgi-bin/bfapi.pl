@@ -52,7 +52,12 @@ form 'YYYY-MM-DD HH:MM:SS', GMT.
 use strict;
 use warnings;
 
-use lib "$ENV{BFCONFDIR}/perl5";
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+use lib "$ENV{BFConfDir}/perl5";
 use BFUtils;
 
 use DBI;
@@ -60,8 +65,6 @@ use CGI;
 use JSON::PP;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $email_only);
-
-$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 setup_die_handler();
 

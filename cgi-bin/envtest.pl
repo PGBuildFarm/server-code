@@ -16,7 +16,12 @@ print "Content-Type: text/plain\n\n";
 
 use vars qw($envtestenabled);
 
-$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 exit unless $envtestenabled;

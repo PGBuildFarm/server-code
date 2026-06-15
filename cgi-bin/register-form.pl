@@ -11,7 +11,12 @@ See accompanying License file for license details
 use strict;
 use warnings;
 
-use lib "$ENV{BFCONFDIR}/perl5";
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+use lib "$ENV{BFConfDir}/perl5";
 use BFUtils;
 
 use Template;
@@ -19,8 +24,6 @@ use CGI;
 
 
 use vars qw( $template_dir $captcha_invis_pubkey $skip_captcha $email_only);
-$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
-
 setup_die_handler();
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";

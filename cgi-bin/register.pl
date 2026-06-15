@@ -17,15 +17,18 @@ use CGI;
 use Template;
 use Crypt::URandom qw(urandom);
 
-use lib "$ENV{BFCONFDIR}/perl5";
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+use lib "$ENV{BFConfDir}/perl5";
 use Captcha::reCAPTCHA::V2;
 use BFUtils;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport $notifyapp
   $captcha_invis_privkey $template_dir $default_host
   $register_from $skip_mail $skip_captcha $email_only);
-
-$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 setup_die_handler();
 

@@ -11,20 +11,23 @@ index.tt and lists.tt templates, using the active site livery (see $livery and
 %liveries in BuildFarmWeb.pl). Run this after switching the livery or editing
 either template.
 
-  BFCONFDIR=/path/to/conf perl bin/make-static-pages.pl /path/to/htdocs
+  BFConfDir=/path/to/conf perl bin/make-static-pages.pl /path/to/htdocs
 
 =cut
 
 use strict;
 use warnings;
 
-use lib "$ENV{BFCONFDIR}/perl5";
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+use lib "$ENV{BFConfDir}/perl5";
 use BFUtils;
 use Template;
 
 use vars qw($template_dir);
-
-$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 

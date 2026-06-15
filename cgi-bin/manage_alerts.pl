@@ -17,7 +17,12 @@ use MIME::Base64;
 use DBI;
 use DBD::Pg;
 
-use lib "$ENV{BFCONFDIR}/perl5";
+BEGIN
+{
+	$ENV{BFConfDir} ||= $ENV{BFCONFDIR};
+	$ENV{BFCONFDIR} ||= $ENV{BFConfDir};
+}
+use lib "$ENV{BFConfDir}/perl5";
 use BFUtils;
 
 use vars qw($dbhost $dbname $dbuser $dbpass $dbport);
@@ -40,8 +45,6 @@ my $content = "animal=$animal&ts=$ts";
 $content = "$content&op=$op" if $op;
 
 $op ||= "disable";
-
-$ENV{BFConfDir} ||= $ENV{BFCONFDIR} if exists $ENV{BFCONFDIR};
 
 setup_die_handler();
 

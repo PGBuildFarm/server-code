@@ -33,7 +33,6 @@ server {
                 fastcgi_split_path_info ^/cgi-bin/(.+\.pl)(.*)$;
                 fastcgi_param SCRIPT_FILENAME /home/pgbuildfarm/website/cgi-bin/$fastcgi_script_name;
                 fastcgi_param PATH_INFO $fastcgi_path_info;
-                fastcgi_param BFCONFDIR /home/pgbuildfarm/website;
                 fastcgi_param BFConfDir /home/pgbuildfarm/website;
                 fastcgi_param BF_DEBUG on;
         }
