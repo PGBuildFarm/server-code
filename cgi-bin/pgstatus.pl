@@ -20,6 +20,7 @@ use vars qw($dbhost $dbname $dbuser $dbpass $dbport
   $skip_mail
   $skip_rss
   $ignore_branches_of_interest
+  $reject_unknown_git_head_ref
   $email_only
 );
 
@@ -357,6 +358,35 @@ if ($log_archive)
 		$githeadref = <$githead>;
 		chomp $githeadref;
 		close $githead;
+
+		# optionally reject the build if the reported git head ref is not
+		# present in our clone of the repo (e.g. it was built from an
+		# unpublished or rewritten commit).
+		if ($reject_unknown_git_head_ref)
+		{
+			local $ENV{GIT_DIR} = $local_git_clone;
+
+			# use the list form of open() so the client-supplied ref is
+			# never passed through a shell; cat-file -e writes nothing to
+			# stdout and exits non-zero when the object is not present.
+			my $ref_ok = 0;
+			if (open(my $ch, "-|", "git", "cat-file", "-e",
+					"$githeadref^{commit}"))
+			{
+				local $/;
+				my $ignore = <$ch>;
+				$ref_ok = close($ch) ? 1 : 0;
+			}
+			unless ($ref_ok)
+			{
+				print "Status: 497 unknown git head ref\n",
+				  "Content-Type: text/plain\n\n",
+				  "unknown git head ref: $githeadref\n";
+				$db->disconnect;
+				exit;
+			}
+		}
+
 		# mark it with an asterisk if the commit is more than 2 days older
 		# than the current tip of the branch.
 		my $git_cmd = 'git show -s --pretty=%ct';

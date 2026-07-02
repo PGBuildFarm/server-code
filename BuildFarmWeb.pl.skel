@@ -27,6 +27,7 @@ use vars qw(
   $skip_rss
   $skip_captcha
   $ignore_branches_of_interest
+  $reject_unknown_git_head_ref
   $envtestenabled
   $email_only
   $livery %liveries
@@ -118,6 +119,11 @@ $captcha_invis_privkey = 'bar';
 $local_git_clone = '/path/to/bare/git/repo';
 
 $ignore_branches_of_interest = undef;    # or some true value to ignore it
+
+# if set to a true value, reject any build whose reported git head ref is
+# not present in $local_git_clone (e.g. built from an unpublished or
+# rewritten commit). Off by default.
+$reject_unknown_git_head_ref = undef;
 
 $email_only = undef;
 
