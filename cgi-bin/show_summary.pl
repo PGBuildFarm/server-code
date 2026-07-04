@@ -53,6 +53,7 @@ from branch_git_tip g
 where snapshot > now() - interval '90 days'
 group by g.branch, g.git_commit_ref, g.git_commit_ts, g.git_commit_header
 order by g.branch = 'HEAD' desc,
+         g.branch ~ '^REL_?[0-9]' desc,
          g.branch COLLATE "C" desc;
   );
 

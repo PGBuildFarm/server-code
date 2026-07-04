@@ -62,6 +62,7 @@ sub get_status
        dsh.*
     from dashboard_mat dsh
     order by branch = 'HEAD' desc,
+        branch ~ '^REL_?[0-9]' desc,
         branch COLLATE "C" desc,
         snapshot desc
 

@@ -104,7 +104,8 @@ my $other_branches_query = q{
                       and snapshot > now() at time zone 'GMT'
                                      - interval '30 days'
                  ) q
-                 order by branch <> 'HEAD', branch COLLATE "C" desc
+                 order by branch <> 'HEAD',
+                          branch !~ '^REL_?[0-9]', branch COLLATE "C" desc
 };
 
 my $other_branches =

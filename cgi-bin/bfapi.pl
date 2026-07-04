@@ -269,7 +269,8 @@ sub do_status
 		where (? ::text is null or b.branch = ?)
 			and (? ::text is null or b.sysname = ?)
 			and (? ::text is null or s.owner_email = ?)
-		order by b.branch = 'HEAD' desc, b.branch COLLATE "C" desc,
+		order by b.branch = 'HEAD' desc,
+			b.branch ~ '^REL_?[0-9]' desc, b.branch COLLATE "C" desc,
 			$sortby b.report_time desc
 	};
 
@@ -388,7 +389,8 @@ sub do_failures
 				on (d.sysname = b.sysname and d.branch = b.branch)
 		where (now()::timestamp(0) without time zone - b.snapshot)
 			< (? * interval '1 day')
-		order by b.branch = 'HEAD' desc, b.branch COLLATE "C" desc,
+		order by b.branch = 'HEAD' desc,
+			b.branch ~ '^REL_?[0-9]' desc, b.branch COLLATE "C" desc,
 			b.snapshot desc
 	};
 
@@ -464,7 +466,8 @@ sub do_members
 					|| ':' || extract(days from now() - l.snapshot)
 				from latest_snapshot l
 				where l.sysname = s.name
-				order by branch <> 'HEAD', branch COLLATE "C" desc
+				order by branch <> 'HEAD',
+					branch !~ '^REL_?[0-9]', branch COLLATE "C" desc
 			) as branches,
 			array(
 				select compiler_version || E'\t' || os_version

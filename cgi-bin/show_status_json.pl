@@ -123,6 +123,7 @@ my $statement = qq[
        join build_status_raw l
           on l.sysname = b.sysname and l.snapshot = b.snapshot
   order by b.branch = 'HEAD' desc,
+        b.branch ~ '^REL_?[0-9]' desc,
         b.branch COLLATE "C" desc, $sort_clause
        report_time desc
 ]

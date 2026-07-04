@@ -119,6 +119,7 @@ my $statement = qq[
                        s.owner_email = \$1
                   end
   order by branch = 'HEAD' desc,
+        branch ~ '^REL_?[0-9]' desc,
         branch COLLATE "C" desc, $sort_clause
        report_time desc
 ]
