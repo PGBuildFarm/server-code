@@ -153,6 +153,29 @@ not recorded
 </tr>
 [% END %]
 </table>
+[% IF patch_stack %]
+<h3>Patch stack</h3>
+<p>Source: [% patch_stack.source | html %] &mdash; Status: [% patch_stack.status | html %]</p>
+[% IF patch_stack.patches.size > 0 %]
+<table>
+<tr><th>Patch</th><th>Subject</th></tr>
+[% FOREACH p IN patch_stack.patches %]
+<tr><td>[% p.name | html %]</td><td>[% p.subject | html %]</td></tr>
+[% END %]
+</table>
+[% ELSE %]
+<p>No patches applied.</p>
+[% END %]
+[% IF patch_stack_diff %]
+<p>Changed since previous run:</p>
+<pre>
+[% FOREACH a IN patch_stack_diff.added %]+ [% a | html %]
+[% END %]
+[% FOREACH r IN patch_stack_diff.removed %]- [% r | html %]
+[% END %]
+</pre>
+[% END %]
+[% END %]
 <h3>Log</h3>
 <pre>
 [% log | html %]

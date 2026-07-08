@@ -58,6 +58,7 @@ my ($git_head_ref, $last_build_git_ref, $last_success_git_ref);
 my ($stage_times, $run_time);
 my $other_branches;
 my ($changed_this_run_logs, $changed_since_success_logs);
+my ($patch_stack, $patch_stack_diff);
 
 use vars qw($info_row);
 
@@ -81,12 +82,17 @@ if (   $system
 
 	};
 	my $last_build_statement = q{
-		select git_head_ref, stage
+		select git_head_ref, stage, snapshot, log_archive_filenames
                 from build_status
                 where sysname = ? and branch = ?  and snapshot =
                     (select max(snapshot)
                     from build_status
                     where sysname = ? and branch = ? and snapshot < ?)
+	};
+	my $patch_stack_log_statement = q{
+		select log_text
+                from build_status_log
+                where sysname = ? and snapshot = ? and log_stage = 'patch_stack.log'
 	};
 	my $last_success_statement = q{
 		select git_head_ref
@@ -151,6 +157,35 @@ if (   $system
 	$log_file_names =~ s/^\{(.*)\}$/$1/ if $log_file_names;
 	@log_file_names = split(',', $log_file_names)
 	  if $log_file_names;
+
+	if (grep { $_ eq 'patch_stack.log' } @log_file_names)
+	{
+		my ($ptext) =
+		  $db->selectrow_array($patch_stack_log_statement, undef,
+			$system, $logdate);
+		$patch_stack = parse_patch_stack_log($ptext) if $ptext;
+	}
+
+	if ($patch_stack && ref $last_build_row)
+	{
+		my $last_log_file_names = $last_build_row->{log_archive_filenames};
+		$last_log_file_names =~ s/^\{(.*)\}$/$1/ if $last_log_file_names;
+		my @last_log_file_names =
+		  $last_log_file_names ? split(',', $last_log_file_names) : ();
+
+		if (grep { $_ eq 'patch_stack.log' } @last_log_file_names)
+		{
+			my ($last_ptext) =
+			  $db->selectrow_array($patch_stack_log_statement, undef,
+				$system, $last_build_row->{snapshot});
+			if ($last_ptext)
+			{
+				my $last_patch_stack = parse_patch_stack_log($last_ptext);
+				$patch_stack_diff =
+				  diff_patch_stack($patch_stack, $last_patch_stack);
+			}
+		}
+	}
 
 	$statement = q{
 
@@ -277,12 +312,60 @@ $template->process(
 		last_build_git_ref         => $last_build_git_ref,
 		last_success_git_ref       => $last_success_git_ref,
 		other_branches             => $other_branches,
+		patch_stack                => $patch_stack,
+		patch_stack_diff           => $patch_stack_diff,
 	}
 );
 
 exit;
 
 ##########################################################
+
+# Parse the structured patch_stack.log artifact written by
+# PGBuild::Modules::PatchStack (client-side): a few "key: value" header
+# lines followed by one "filename<TAB>subject" line per patch in the
+# series. Returns a hashref { id, source, status, patches => [ {name,
+# subject}, ... ] }, or undef if the text doesn't look like this format.
+sub parse_patch_stack_log
+{
+	my $text = shift;
+	return unless defined $text && $text ne '';
+
+	my %info;
+	my @patches;
+	foreach my $line (split(/\n/, $text))
+	{
+		if ($line =~ /^patch_stack_(id|source|status):\s?(.*)$/)
+		{
+			$info{$1} = $2;
+		}
+		elsif ($line =~ /^([^\t]+)\t(.*)$/)
+		{
+			push(@patches, { name => $1, subject => $2 });
+		}
+	}
+	$info{patches} = \@patches;
+	return \%info;
+}
+
+# Compare two parsed patch_stack.log structures and report which patch
+# filenames were added/removed, but only when the series identity
+# actually differs -- avoids noise from e.g. a patch's subject line
+# changing while the tree SHA (and hence the filenames) stayed the same.
+sub diff_patch_stack
+{
+	my ($cur, $prev) = @_;
+	return if ($cur->{id} // '') eq ($prev->{id} // '');
+
+	my %cur_names = map { $_->{name} => 1 } @{ $cur->{patches} };
+	my %prev_names = map { $_->{name} => 1 } @{ $prev->{patches} };
+
+	my @added = sort grep { !$prev_names{$_} } keys %cur_names;
+	my @removed = sort grep { !$cur_names{$_} } keys %prev_names;
+
+	return unless @added || @removed;
+	return { added => \@added, removed => \@removed };
+}
 
 sub process_changed
 {
