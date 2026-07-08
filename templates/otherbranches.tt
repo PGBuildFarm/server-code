@@ -1,0 +1,26 @@
+[%#
+
+Copyright (c) 2003-2022, Andrew Dunstan
+
+See accompanying License file for license details
+
+-%]
+[% IF other_branches.size %]
+[% PERL %]
+	use POSIX qw(ceil);
+	my $obfactor = 6;
+	$stash->set(obfactor => $obfactor);
+	$stash->set(
+		obrows => ceil(scalar(@{ $stash->get('other_branches') }) / $obfactor));
+[% END -%]
+    <br />
+    <table>
+      <tr>
+        <th class="head" rowspan="[% obrows %]">Other branches</th>
+	[% FOREACH ob IN other_branches %]
+	  [% IF loop.count > 1 AND (loop.count - 1) % obfactor == 0 %]</tr><tr>[% END %]
+          <td><a href="/cgi-bin/show_history.pl?nm=[% ob_name %]&amp;br=[% ob %]">[% ob %]</a></td>
+        [% END %]
+      </tr>
+    </table>
+[% END %]

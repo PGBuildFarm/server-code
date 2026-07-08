@@ -36,17 +36,7 @@ See accompanying License file for license details
      </tr>
    </table>
 [% END %]
-[% IF other_branches %]
-    <br />
-    <table>
-      <tr>
-        <th class="head">Other branches</th>
-	[% FOREACH ob IN other_branches %]
-          <td><a href="/cgi-bin/show_history.pl?nm=[% member %]&amp;br=[% ob %]">[% ob %]</a></td>
-        [% END %]
-      </tr>
-    </table>
-[% END %]
+[% INCLUDE 'otherbranches.tt' ob_name = member %]
 
   <h3>Branch: [% branch %][% IF statrows.size >= hm %] (last [% hm %] entries shown)[% END %]</h3>
 [% BLOCK stdet %]
