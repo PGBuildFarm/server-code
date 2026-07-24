@@ -16,6 +16,7 @@ use warnings;
 
 use DBI;
 use DBD::Pg;
+use MIME::Base64;
 
 use File::Find ();
 
@@ -51,7 +52,20 @@ my $sth = $db->prepare(
 	"SELECT count(*) FROM build_status WHERE sysname = ? and snapshot = ?",
 	{ pg_server_prepare => 1 });
 
+# Set of branches that still have any build in build_status. A build that
+# is absent from build_status but whose branch no longer appears here at
+# all belongs to a dropped/purged branch; such orphans are reaped rather
+# than warned about. This is one scan of build_status, which is fine as
+# the script runs periodically.
+my %branch_followed;
+{
+	my $branches =
+	  $db->selectcol_arrayref("SELECT DISTINCT branch FROM build_status");
+	$branch_followed{$_} = 1 foreach @$branches;
+}
+
 sub wanted;
+sub meta_branch;
 
 my @files;
 
@@ -156,14 +170,68 @@ sub wanted
 	}
 	else
 	{
-		# complain if the file has gotten to be old enough that
-		# it really *should* have been imported by now
+		# No matching build in the database. build_status is populated
+		# synchronously by pgstatus.pl, so this never means "not imported
+		# yet". Only act once the file is old enough.
 		my ($dev, $ino, $mode, $nlink, $uid, $gid);
-		     (($dev, $ino, $mode, $nlink, $uid, $gid) = lstat($_))
+		return
+		  unless (($dev, $ino, $mode, $nlink, $uid, $gid) = lstat($_))
 		  && (int(-M _) > 7)
-		  && -f _
-		  && warn "$name hasn't been imported yet!";
+		  && -f _;
+
+		# The build's own row is gone, so recover its branch from the
+		# .meta (a .tgz carries no config; read its sibling .meta). If
+		# the branch still has builds in build_status the missing row is
+		# a real anomaly worth flagging; if the branch has none at all it
+		# has been dropped/purged, so reap the orphan instead.
+		(my $metafile = $file) =~ s/\.tgz$/.meta/;
+		my $branch = meta_branch($metafile);
+
+		if (defined($branch) && !$branch_followed{$branch})
+		{
+			push(@files, $name);
+		}
+		else
+		{
+			warn "$name hasn't been imported yet!";
+		}
 	}
 
 	return;
+}
+
+# Recover the branch of a build from its .meta file. pgstatus.pl does not
+# store the branch as its own field, but the client config it dumps into
+# frozen_sconf carries it as the last positional argument in
+# invocation_args. Returns undef if the file is unreadable or the branch
+# cannot be determined.
+sub meta_branch
+{
+	my $metafile = shift;
+
+	open(my $fh, '<', $metafile) or return undef;
+	my $branch;
+	while (my $line = <$fh>)
+	{
+		next unless $line =~ /^frozen_sconf:(.*)/;
+		my $enc = $1;
+
+		# undo the transport escaping pgstatus.pl applies (+ -> $, = -> @)
+		$enc =~ tr/$@/+=/;
+		my $json = decode_base64($enc);
+
+		if ($json =~ /"invocation_args"\s*:\s*\[([^\]]*)\]/)
+		{
+			my @args = $1 =~ /"((?:[^"\\]|\\.)*)"/g;
+			$branch = $args[-1] if @args;
+		}
+		last;
+	}
+	close($fh);
+
+	# ignore anything that isn't a plausible branch (e.g. an option, or a
+	# run with no explicit branch argument): treat as undeterminable.
+	undef $branch if defined($branch) && $branch =~ /^-/;
+
+	return $branch;
 }
