@@ -18,6 +18,7 @@ BEGIN
 }
 use lib "$ENV{BFConfDir}/perl5";
 use BFUtils;
+use PatchStackLog;
 
 use DBI;
 use Template;
@@ -32,8 +33,11 @@ require "$ENV{BFConfDir}/BuildFarmWeb.pl";
 
 check_email_only();
 
-my $template_opts = { INCLUDE_PATH => $template_dir, EVAL_PERL => 1,
-	VARIABLES => { livery => livery() } };
+my $template_opts = {
+	INCLUDE_PATH => $template_dir,
+	EVAL_PERL    => 1,
+	VARIABLES    => { livery => livery() }
+};
 my $template = Template->new($template_opts);
 
 die "no dbname" unless $dbname;
@@ -58,7 +62,7 @@ my ($git_head_ref, $last_build_git_ref, $last_success_git_ref);
 my ($stage_times, $run_time);
 my $other_branches;
 my ($changed_this_run_logs, $changed_since_success_logs);
-my ($patch_stack, $patch_stack_diff);
+my ($patch_stack,           $patch_stack_diff);
 
 use vars qw($info_row);
 
@@ -120,7 +124,7 @@ if (   $system
 	my $row = $sth->fetchrow_arrayref;
 	$branch       = $row->[5];
 	$git_head_ref = $row->[9];
-	$run_time = $row->[10];
+	$run_time     = $row->[10];
 	$sth->finish;
 	my $last_build_row;
 
@@ -149,9 +153,9 @@ if (   $system
 	$changed_since_success = $row->[4];
 	my $log_file_names = $row->[6];
 	$scm = $row->[7];
-	$scm ||= 'cvs';    # legacy scripts
+	$scm ||= 'cvs';                                        # legacy scripts
 	$scmurl = $row->[8];
-	$scmurl = undef unless $scmurl && $scmurl =~ /^http/;    # slight sanity check
+	$scmurl = undef unless $scmurl && $scmurl =~ /^http/;  # slight sanity check
 	$scmurl = 'http://git.postgresql.org/gitweb?p=postgresql.git;a=commit;h='
 	  if ($scmurl && $scmurl eq 'http://git.postgresql.org/git/postgresql.git');
 	$log_file_names =~ s/^\{(.*)\}$/$1/ if $log_file_names;
@@ -160,9 +164,8 @@ if (   $system
 
 	if (grep { $_ eq 'patch_stack.log' } @log_file_names)
 	{
-		my ($ptext) =
-		  $db->selectrow_array($patch_stack_log_statement, undef,
-			$system, $logdate);
+		my ($ptext) = $db->selectrow_array($patch_stack_log_statement,
+			undef, $system, $logdate);
 		$patch_stack = parse_patch_stack_log($ptext) if $ptext;
 	}
 
@@ -225,7 +228,7 @@ if (   $system
         };
 	$stage_times =
 	  $db->selectall_hashref($stage_times_query, 'log_stage', undef,
-							 $system, $logdate);
+		$system, $logdate);
 	unless ($run_time)
 	{
 		my $run_time_query = q{
@@ -252,7 +255,7 @@ my $log_marker = "==~_~===-=-===~_~==";
 
 my @log_pieces;
 my @log_piece_names;
-my @pieces = split (/$log_marker (.*?) $log_marker\r?\n/, $log);
+my @pieces = split(/$log_marker (.*?) $log_marker\r?\n/, $log);
 if ($log =~ /^$log_marker/)
 {
 	$log = "";
@@ -260,12 +263,13 @@ if ($log =~ /^$log_marker/)
 elsif (@pieces)
 {
 	$log = shift(@pieces);
+
 	# skip useless preliminary make output
 	if ($log =~ /.*?\n(([A-Za-z]{3} \d\d \d\d:\d\d:\d\d )?(echo "\+\+\+))/s)
 	{
-		my $pos = $-[1];
-		my $good = substr($log,$pos);
-		my $head = substr($log,0,$pos);
+		my $pos  = $-[1];
+		my $good = substr($log, $pos);
+		my $head = substr($log, 0, $pos);
 		$head =~ s/.*ake.*?Nothing to be done for.*?\n//s;
 		$log = $head . $good;
 	}
@@ -273,7 +277,7 @@ elsif (@pieces)
 while (@pieces)
 {
 	push(@log_piece_names, shift(@pieces));
-	push(@log_pieces, shift(@pieces));
+	push(@log_pieces,      shift(@pieces));
 }
 for (@log_piece_names)
 {
@@ -300,9 +304,9 @@ $template->process(
 		urldt                      => $logdate,
 		log_file_names             => \@log_file_names,
 		conf                       => $conf,
-	 log                        => $log,
-	 log_pieces => \@log_pieces,
-	 log_piece_names => \@log_piece_names,
+		log                        => $log,
+		log_pieces                 => \@log_pieces,
+		log_piece_names            => \@log_piece_names,
 		changed_this_run           => $changed_this_run,
 		changed_since_success      => $changed_since_success,
 		changed_this_run_logs      => $changed_this_run_logs,
@@ -320,52 +324,6 @@ $template->process(
 exit;
 
 ##########################################################
-
-# Parse the structured patch_stack.log artifact written by
-# PGBuild::Modules::PatchStack (client-side): a few "key: value" header
-# lines followed by one "filename<TAB>subject" line per patch in the
-# series. Returns a hashref { id, source, status, patches => [ {name,
-# subject}, ... ] }, or undef if the text doesn't look like this format.
-sub parse_patch_stack_log
-{
-	my $text = shift;
-	return unless defined $text && $text ne '';
-
-	my %info;
-	my @patches;
-	foreach my $line (split(/\n/, $text))
-	{
-		if ($line =~ /^patch_stack_(id|source|status):\s?(.*)$/)
-		{
-			$info{$1} = $2;
-		}
-		elsif ($line =~ /^([^\t]+)\t(.*)$/)
-		{
-			push(@patches, { name => $1, subject => $2 });
-		}
-	}
-	$info{patches} = \@patches;
-	return \%info;
-}
-
-# Compare two parsed patch_stack.log structures and report which patch
-# filenames were added/removed, but only when the series identity
-# actually differs -- avoids noise from e.g. a patch's subject line
-# changing while the tree SHA (and hence the filenames) stayed the same.
-sub diff_patch_stack
-{
-	my ($cur, $prev) = @_;
-	return if ($cur->{id} // '') eq ($prev->{id} // '');
-
-	my %cur_names = map { $_->{name} => 1 } @{ $cur->{patches} };
-	my %prev_names = map { $_->{name} => 1 } @{ $prev->{patches} };
-
-	my @added = sort grep { !$prev_names{$_} } keys %cur_names;
-	my @removed = sort grep { !$cur_names{$_} } keys %prev_names;
-
-	return unless @added || @removed;
-	return { added => \@added, removed => \@removed };
-}
 
 sub process_changed
 {
@@ -386,7 +344,7 @@ sub process_changed
 		## no critic (RegularExpressions::ProhibitUnusedCapture)
 		next if ($scm eq 'cvs' and (!m!^(pgsql|master|REL\d_\d_STABLE)/!));
 		push(@changed_rows, [ $1, $3 ]) if (m!(^\S+)(\s+)(\S+)!);
-		$commits{$3} = 1 if $scm eq 'git';
+		$commits{$3} = 1                if $scm eq 'git';
 	}
 	if ($git_from && $git_to)
 	{
