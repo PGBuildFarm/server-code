@@ -209,7 +209,7 @@ sub meta_branch
 {
 	my $metafile = shift;
 
-	open(my $fh, '<', $metafile) or return undef;
+	open(my $fh, '<', $metafile) or return;
 	my $branch;
 	while (my $line = <$fh>)
 	{

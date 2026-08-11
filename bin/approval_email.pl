@@ -134,7 +134,7 @@ if ($encrypt)
 	  or die "gpg encryption failed: $?";
 
 	open(my $ct_fh, '<', $ct_name) or die "can't read $ct_name: $!";
-	my $armored = do { local $/; <$ct_fh> };
+	my $armored = do { local $/ = undef; <$ct_fh> };
 	close $ct_fh;
 
 	print STDERR "Key: $key\n";

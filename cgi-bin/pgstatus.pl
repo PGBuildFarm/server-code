@@ -373,7 +373,7 @@ if ($log_archive)
 			if (open(my $ch, "-|", "git", "cat-file", "-e",
 					"$githeadref^{commit}"))
 			{
-				local $/;
+				local $/ = undef;
 				my $ignore = <$ch>;
 				$ref_ok = close($ch) ? 1 : 0;
 			}
