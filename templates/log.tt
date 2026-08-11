@@ -155,12 +155,17 @@ not recorded
 </table>
 [% IF patch_stack %]
 <h3>Patch stack</h3>
-<p>Source: [% patch_stack.source | html %] &mdash; Status: [% patch_stack.status | html %]</p>
+<p>Source: [% patch_stack.source | html %]
+[%- IF patch_stack.id %] &mdash; Stack: <tt>[% patch_stack.id.substr(0,10) | html %]</tt>[% END %]
+[%- IF patch_stack.commit %] (patches commit <tt>[% patch_stack.commit.substr(0,10) | html %]</tt>)[% END %]
+ &mdash; Status: [% patch_stack.status | html %]</p>
 [% IF patch_stack.patches.size > 0 %]
+[%- has_sha = 0 %]
+[%- FOREACH p IN patch_stack.patches %][% IF p.sha %][% has_sha = 1 %][% END %][% END %]
 <table>
-<tr><th>Patch</th><th>Subject</th></tr>
+<tr><th>Patch</th>[% IF has_sha %]<th>Blob</th>[% END %]<th>Subject</th></tr>
 [% FOREACH p IN patch_stack.patches %]
-<tr><td>[% p.name | html %]</td><td>[% p.subject | html %]</td></tr>
+<tr><td>[% p.name | html %]</td>[% IF has_sha %]<td><tt>[% p.sha ? p.sha.substr(0,7) : '' | html %]</tt></td>[% END %]<td>[% p.subject | html %]</td></tr>
 [% END %]
 </table>
 [% ELSE %]
@@ -172,6 +177,8 @@ not recorded
 [% FOREACH a IN patch_stack_diff.added %]+ [% a | html %]
 [% END %]
 [% FOREACH r IN patch_stack_diff.removed %]- [% r | html %]
+[% END %]
+[% FOREACH m IN patch_stack_diff.modified %]~ [% m.name | html %] ([% m.from.substr(0,7) | html %] -&gt; [% m.to.substr(0,7) | html %])
 [% END %]
 </pre>
 [% END %]
