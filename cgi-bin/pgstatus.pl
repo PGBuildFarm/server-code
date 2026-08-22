@@ -713,7 +713,7 @@ if ($ENV{BF_DEBUG})
 	my $client_time = $client_conf->{current_ts};
 	open(my $tx, ">>", "$buildlogs/$animal.$date")
 	  || die "opening $buildlogs/$animal.$date";
-	print $tx "\n", Dumper(\$client_conf), "\n";
+	print $tx "\nbranch: $branch\n", Dumper(\$client_conf), "\n";
 	print $tx "server time: $server_time, client time: $client_time\n"
 	  if $client_time;
 	close($tx);
