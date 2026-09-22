@@ -36,7 +36,9 @@ allow = once
 [-Subroutines::RequireArgUnpacking]
 
 # from perl-critic-more - don't require use of exceptions
-[-ErrorHandling::RequireUseOfExceptions ]
+# not usually installed, and this results in a complaint even though we
+# would ignore it.
+# [-ErrorHandling::RequireUseOfExceptions ]
 
 # sev 3
 
