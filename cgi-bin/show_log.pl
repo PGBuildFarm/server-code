@@ -249,13 +249,7 @@ if (   $system
 	  $db->selectall_hashref($stage_times_query, 'log_stage', undef,
 		$system, $logdate);
 
-	# Whether any stage log text was archived for this snapshot, queried
-	# against the raw (undecoded) table so we get partition pruning on
-	# the "log_text is null" partition key and never touch/decode the
-	# bytea log_text. It's all-or-nothing per snapshot, so one flag for
-	# the whole page is enough.
-	# cast to int rather than returning the boolean directly: DBD::Pg's
-	# default pg_bool_tf setting returns 'f' as a (truthy!) string
+	# Whether any stage log text was archived for this snapshot
 	my $log_presence_query = q{
            select (exists (
                select 1
