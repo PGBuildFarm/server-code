@@ -129,12 +129,20 @@ while (my $row = $sth->fetchrow_hashref)
 	}
 	$row->{script_version} =~ s/^(\d{3})0(\d{2})/$1.$2/;
 	$row->{script_version} =~ s/^0+//;
+	## no critic (ProhibitCaptureWithoutTest)
+	$row->{days_ago} = ($row->{when_ago} =~ /(\d+) day/) ? $1+0 : 0;
 	push(@$statrows, $row);
 }
 
 $sth->finish;
 
 $db->disconnect;
+
+if ($statrows->[0]->{days_ago} > 183)
+{
+	print "Status: 404 data too old\n", "Content-Type: text/plain\n\n";
+	exit;
+}
 
 $branch =~ s/^HEAD$/master/;
 s/^HEAD$/master/ foreach @$other_branches;

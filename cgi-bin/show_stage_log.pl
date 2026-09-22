@@ -92,13 +92,14 @@ if (   $system
 	my $sth = $db->prepare($statement);
 	$sth->execute($system, $logdate, $stage);
 	my $row = $sth->fetchrow_arrayref;
-	my ($branch, $logtext);
-	if ($row)
-	{
-		$branch  = $row->[0];
-		$logtext = $row->[1];
-	}
 	$sth->finish;
+	unless ($row && defined($row->[1]))
+	{
+		$db->disconnect;
+		print "Status: 404 no data found for date\n", "Content-Type: text/plain\n\n";
+		exit;
+	}
+	my ($branch, $logtext) = @$row;
 	$db->disconnect;
 
 	$branch ||= "unknown";

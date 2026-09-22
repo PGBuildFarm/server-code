@@ -59,7 +59,7 @@ my $conf = "";
 my ($stage, $changed_this_run, $changed_since_success, $branch, $scmurl);
 my $scm;
 my ($git_head_ref, $last_build_git_ref, $last_success_git_ref);
-my ($stage_times, $run_time);
+my ($stage_times, $run_time, $has_stage_logs);
 my $other_branches;
 my ($changed_this_run_logs, $changed_since_success_logs);
 my ($patch_stack,           $patch_stack_diff);
@@ -69,8 +69,19 @@ use vars qw($info_row);
 # sanity check the date - some browsers mangle decoding it
 if (   $system
 	&& $logdate
-	&& $logdate =~ /^20\d{2}-[01]\d-[0123]\d [012]\d:[0-5]\d:[0-5]\d$/)
+	&& $logdate =~ /^(20\d{2}-[01]\d-[0123]\d) [012]\d:[0-5]\d:[0-5]\d$/)
 {
+	my $datestr = $1;
+	my $old = time - (183 * 86400);
+	# 404 for dates older than 6 months
+	my ($sec,$min,$hour,$mday,$mon,$year) = gmtime($old);
+	my $oldstr = sprintf("%d-%.2d-%.2d",$year + 1900, $mon +1, $mday);
+	if ($datestr lt $oldstr)
+	{
+		print "Status: 404 no data found for date\n",
+		  "Content-Type: text/plain\n\n";
+		exit;
+	}
 
 	my $db = DBI->connect($dsn, $dbuser, $dbpass, { pg_expand_array => 0 });
 
@@ -122,6 +133,14 @@ if (   $system
 	my $sth = $db->prepare($statement);
 	$sth->execute($system, $logdate);
 	my $row = $sth->fetchrow_arrayref;
+	unless ($row)
+	{
+		$sth->finish;
+		$db->disconnect;
+		print "Status: 404 no data found for date\n",
+		  "Content-Type: text/plain\n\n";
+		exit;
+	}
 	$branch       = $row->[5];
 	$git_head_ref = $row->[9];
 	$run_time     = $row->[10];
@@ -229,6 +248,23 @@ if (   $system
 	$stage_times =
 	  $db->selectall_hashref($stage_times_query, 'log_stage', undef,
 		$system, $logdate);
+
+	# Whether any stage log text was archived for this snapshot, queried
+	# against the raw (undecoded) table so we get partition pruning on
+	# the "log_text is null" partition key and never touch/decode the
+	# bytea log_text. It's all-or-nothing per snapshot, so one flag for
+	# the whole page is enough.
+	# cast to int rather than returning the boolean directly: DBD::Pg's
+	# default pg_bool_tf setting returns 'f' as a (truthy!) string
+	my $log_presence_query = q{
+           select (exists (
+               select 1
+               from build_status_log_raw
+               where sysname = ? and snapshot = ? and log_text is not null
+           ))::int
+        };
+	($has_stage_logs) =
+	  $db->selectrow_array($log_presence_query, undef, $system, $logdate);
 	unless ($run_time)
 	{
 		my $run_time_query = q{
@@ -302,6 +338,7 @@ $template->process(
 		stage_times                => $stage_times,
 		run_time                   => $run_time,
 		urldt                      => $logdate,
+		has_stage_logs             => $has_stage_logs,
 		log_file_names             => \@log_file_names,
 		conf                       => $conf,
 		log                        => $log,

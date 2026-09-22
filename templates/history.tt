@@ -43,11 +43,10 @@ See accompanying License file for license details
     <tr [% PROCESS cl bgfor=row.stage %]>
       <td>[%- row.when_ago | replace('\s','&nbsp;') %]&nbsp;ago&nbsp;</td>
       <td class="status">[% row.stage -%]&nbsp;[[% row.git_head_ref.substr(0,7) %]][% IF row.run_time %]&nbsp;([% row.run_time %])[% END %]</td>
-      <td class="status"><a href="show_log.pl?nm=
+      <td class="status">[% IF row.days_ago < 183 %]<a href="show_log.pl?nm=
                [%- row.sysname %]&amp;dt=
-               [%- row.snapshot | uri %]">
-                [%- IF row.stage != 'OK' %]Details[% ELSE %]Config[% END -%]</a></td>
-
+               [%- row.snapshot | uri %]">[% END -%]
+                [%- IF row.stage != 'OK' %]Details[% ELSE %]Config[% END ; IF row.days_ago < 183 %]</a>[% END %]</td>
     </tr>
 [% END %]
 <table border="0"> <tr>
