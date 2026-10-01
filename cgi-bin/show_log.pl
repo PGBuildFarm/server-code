@@ -91,7 +91,7 @@ if (   $system
 
   		select log,conf_sum,stage, changed_this_run, changed_since_success,
                 branch,	log_archive_filenames, scm, scmurl, git_head_ref,
-                run_secs * interval '1 second' as run_time
+                run_secs * interval '1 second' as run_time, frozen_conf
   		from build_status
   		where sysname = ? and snapshot = ?
 
@@ -104,10 +104,10 @@ if (   $system
                     from build_status
                     where sysname = ? and branch = ? and snapshot < ?)
 	};
-	my $patch_stack_log_statement = q{
+	my $stage_log_statement = q{
 		select log_text
                 from build_status_log
-                where sysname = ? and snapshot = ? and log_stage = 'patch_stack.log'
+                where sysname = ? and snapshot = ? and log_stage = ?
 	};
 	my $last_success_statement = q{
 		select git_head_ref
@@ -183,9 +183,20 @@ if (   $system
 
 	if (grep { $_ eq 'patch_stack.log' } @log_file_names)
 	{
-		my ($ptext) = $db->selectrow_array($patch_stack_log_statement,
-			undef, $system, $logdate);
+		my ($ptext) = $db->selectrow_array($stage_log_statement,
+			undef, $system, $logdate, 'patch_stack.log');
 		$patch_stack = parse_patch_stack_log($ptext) if $ptext;
+	}
+
+	# If the client left the failure log out of its report, show the stage
+	# log it named as holding it.
+	my $fail_log = failed_stage_log($stage, $log, thaw_frozen_conf($row->[11]),
+		\@log_file_names);
+	if ($fail_log)
+	{
+		my ($ltext) = $db->selectrow_array($stage_log_statement,
+			undef, $system, $logdate, $fail_log);
+		$log .= $ltext if $ltext;
 	}
 
 	if ($patch_stack && ref $last_build_row)
@@ -198,8 +209,9 @@ if (   $system
 		if (grep { $_ eq 'patch_stack.log' } @last_log_file_names)
 		{
 			my ($last_ptext) =
-			  $db->selectrow_array($patch_stack_log_statement, undef,
-				$system, $last_build_row->{snapshot});
+			  $db->selectrow_array($stage_log_statement, undef,
+				$system, $last_build_row->{snapshot},
+				'patch_stack.log');
 			if ($last_ptext)
 			{
 				my $last_patch_stack = parse_patch_stack_log($last_ptext);

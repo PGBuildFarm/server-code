@@ -7,9 +7,11 @@ use warnings;
 
 ## no critic (ProhibitAutomaticExportation)
 use Exporter qw(import);
+use Storable qw(thaw);
 our (@EXPORT, @EXPORT_OK, %EXPORT_TAGS);
 @EXPORT = qw( check_email_only livery normalize_build_flags
-  setup_die_handler print_http_header );
+  setup_die_handler print_http_header thaw_frozen_conf
+  failed_stage_log );
 
 # Set once the response body (or its headers) has begun, so the die handler
 # installed by setup_die_handler() knows not to emit a second set of headers.
@@ -125,6 +127,39 @@ sub normalize_build_flags
 	$flags =~ s/\s+$//;
 
 	return $flags;
+}
+
+# Thaw the client config stored in build_status.frozen_conf, as fetched
+# from the database, and return it as a hashref (empty if there is none).
+sub thaw_frozen_conf
+{
+	my ($frozen) = @_;
+	return {} unless defined $frozen && length $frozen;
+
+	# not all versions of DBD::Pg decode modern bytea literals nicely. cope.
+	$frozen =~ s/^(\\?x)([a-fA-F0-9]+)$/pack('H*',$2)/e;
+
+	return thaw($frozen) || {};
+}
+
+# Clients can omit the failure log from their report, apart from the
+# snapshot mtime header, when it is also in one of the stage logs, and name
+# that stage log in their config. Return the name of that stage log if this
+# is such a report and the log is in the archive, otherwise return nothing.
+sub failed_stage_log
+{
+	my ($stage, $log, $client_conf, $log_file_names) = @_;
+
+	return if $stage eq 'OK' || ref $client_conf ne 'HASH';
+
+	my $log_body = defined $log ? $log : '';
+	$log_body =~ s/^Last file mtime in snapshot: .*\n=+\n//;
+	return if $log_body =~ /\S/;
+
+	my $fail_log = $client_conf->{failed_stage_log};
+	return unless $fail_log && grep { $_ eq $fail_log } @$log_file_names;
+
+	return $fail_log;
 }
 
 1;

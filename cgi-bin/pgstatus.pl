@@ -884,8 +884,21 @@ if ($email_only)
 {
 	if ($stage ne 'OK')
 	{
-		$log_ref = "Log:\n" .  substr($log, 0, 1_000_000);
-		$log_ref .= "\n(truncated)\n" if (length($log) > 1_000_000);
+		my $mail_log = $log;
+
+		# If the client left the failure log out of its report, use the
+		# stage log it named as holding it.
+		my $fail_log =
+		  failed_stage_log($stage, $log, $client_conf, \@log_file_names);
+		my $handle;
+		if ($fail_log && open($handle, "<", "$dirname/$fail_log"))
+		{
+			local $/ = undef;
+			$mail_log .= <$handle>;
+			close($handle);
+		}
+		$log_ref = "Log:\n" . substr($mail_log, 0, 1_000_000);
+		$log_ref .= "\n(truncated)\n" if (length($mail_log) > 1_000_000);
 	}
 	else
 	{
