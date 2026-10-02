@@ -42,7 +42,7 @@ use strict;
 use warnings;
 
 use Crypt::URandom qw(urandom);
-use File::Temp qw(tempfile);
+use File::Temp     qw(tempfile);
 use Getopt::Long;
 use Mail::Send;
 
@@ -68,15 +68,14 @@ my $encrypt = $lv->{encrypt_secrets};
 GetOptions(
 	'send|s'   => \$send,
 	'encrypt!' => \$encrypt,
-  )
-  or die "usage: $0 [--send] [--[no-]encrypt] animal_name\n";
+) or die "usage: $0 [--send] [--[no-]encrypt] animal_name\n";
 
 my $name = shift @ARGV
   or die "usage: $0 [--send] [--[no-]encrypt] animal_name\n";
 
 $ENV{PGDATABASE} = $dbname;
-$ENV{PGHOST}      = $dbhost      if $dbhost;
-$ENV{PGPORT}      = $dbport_bin  if $dbport_bin;
+$ENV{PGHOST}     = $dbhost     if $dbhost;
+$ENV{PGPORT}     = $dbport_bin if $dbport_bin;
 
 # fetch via psql rather than DBI; the animal name is passed as a bound
 # psql variable (:'name'), not interpolated into the SQL text, and the
@@ -90,10 +89,8 @@ print $q_fh
       from buildsystems where name = :'name';};
 close $q_fh;
 
-my @cmd = (
-	'psql', '-X', '-A', '-t', '-F', "\t",
-	'-v', "name=$name",
-	'-f', $q_name);
+my @cmd =
+  ('psql', '-X', '-A', '-t', '-F', "\t", '-v', "name=$name", '-f', $q_name);
 
 open(my $fh, '-|', @cmd) or die "can't run psql: $!";
 my $line = <$fh>;
@@ -101,10 +98,8 @@ close($fh) or die "psql failed: $?";
 
 die "no such animal: $name\n" unless defined $line;
 chomp $line;
-my (
-	$secret, $owner, $owner_email,
-	$os, $osv, $comp, $compv, $arch
-) = split(/\t/, $line, 8);
+my ($secret, $owner, $owner_email, $os, $osv, $comp, $compv, $arch) =
+  split(/\t/, $line, 8);
 die "no such animal: $name\n"
   unless defined $secret && defined $owner && defined $owner_email;
 
@@ -127,10 +122,10 @@ if ($encrypt)
 	my (undef, $ct_name) = tempfile(UNLINK => 1);
 
 	system(
-		'gpg', '--batch', '--yes', '--symmetric', '--armor',
-		'--pinentry-mode',   'loopback',
-		'--passphrase-file', $pf_name,
-		'-o', $ct_name, $pt_name) == 0
+		'gpg',     '--batch',         '--yes',    '--symmetric',
+		'--armor', '--pinentry-mode', 'loopback', '--passphrase-file',
+		$pf_name,  '-o',              $ct_name,   $pt_name
+	  ) == 0
 	  or die "gpg encryption failed: $?";
 
 	open(my $ct_fh, '<', $ct_name) or die "can't read $ct_name: $!";

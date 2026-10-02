@@ -42,15 +42,16 @@ $dsn .= ";port=$dbport" if $dbport;
 
 my $template_opts =
   { INCLUDE_PATH => $template_dir, VARIABLES => { livery => livery() } };
-my $template      = Template->new($template_opts);
-my $query         = CGI->new;
+my $template = Template->new($template_opts);
+my $query    = CGI->new;
 
 my $params = $query->Vars;
 
-my ($os, $osv, $comp, $compv, $arch, $email, $owner,
-	$response, $comments) =
-  @{$params}{qw(os osv comp compv arch email owner
-				g-recaptcha-response comments)};
+my ($os, $osv, $comp, $compv, $arch, $email, $owner, $response, $comments) =
+  @{$params}{
+	qw(os osv comp compv arch email owner
+	  g-recaptcha-response comments)
+  };
 
 my $ok = 1;
 
